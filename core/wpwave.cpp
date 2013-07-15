@@ -227,4 +227,7 @@ void WPWave::Gabor(const Type *begin, const Type *end, double sigma, int period,
     }
 }
 
-void WPWave::_Gabor(QVector<QVector<std::complex<double> > > &in, double sigma, int period, QVector<std::complex<double> > &out);
+void WPWave::_Gabor(QVector<QVector<std::complex<double> > > &in, double sigma, int period, QVector<std::complex<double> > &out)
+{
+    //...
+}
