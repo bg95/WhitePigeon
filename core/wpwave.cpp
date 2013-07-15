@@ -47,6 +47,19 @@ void WPWave::_FFT()
         data[i] = auxdata[i].real()/* + auxdata[i].imag()*/; //?
 }
 
+void WPWave::Gabor(double sigma, int period)
+{
+    Gabor(data.begin(), data.end(), sigma, period, STFTdata);
+}
+void WPWave::_Gabor(double sigma, int period)
+{
+    QVector<std::complex<double> > auxdata;
+    _Gabor(STFTdata, sigma, period, auxdata);
+    int i;
+    for (i = 0; i < data.size(); i++)
+        data[i] = auxdata[i].real()/* + auxdata[i].imag()*/; //?
+}
+
 bool WPWave::play()
 {
     if (!isdecoded)
@@ -130,11 +143,8 @@ int WPWave::FFT(const Type *begin, const Type *end, QVector<std::complex<double>
             std::swap(FFTout[i], FFTout[j]);
     }
 
-    printf("FFT 0\n");
-
     for (i = 2; i <= n2; i <<= 1)
     {
-        printf("FFT %d\n", i);
         omega = std::complex<double>(cos(2 * PI / i), sin(2 * PI / i));
         for (j = 0; j < n2; j += i)
         {
@@ -174,11 +184,8 @@ int WPWave::_FFT(const std::complex<double> *begin, const std::complex<double> *
             std::swap(FFTout[i], FFTout[j]);
     }
 
-    printf("FFT 0\n");
-
     for (i = 2; i <= n2; i <<= 1)
     {
-        printf("FFT %d\n", i);
         omega = std::complex<double>(cos(2 * PI / i), -sin(2 * PI / i));
         for (j = 0; j < n2; j += i)
         {
@@ -203,12 +210,11 @@ double WPWave::Gauss(double sigma, double x)
 }
 
 template <class Type>
-void WPWave::Gabor(const Type *begin, const Type *end, double sigma, int period, QVector<QVector<std::complex<double> > > &out)
+void WPWave::STFT(const Type *begin, const Type *end, double *window, int width, int period, QVector<QVector<std::complex<double> > > &out)
 {
     double *tmpwave;
-    int mid, i, k, n, width;
+    int mid, i, k, n;
     n = end - begin;
-    width = int(Ksigma * sigma + 1.0);
     tmpwave = new double[width * 2 + 1];
     out.clear();
     k = 0;
@@ -217,7 +223,7 @@ void WPWave::Gabor(const Type *begin, const Type *end, double sigma, int period,
         for (i = -width; i <= width; i++)
         {
             if (mid + i >= 0 && mid + i < n)
-                tmpwave[i + width] = begin[mid + i] * Gauss(sigma, i);
+                tmpwave[i + width] = begin[mid + i] * window[std::abs(i)];
             else
                 tmpwave[i + width] = 0;
         }
@@ -227,7 +233,55 @@ void WPWave::Gabor(const Type *begin, const Type *end, double sigma, int period,
     }
 }
 
-void WPWave::_Gabor(QVector<QVector<std::complex<double> > > &in, double sigma, int period, QVector<std::complex<double> > &out)
+void WPWave::_STFT(const QVector<QVector<std::complex<double> > > &in, double *window, int width, int period, QVector<std::complex<double> > &out)
 {
-    //...
+    int *multi;
+    int n = in.size() * period;
+    int i, k, mid;
+    QVector<std::complex<double> > tmpwave;
+    multi = new int[n];
+    out.clear();
+    out.fill(0.0, n);
+    k = 0;
+    for (mid = 0; mid < n; mid += period)
+    {
+        _FFT(in[k].begin(), in[k].end(), tmpwave);
+        for (i = -width; i <= width; i++)
+        {
+            if (mid + i >= 0 && mid + i < n)
+            {
+                out[mid + i] += tmpwave[i + width] / window[std::abs(i)];
+                multi[mid + i]++;
+            }
+        }
+        k++;
+    }
+    for (i = 0; i < n; i++)
+        out[i] /= multi[i];
+    delete[] multi;
+}
+
+template <class Type>
+void WPWave::Gabor(const Type *begin, const Type *end, double sigma, int period, QVector<QVector<std::complex<double> > > &out)
+{
+    double *gausswindow;
+    int width = int(Ksigma * sigma + 1.0);
+    int i;
+    gausswindow = new double[width + 1];
+    for (i = 0; i <= width; i++)
+        gausswindow[i] = Gauss(sigma, i);
+    STFT(begin, end, gausswindow, int(Ksigma * sigma + 1.0), period, out);
+    delete[] gausswindow;
+}
+
+void WPWave::_Gabor(const QVector<QVector<std::complex<double> > > &in, double sigma, int period, QVector<std::complex<double> > &out)
+{
+    double *gausswindow;
+    int width = int(Ksigma * sigma + 1.0);
+    int i;
+    gausswindow = new double[width + 1];
+    for (i = 0; i <= width; i++)
+        gausswindow[i] = Gauss(sigma, i);
+    _STFT(in, gausswindow, int(Ksigma * sigma + 1.0), period, out);
+    delete[] gausswindow;
 }

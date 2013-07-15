@@ -5,7 +5,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     glwidget(this),
-    glwidget2(this)
+    glwidgetR(this),
+    glwidgetI(this)
 {
     //ui->setupUi(this);
     setGeometry(100, 100, 1000, 600);
@@ -20,12 +21,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::resizeEvent(QResizeEvent *)
 {
-    glwidget.setGeometry(0, 0, width(), height() / 2);
-    glwidget2.setGeometry(0, height() / 2 + 1, width(), height() / 2);
+    glwidget.setGeometry(0, 0, width(), height() / 3);
+    glwidgetR.setGeometry(0, height() / 3 + 1, width(), height() / 3 - 1);
+    glwidgetI.setGeometry(0, height() / 3 * 2 + 1, width(), height() / 3 - 1);
 }
 
 void MainWindow::waveDecodeFinished()
 {
+    //wave.Gabor(1, 1);
+    //wave._Gabor(1, 1);
     wave.FFT();
     wave._FFT();
     wave.play();
@@ -35,8 +39,13 @@ void MainWindow::waveDecodeFinished()
         glwidget.addPoint(i, wave.data[i]);
     glwidget.repaint();
 
-    glwidget2.setRange(0, wave.FFTdata.size(), 0, wave.FFTdata.size() * 1000);
+    glwidgetR.setRange(0, wave.FFTdata.size() / 20, -wave.FFTdata.size() * 1000, wave.FFTdata.size() * 1000);
     for (int i = 0; i < wave.FFTdata.size(); i++)
-        glwidget2.addLine(i, 0, i, wave.FFTdata[i].real());
-    glwidget2.repaint();
+        glwidgetR.addLine(i, 0, i, wave.FFTdata[i].real());
+    glwidgetR.repaint();
+
+    glwidgetI.setRange(0, wave.FFTdata.size() / 20, -wave.FFTdata.size() * 1000, wave.FFTdata.size() * 1000);
+    for (int i = 0; i < wave.FFTdata.size(); i++)
+        glwidgetI.addLine(i, 0, i, wave.FFTdata[i].imag());
+    glwidgetI.repaint();
 }
