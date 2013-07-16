@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     glwidgetSTFT(this)
 {
     //ui->setupUi(this);
-    setGeometry(100, 100, 1000, 600);
+    setGeometry(100, 50, 1000, 600);
     wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave.wav");
     connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
 }
@@ -30,7 +30,7 @@ void MainWindow::resizeEvent(QResizeEvent *)
 
 void MainWindow::waveDecodeFinished()
 {
-    wave.Gabor(64, 8);
+    wave.Gabor(256, 256);
     QVector<QVector<std::complex<double> > > tmp;
     tmp.clear();
     for (int i = 0; i < wave.STFTdata.size(); i++)
@@ -41,7 +41,7 @@ void MainWindow::waveDecodeFinished()
             tmp[i][(j * 2) % wave.STFTdata[i].size()] += wave.STFTdata[i][j];
     }
     //wave.STFTdata = tmp;
-    wave._Gabor(64, 8);
+    wave._Gabor(256, 256);
     wave.FFT();
     wave._FFT();
 
@@ -67,7 +67,7 @@ void MainWindow::waveDecodeFinished()
         for (int j = 0; j < wave.STFTdata[i].size(); j++)
         {
             double t = std::abs(wave.STFTdata[i][j]);
-            glwidgetSTFT.addPoint(i, j, t / 100000.0, t / 50000.0, t / 25000.0);
+            glwidgetSTFT.addPoint(i, j, t / 40000.0, t / 20000.0, t / 10000.0);
         }
     glwidgetSTFT.repaint();
     wave.play();

@@ -124,13 +124,18 @@ int WPWave::FFT(const Type *begin, const Type *end, QVector<std::complex<double>
     int n = end - begin;
     int n2;
     int i, j, k;
-    std::complex<double> omega, pomega;
+    std::complex<double> omega, pomega, temp;
     for (n2 = 1; n2 < n; n2 <<= 1);
     FFTout.clear();
+    FFTout.resize(n2);/*
     for (i = 0; i < n; i++)
         FFTout.push_back(std::complex<double>(begin[i]));
     for (i = n; i < n2; i++)
-        FFTout.push_back(std::complex<double>(0));
+        FFTout.push_back(std::complex<double>(0));*/
+    for (i = 0; i < n; i++)
+        FFTout[i] = std::complex<double>(begin[i]);
+    for (i = n; i < n2; i++)
+        FFTout[i] = std::complex<double>(0);
 
     for (i = 0; i < n2; i++)
     {
@@ -146,15 +151,16 @@ int WPWave::FFT(const Type *begin, const Type *end, QVector<std::complex<double>
     for (i = 2; i <= n2; i <<= 1)
     {
         omega = std::complex<double>(cos(2 * PI / i), sin(2 * PI / i));
-        for (j = 0; j < n2; j += i)
+        pomega = 1.0;
+        for (k = 0; k < i / 2; k++)
         {
-            pomega = 1.0;
-            for (k = 0; k < i / 2; k++)
+            for (j = 0; j < n2; j += i)
             {
-                FFTout[j + k] = FFTout[j + k] + pomega * FFTout[j + k + i / 2];
-                FFTout[j + k + i / 2] = FFTout[j + k] - 2.0 * pomega * FFTout[j + k + i / 2];
-                pomega *= omega;
+                temp = pomega * FFTout[j + k + i / 2];
+                FFTout[j + k] = FFTout[j + k] + temp;
+                FFTout[j + k + i / 2] = FFTout[j + k] - temp - temp;
             }
+            pomega *= omega;
         }
     }
     return n2;
@@ -165,13 +171,18 @@ int WPWave::_FFT(const std::complex<double> *begin, const std::complex<double> *
     int n = end - begin;
     int n2;
     int i, j, k;
-    std::complex<double> omega, pomega;
+    std::complex<double> omega, pomega, temp;
     for (n2 = 1; n2 < n; n2 <<= 1);
     FFTout.clear();
+    FFTout.resize(n2);/*
     for (i = 0; i < n; i++)
         FFTout.push_back(std::complex<double>(begin[i]));
     for (i = n; i < n2; i++)
-        FFTout.push_back(std::complex<double>(0));
+        FFTout.push_back(std::complex<double>(0));*/
+    for (i = 0; i < n; i++)
+        FFTout[i] = std::complex<double>(begin[i]);
+    for (i = n; i < n2; i++)
+        FFTout[i] = std::complex<double>(0);
 
     for (i = 0; i < n2; i++)
     {
@@ -187,15 +198,16 @@ int WPWave::_FFT(const std::complex<double> *begin, const std::complex<double> *
     for (i = 2; i <= n2; i <<= 1)
     {
         omega = std::complex<double>(cos(2 * PI / i), -sin(2 * PI / i));
-        for (j = 0; j < n2; j += i)
+        pomega = 1.0;
+        for (k = 0; k < i / 2; k++)
         {
-            pomega = 1.0;
-            for (k = 0; k < i / 2; k++)
+            for (j = 0; j < n2; j += i)
             {
-                FFTout[j + k] = FFTout[j + k] + pomega * FFTout[j + k + i / 2];
-                FFTout[j + k + i / 2] = FFTout[j + k] - 2.0 * pomega * FFTout[j + k + i / 2];
-                pomega *= omega;
+                temp = pomega * FFTout[j + k + i / 2];
+                FFTout[j + k] = FFTout[j + k] + temp;
+                FFTout[j + k + i / 2] = FFTout[j + k] - temp - temp;
             }
+            pomega *= omega;
         }
     }
     for (i = 0; i < FFTout.size(); i++)
