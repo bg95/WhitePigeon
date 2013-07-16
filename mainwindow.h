@@ -23,7 +23,7 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    MyGLWidget glwidget, glwidgetR, glwidgetI;
+    MyGLWidget glwidget, glwidgetR, glwidgetI, glwidgetSTFT;
     WPWave wave;
 
 protected:

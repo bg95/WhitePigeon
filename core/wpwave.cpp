@@ -217,6 +217,7 @@ void WPWave::STFT(const Type *begin, const Type *end, double *window, int width,
     n = end - begin;
     tmpwave = new double[width * 2 + 1];
     out.clear();
+    printf("STFT: width = %d\n", width);
     k = 0;
     for (mid = 0; mid < n; mid += period)
     {
@@ -235,30 +236,36 @@ void WPWave::STFT(const Type *begin, const Type *end, double *window, int width,
 
 void WPWave::_STFT(const QVector<QVector<std::complex<double> > > &in, double *window, int width, int period, QVector<std::complex<double> > &out)
 {
-    int *multi;
     int n = in.size() * period;
     int i, k, mid;
     QVector<std::complex<double> > tmpwave;
-    multi = new int[n];
+    double *scale;
+    scale = new double[n];
     out.clear();
     out.fill(0.0, n);
+    for (i = 0; i < n; i++)
+        scale[i] = 0.0;
+    printf("_STFT: width = %d\n", width);
     k = 0;
     for (mid = 0; mid < n; mid += period)
     {
-        _FFT(in[k].begin(), in[k].end(), tmpwave);
+        _FFT(in[k].begin(), in[k].end(), tmpwave);/*
+        printf("in[%d].size() == %d\n", k, in[k].size());
+        Q_ASSERT_X(in[k].size() >= width * 2 + 1, "_STFT", "in[k] size error");
+        Q_ASSERT_X(tmpwave.size() >= width * 2 + 1, "_STFT", "tmpwave size error");*/
         for (i = -width; i <= width; i++)
         {
             if (mid + i >= 0 && mid + i < n)
             {
-                out[mid + i] += tmpwave[i + width] / window[std::abs(i)];
-                multi[mid + i]++;
+                out[mid + i] += tmpwave[i + width];
+                scale[mid + i] += window[std::abs(i)];
             }
         }
         k++;
     }
     for (i = 0; i < n; i++)
-        out[i] /= multi[i];
-    delete[] multi;
+        out[i] /= scale[i];
+    delete[] scale;
 }
 
 template <class Type>
@@ -282,6 +289,6 @@ void WPWave::_Gabor(const QVector<QVector<std::complex<double> > > &in, double s
     gausswindow = new double[width + 1];
     for (i = 0; i <= width; i++)
         gausswindow[i] = Gauss(sigma, i);
-    _STFT(in, gausswindow, int(Ksigma * sigma + 1.0), period, out);
+    _STFT(in, gausswindow, width, period, out);
     delete[] gausswindow;
 }

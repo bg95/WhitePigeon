@@ -7,8 +7,8 @@
 QT       += core gui opengl multimedia
 
 #needs
-#libpulse
-#qmultimedia5
+#libpulse-dev
+#qtmultimedia5-dev
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

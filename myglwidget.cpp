@@ -1,44 +1,38 @@
-#include "myglwidget.h"
+﻿#include "myglwidget.h"
 #include <stdio.h>
 
 MyGLWidget::MyGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
-    px = new double[N];
-    py = new double[N];
-    lx1 = new double[N];
-    ly1 = new double[N];
-    lx2 = new double[N];
-    ly2 = new double[N];
     clear();
 }
 
 MyGLWidget::~MyGLWidget()
 {
-    delete[] px;
-    delete[] py;
-    delete[] lx1;
-    delete[] ly1;
-    delete[] lx2;
-    delete[] ly2;
 }
 
-void MyGLWidget::addPoint(double x, double y)
+void MyGLWidget::addPoint(double x, double y, double _red, double _green, double _blue)
 {
-    px[pcnt] = x;
-    py[pcnt] = y;
+    px.push_back(x);
+    py.push_back(y);
+    pred.push_back(_red);
+    pgreen.push_back(_green);
+    pblue.push_back(_blue);
     pcnt++;
     //printf("point %.2lf,%.2lf added\n", x, y);
     //fflush(stdout);
     //paintGL();
 }
 
-void MyGLWidget::addLine(double x1, double y1, double x2, double y2)
+void MyGLWidget::addLine(double x1, double y1, double x2, double y2, double _red, double _green, double _blue)
 {
-    lx1[lcnt] = x1;
-    ly1[lcnt] = y1;
-    lx2[lcnt] = x2;
-    ly2[lcnt] = y2;
+    lx1.push_back(x1);
+    ly1.push_back(y1);
+    lx2.push_back(x2);
+    ly2.push_back(y2);
+    lred.push_back(_red);
+    lgreen.push_back(_green);
+    lblue.push_back(_blue);
     lcnt++;
 }
 
@@ -55,6 +49,18 @@ void MyGLWidget::clear()
 {
     pcnt = 0;
     lcnt = 0;
+    px.clear();
+    py.clear();
+    lx1.clear();
+    ly1.clear();
+    lx2.clear();
+    ly2.clear();
+    pred.clear();
+    pgreen.clear();
+    pblue.clear();
+    lred.clear();
+    lgreen.clear();
+    lblue.clear();
     paintGL();
 }
 
@@ -69,21 +75,21 @@ void MyGLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
     glOrtho(l, r, b, t, -1, 1);
-    printf("%lf %lf %lf %lf\n", l, r, b, t);
-    //glOrtho(-100, 100, -100, 100, -1, 1);
-    glColor3d(1.0, 1.0, 0.0);
-    glBegin(GL_LINES);
     for (i = 0; i < lcnt; i++)
     {
+        glBegin(GL_LINES);
+        glColor3d(lred[i], lgreen[i], lblue[i]);
         glVertex2d(lx1[i], ly1[i]);
         glVertex2d(lx2[i], ly2[i]);
+        glEnd();
     }
-    glEnd();
-    glColor3d(0.0, 0.0, 1.0);
-    glBegin(GL_LINE_STRIP);
     for (i = 0; i < pcnt; i++)
+    {
+        glColor3d(pred[i], pgreen[i], pblue[i]);
+        glBegin(GL_POINTS);
         glVertex2d(px[i], py[i]);
-    glEnd();
+        glEnd();
+    }
 }
 
 void MyGLWidget::resizeGL(int w, int h)
