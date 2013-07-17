@@ -12,10 +12,12 @@ class WPInterval
 {
 	public:
 		WPInterval();
-		WPInterval(WPPosition, WPPosition);
+		WPInterval(const WPPosition &, const WPPosition &);
 		~WPInterval();
+		WPPosition begin() const;
+		WPPosition end() const;
 	private:
-		
+		WPPosition Begin, End;
 };
 
 #endif

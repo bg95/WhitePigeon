@@ -1,3 +1,7 @@
+/*
+ * Important!!!
+ * Please do NOT add notes with different length!
+ */
 #ifndef _WPMULTINOTE_H
 #define _WPMULTINOTE_H
 

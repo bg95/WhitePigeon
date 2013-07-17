@@ -13,7 +13,7 @@ class WPPart
 	public:
 		WPPart();
 		~WPPart();
-		
+		void insertProperties(const WPProperty &);
 	private:
 		std::vector <WPMultinote> Notes;
 		std::vector <WPProperty> Properties;
