@@ -19,10 +19,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp\
         myglwidget.cpp \
-    core/wpwave.cpp
+    core/wpwave.cpp \
+    core/wpsynthesizer.cpp
 
 HEADERS  += mainwindow.h\
             myglwidget.h \
-    core/wpwave.h
+    core/wpwave.h \
+    core/wpsynthesizer.h
 
 FORMS    += mainwindow.ui

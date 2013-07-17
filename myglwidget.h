@@ -12,6 +12,7 @@ public:
     ~MyGLWidget();
     void setRange(double _l, double _r, double _b, double _t);
     void addPoint(double x, double y, double _red, double _green, double _blue);
+    int getNumPoints() const;
     void addLine(double x1, double y1, double x2, double y2, double _red, double _green, double _blue);
     void clear();
     

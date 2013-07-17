@@ -14,11 +14,11 @@
 #include <QFile>
 #include <QMediaPlayer>
 
-typedef qint16 WaveDataType;
 class WPWave : public QObject
 {
     Q_OBJECT
 public:
+    typedef qint16 WaveDataType;
     static const double PI = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
     static const double Ksigma = 6.0;   //The Gauss function is considered very small (as 0) if |x| > Ksigma * sigma
     template <class Type> static int FFT(const Type *begin, const Type *end, QVector<std::complex<double> > &FFTout);
@@ -30,7 +30,7 @@ public:
     static void _Gabor(const QVector<QVector<std::complex<double> > > &in, double sigma, int period, QVector<std::complex<double> > &out);
 
     explicit WPWave(QObject *parent = 0);
-    WPWave(QVector<WaveDataType> &_data, QObject *parent = 0);
+    WPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format, QObject *parent = 0);
     void readFile(QString filename);
     void FFT();
     void _FFT();
@@ -45,11 +45,8 @@ signals:
     void finished();
     
 public slots:
-    void readBuffer();
-    void decodeFinished();
     bool play();
     void stop();
-    void audiooutputStateChanged(QAudio::State);
     
 private:
     QAudioFormat format;
@@ -62,6 +59,11 @@ private:
     QFile *bufferfile;
     QAudioOutput *audiooutput;
     QMediaPlayer *player;
+
+private slots:
+    void readBuffer();
+    void decodeFinished();
+    void audiooutputStateChanged(QAudio::State);
 
 };
 

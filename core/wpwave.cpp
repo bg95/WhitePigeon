@@ -8,8 +8,10 @@ WPWave::WPWave(QObject *parent) :
     isFFTed = false;
 }
 
-WPWave::WPWave(QVector<WaveDataType> &_data, QObject *parent) :
-    QObject(parent), data(_data)
+WPWave::WPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format, QObject *parent) :
+    QObject(parent),
+    data(_data),
+    format(_format)
 {
     isdecoded = true;
     isFFTed = false;

@@ -24,6 +24,11 @@ void MyGLWidget::addPoint(double x, double y, double _red, double _green, double
     //paintGL();
 }
 
+int MyGLWidget::getNumPoints() const
+{
+    return pcnt;
+}
+
 void MyGLWidget::addLine(double x1, double y1, double x2, double y2, double _red, double _green, double _blue)
 {
     lx1.push_back(x1);
