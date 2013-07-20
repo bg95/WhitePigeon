@@ -17,6 +17,18 @@ WPWave::WPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format, 
     isFFTed = false;
 }
 
+WPWave::WPWave(WPWave &b) :
+    QObject(b.parent()),
+    data(b.data),
+    FFTdata(b.FFTdata),
+    STFTdata(b.STFTdata),
+    format(b.format),
+    decoder(),
+    isdecoded(b.isdecoded),
+    isFFTed(b.isFFTed)
+{
+}
+
 void WPWave::readFile(QString filename)
 {
     isdecoded = false;
@@ -60,6 +72,32 @@ void WPWave::_Gabor(double sigma, int period)
     int i;
     for (i = 0; i < data.size(); i++)
         data[i] = auxdata[i].real()/* + auxdata[i].imag()*/; //?
+}
+
+void WPWave::append(WPWave &b)
+{
+    data.append(b.data);
+    isFFTed = false;
+}
+
+void WPWave::mixWith(double ra, const WPWave &b, double rb)
+{
+    int i, n;
+    n = data.size();
+    if (b.data.size() > n)
+    {
+        for (i = 0; i < n; i++)
+            data[i] = data[i] * ra + b.data[i] * rb;
+        for (i = n; i < b.data.size(); i++)
+            data[i] = b.data[i] * rb;
+    }
+    else
+    {
+        for (i = 0; i < b.data.size(); i++)
+            data[i] = data[i] * ra + b.data[i] * rb;
+        for (i = b.data.size(); i < n; i++)
+            data[i] = data[i] * ra;
+    }
 }
 
 bool WPWave::play()

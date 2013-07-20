@@ -31,11 +31,15 @@ public:
 
     explicit WPWave(QObject *parent = 0);
     WPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format, QObject *parent = 0);
+    WPWave(WPWave &b);
+
     void readFile(QString filename);
     void FFT();
     void _FFT();
     void Gabor(double sigma, int period);
     void _Gabor(double sigma, int period);
+    void append(WPWave &b);
+    void mixWith(double ra, const WPWave &b, double rb);
 
     QVector<WaveDataType> data;
     QVector<std::complex<double> > FFTdata;
