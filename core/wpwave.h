@@ -40,6 +40,7 @@ public:
     void _Gabor(double sigma, int period);
     void append(WPWave &b);
     void mixWith(double ra, const WPWave &b, double rb);
+    void copy(WPWave &b);
 
     QVector<WaveDataType> data;
     QVector<std::complex<double> > FFTdata;

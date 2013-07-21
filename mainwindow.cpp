@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "WPScore/WPNote.h"
+#include "core/wpsynthesizer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,8 +13,21 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     //ui->setupUi(this);
     setGeometry(100, 50, 1000, 600);
-    wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
-    connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
+    //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
+    //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
+    WPNote note(0, Fraction(10, 1));
+    WPSynthesizer synthesizer(WPSynthesizer::Internal, "Tuning Fork");
+    qWarning("synthesizer constructed");
+    WPWave *pwave = synthesizer.synthesize(note);
+    qWarning("synthesis finished");
+    wave.copy(*pwave);
+    WPNote note2(4, Fraction(10, 1));
+    pwave = synthesizer.synthesize(note2);
+    wave.mixWith(0.3, *pwave, 0.3);
+    WPNote note3(7, Fraction(10, 1));
+    pwave = synthesizer.synthesize(note3);
+    wave.mixWith(0.6, *pwave, 0.3);
+    waveDecodeFinished();
 }
 
 MainWindow::~MainWindow()
@@ -29,8 +44,9 @@ void MainWindow::resizeEvent(QResizeEvent *)
 }
 
 void MainWindow::waveDecodeFinished()
-{
-    wave.Gabor(256, 32);
+{/*
+    qWarning("Gabor");
+    wave.Gabor(256, 512);
     QVector<QVector<std::complex<double> > > tmp;
     tmp.clear();
     for (int i = 0; i < wave.STFTdata.size(); i++)
@@ -41,15 +57,17 @@ void MainWindow::waveDecodeFinished()
             tmp[i][(j * 2) % wave.STFTdata[i].size()] += wave.STFTdata[i][j];
     }
     //wave.STFTdata = tmp;
-    wave._Gabor(256, 32);
+    wave._Gabor(256, 512);
+    qWarning("FFT");
     wave.FFT();
     wave._FFT();
-
+*/
+    qWarning("drawing");
     glwidget.setRange(0, 10000, -32768.0, 32768.0);
     for (int i = 0; i < wave.data.size(); i++)
         glwidget.addPoint(i, wave.data[i], 0.0, 0.0, 1.0);
     glwidget.repaint();
-
+/*
     glwidgetR.setRange(0, wave.FFTdata.size() / 20, -wave.FFTdata.size() * 1000, wave.FFTdata.size() * 1000);
     for (int i = 0; i < wave.FFTdata.size(); i++)
         glwidgetR.addLine(i, 0, i, wave.FFTdata[i].real(), 1.0, 1.0, 0.0);
@@ -71,5 +89,6 @@ void MainWindow::waveDecodeFinished()
         }
     printf("points: %d", glwidgetSTFT.getNumPoints());
     glwidgetSTFT.repaint();
+*/
     wave.play();
 }

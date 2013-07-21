@@ -76,7 +76,9 @@ void WPWave::_Gabor(double sigma, int period)
 
 void WPWave::append(WPWave &b)
 {
-    data.append(b.data);
+    int i;
+    for (i = 0; i < b.data.size(); i++)
+        data.push_back(b.data[i]);
     isFFTed = false;
 }
 
@@ -98,6 +100,16 @@ void WPWave::mixWith(double ra, const WPWave &b, double rb)
         for (i = b.data.size(); i < n; i++)
             data[i] = data[i] * ra;
     }
+}
+
+void WPWave::copy(WPWave &b)
+{
+    data = b.data;
+    FFTdata = b.FFTdata;
+    STFTdata = b.STFTdata;
+    format = b.format;
+    isdecoded = b.isdecoded;
+    isFFTed = b.isFFTed;
 }
 
 bool WPWave::play()

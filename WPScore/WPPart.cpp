@@ -8,7 +8,7 @@ WPPart::~WPPart ()
 {
 }
 
-void insertProperties(const WPProperty &P);
+void WPPart::insertProperties(const WPProperty &P)
 {
 	Properties.push_back(P);
 }

@@ -20,11 +20,28 @@ SOURCES += main.cpp\
         mainwindow.cpp\
         myglwidget.cpp \
     core/wpwave.cpp \
-    core/wpsynthesizer.cpp
+    core/wpsynthesizer.cpp \
+    WPScore/WPScore.cpp \
+    WPScore/WPProperty.cpp \
+    WPScore/WPPosition.cpp \
+    WPScore/WPPart.cpp \
+    WPScore/WPNote.cpp \
+    WPScore/WPMultinote.cpp \
+    WPScore/WPLib.cpp \
+    WPScore/WPInterval.cpp
 
 HEADERS  += mainwindow.h\
             myglwidget.h \
     core/wpwave.h \
-    core/wpsynthesizer.h
+    core/wpsynthesizer.h \
+    WPScore/WPSPosition.h \
+    WPScore/WPScore.h \
+    WPScore/WPProperty.h \
+    WPScore/WPPosition.h \
+    WPScore/WPPart.h \
+    WPScore/WPNote.h \
+    WPScore/WPMultinote.h \
+    WPScore/WPLib.h \
+    WPScore/WPInterval.h
 
 FORMS    += mainwindow.ui
