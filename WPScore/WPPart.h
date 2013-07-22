@@ -16,6 +16,7 @@ class WPPart
 		~WPPart();
 		std::string getName() const;
 		void insertProperties(const WPProperty &);
+		void insertMultinote(const WPPosition &, const WPMultinote &);
 	private:
 		std::string Name;
 		std::vector <WPMultinote> Notes;

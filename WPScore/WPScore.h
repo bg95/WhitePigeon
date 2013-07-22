@@ -30,6 +30,7 @@ class WPScore
 		std::vector <WPProperty> getPropertyList() const;
 	private:
 		std::vector < std::pair <WPPosition, WPNote> > NoteList;
+		std::vector <WPPart> PartList;
 };
 
 #endif

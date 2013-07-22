@@ -24,6 +24,7 @@ class WPMultinote
 		void change(const WPMultinote &);
 		void deleteNote(const WPNote &);
 		std::vector <WPNote> getNotes();
+		Fraction getLength() const;
 	private:
 		std::vector <WPNote> List;
 };

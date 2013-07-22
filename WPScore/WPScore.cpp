@@ -38,8 +38,9 @@ void WPScore::deleteProperty(const WPProperty &)
 {
 }
 
-void WPScore::insertPart(const WPPart &)
+void WPScore::insertPart(const WPPart &P)
 {
+	PartList.push_back(P);
 }
 
 void WPScore::deletePart(const WPPart &)

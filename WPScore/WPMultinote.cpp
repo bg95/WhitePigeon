@@ -42,3 +42,10 @@ std::vector <WPNote> WPMultinote::getNotes()
 {
 	return List;
 }
+
+Fraction WPMultinote::getLength() const
+{
+	if (List.empty())
+		return Fraction (0, 1);
+	return List.back().getLength();
+}

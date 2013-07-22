@@ -22,3 +22,8 @@ void WPPart::insertProperties(const WPProperty &P)
 {
 	Properties.push_back(P);
 }
+
+void WPPart::insertMultinote(const WPPosition &, const WPMultinote &)
+{
+	
+}
