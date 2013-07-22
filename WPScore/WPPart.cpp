@@ -4,8 +4,18 @@ WPPart::WPPart ()
 {
 }
 
+WPPart::WPPart (const std::string &S)
+{
+	Name = S;
+}
+
 WPPart::~WPPart ()
 {
+}
+
+std::string WPPart::getName() const
+{
+	return Name;
 }
 
 void WPPart::insertProperties(const WPProperty &P)

@@ -12,9 +12,12 @@ class WPPart
 {
 	public:
 		WPPart();
+		WPPart(const std::string &);
 		~WPPart();
+		std::string getName() const;
 		void insertProperties(const WPProperty &);
 	private:
+		std::string Name;
 		std::vector <WPMultinote> Notes;
 		std::vector <WPProperty> Properties;
 };
