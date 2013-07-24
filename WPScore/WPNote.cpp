@@ -29,6 +29,11 @@ double WPNote::getFrequency() const
 	return 440.0 * pow(2.0, (double) Pitch / 12.0);
 }
 
+double WPNote::getFrequency(double *TuningFunction(int, int), int Base) const
+{
+	return *TuningFunction(Base, Pitch);
+}
+
 Fraction WPNote::getLength() const
 {
 	return Length;
