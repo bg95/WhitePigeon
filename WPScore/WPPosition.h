@@ -15,6 +15,13 @@ class WPPosition
 		~WPPosition();
 		WPPosition(const Fraction &);
 		Fraction getValue() const;
+		bool operator < (const WPPosition &) const;
+		bool operator <= (const WPPosition &) const;
+		bool operator > (const WPPosition &) const;
+		bool operator >= (const WPPosition &) const;
+		WPPosition operator = (const Fraction &);
+		WPPosition operator + (const Fraction &) const;
+		WPPosition operator += (const Fraction &);
 	private:
 		Fraction Value;
 };

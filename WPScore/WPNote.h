@@ -21,6 +21,7 @@ class WPNote
 		double getFrequency(double *(int, int), int) const;
 		Fraction getLength() const;
 		double getTimeSpan() const;
+		void setLength(const Fraction &);
 	private:
 		Fraction Length;
 		int Pitch; /// 0 = 440 Hz

@@ -21,6 +21,8 @@ class WPProperty
 		WPInterval getInterval() const;
 		WPPropertyType getType() const;
 		std::string getArg() const;
+		void lengthen(const Fraction &);
+		void shiftRight(const Fraction &);
 	private:
 		WPInterval Interval;
 		WPPropertyType Type;
