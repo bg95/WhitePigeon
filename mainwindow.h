@@ -3,7 +3,9 @@
 
 #include <QMainWindow>
 #include <QGLWidget>
+#include <QAudioInput>
 #include "core/wpwave.h"
+#include "core/WPOscilloscope.h"
 #include "myglwidget.h"
 
 namespace Ui {
@@ -23,8 +25,10 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    MyGLWidget glwidget, glwidgetR, glwidgetI, glwidgetSTFT;
+    //MyGLWidget glwidget, glwidgetR, glwidgetI, glwidgetSTFT;
+    WPOscilloscope oscilloscope;
     WPWave wave;
+    QAudioInput *audioinput;
 
 protected:
     void resizeEvent(QResizeEvent *);

@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     WPScore/WPNote.cpp \
     WPScore/WPMultinote.cpp \
     WPScore/WPLib.cpp \
-    WPScore/WPInterval.cpp
+    WPScore/WPInterval.cpp \
+    core/WPOscilloscope.cpp
 
 HEADERS  += mainwindow.h\
             myglwidget.h \
@@ -42,6 +43,7 @@ HEADERS  += mainwindow.h\
     WPScore/WPNote.h \
     WPScore/WPMultinote.h \
     WPScore/WPLib.h \
-    WPScore/WPInterval.h
+    WPScore/WPInterval.h \
+    core/WPOscilloscope.h
 
 FORMS    += mainwindow.ui

@@ -25,9 +25,19 @@ WPWave *WPSynthesizer::synthesize(WPNote &note)
     return waveFunction(note.getFrequency(), note.getTimeSpan());
 }
 
+void WPSynthesizer::setBufferSize(quint32 size)
+{
+    buffersize = size;
+}
+
+quint32 WPSynthesizer::getBufferSize() const
+{
+    return buffersize;
+}
+
 //static
 
-WPWave::WaveDataType truncateWaveData(double x)
+WPWave::WaveDataType WPSynthesizer::truncateWaveData(double x)
 {
     if (x > 1.0)
         x = 1.0;

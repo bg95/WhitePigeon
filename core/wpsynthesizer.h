@@ -22,14 +22,22 @@ public:
 
     void loadTimbre(TimbreType type, QString timbrename);
     WPWave *synthesize(WPNote &note);
-    WPWave *synthesize(WPPart &part);
+    void synthesize(WPPart &part);
+    QAudioBuffer *getBuffer();
+    void setBufferSize(quint32);
+    quint32 getBufferSize() const;
 
 signals:
+    void bufferReady();
+    void synthesisFinished();
     
 public slots:
     
 private:
+    static WPWave::WaveDataType truncateWaveData(double x);
+
     WPWave *(*waveFunction)(double, double);
+    quint32 buffersize;
 
 };
 

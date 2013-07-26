@@ -34,6 +34,8 @@ public:
     WPWave(WPWave &b);
 
     void readFile(QString filename);
+    void setData(const QVector<WaveDataType> &_data);
+    void setFormat(const QAudioFormat &_format);
     void FFT();
     void _FFT();
     void Gabor(double sigma, int period);

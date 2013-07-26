@@ -48,6 +48,18 @@ void WPWave::readFile(QString filename)
     decoder.start();
 }
 
+void WPWave::setData(const QVector<WaveDataType> &_data)
+{
+    data = _data;
+    isdecoded = true;
+    isFFTed = false;
+}
+
+void WPWave::setFormat(const QAudioFormat &_format)
+{
+    format = _format;
+}
+
 void WPWave::FFT()
 {
     FFT(data.begin(), data.end(), FFTdata);
