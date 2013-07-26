@@ -43,3 +43,8 @@ double WPNote::getTimeSpan() const
 {
 	return Length.toDouble();
 }
+
+void WPNote::setLength(const Fraction &L)
+{
+	Length = L;
+}

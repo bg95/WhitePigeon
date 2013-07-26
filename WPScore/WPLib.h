@@ -16,6 +16,14 @@ class Fraction
 		~Fraction();
 		bool operator == (const Fraction &) const;
 		bool operator < (const Fraction &) const;
+		bool operator <= (const Fraction &) const;
+		bool operator > (const Fraction &) const;
+		bool operator >= (const Fraction &) const;
+		Fraction operator = (const Fraction &);
+		Fraction operator + (const Fraction &) const;
+		Fraction operator += (const Fraction &);
+		Fraction operator - (const Fraction &) const;
+		Fraction operator -= (const Fraction &);
 		double toDouble() const;
 		int X, Y;
 };

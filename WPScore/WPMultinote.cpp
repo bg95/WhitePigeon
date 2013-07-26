@@ -49,3 +49,9 @@ Fraction WPMultinote::getLength() const
 		return Fraction (0, 1);
 	return List.back().getLength();
 }
+
+void WPMultinote::setLength(const Fraction &L)
+{
+	for (std::vector <WPNote> :: iterator it = List.begin(); it != List.end(); ++ it)
+		it->setLength(L);
+}

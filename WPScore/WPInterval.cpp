@@ -18,7 +18,19 @@ WPPosition WPInterval::begin() const
 {
 	return Begin;
 }
+
 WPPosition WPInterval::end() const
 {
 	return End;
+}
+
+void WPInterval::lengthen(const Fraction &L)
+{
+	End += L;
+}
+
+void WPInterval::shiftRight(const Fraction &L)
+{
+	Begin += L;
+	End += L;
 }
