@@ -83,9 +83,9 @@ void WPOscilloscope::resizeGL(int w, int h)
     glViewport(0, 0, (GLint)w, (GLint)h);//重置当前视口，本身不是重置窗口的，只不过是这里被Qt给封装好了
     glMatrixMode(GL_PROJECTION);//选择投影矩阵
     glLoadIdentity();//重置选择好的投影矩阵
-    glOrtho(0.0, wave.data.size(), -1.0, 1.0, -1.0, 1.0);
     //gluPerspective(45.0, (GLfloat)width/(GLfloat)height, 0.1, 100.0);//建立透视投影矩阵
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    glOrtho(0.0, wave.data.size(), -1.0, 1.0, -1.0, 1.0);
     paintGL();
 }

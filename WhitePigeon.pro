@@ -21,29 +21,29 @@ SOURCES += main.cpp\
         myglwidget.cpp \
     core/wpwave.cpp \
     core/wpsynthesizer.cpp \
-    WPScore/WPScore.cpp \
-    WPScore/WPProperty.cpp \
-    WPScore/WPPosition.cpp \
-    WPScore/WPPart.cpp \
-    WPScore/WPNote.cpp \
-    WPScore/WPMultinote.cpp \
-    WPScore/WPLib.cpp \
-    WPScore/WPInterval.cpp \
+#    WPScore/WPScore.cpp \
+#    WPScore/WPProperty.cpp \
+#    WPScore/WPPosition.cpp \
+#    WPScore/WPPart.cpp \
+#    WPScore/WPNote.cpp \
+#    WPScore/WPMultinote.cpp \
+#    WPScore/WPLib.cpp \
+#    WPScore/WPInterval.cpp \
     core/WPOscilloscope.cpp
 
 HEADERS  += mainwindow.h\
             myglwidget.h \
     core/wpwave.h \
     core/wpsynthesizer.h \
-    WPScore/WPSPosition.h \
-    WPScore/WPScore.h \
-    WPScore/WPProperty.h \
-    WPScore/WPPosition.h \
-    WPScore/WPPart.h \
-    WPScore/WPNote.h \
-    WPScore/WPMultinote.h \
-    WPScore/WPLib.h \
-    WPScore/WPInterval.h \
+#    WPScore/WPSPosition.h \
+#    WPScore/WPScore.h \
+#    WPScore/WPProperty.h \
+#    WPScore/WPPosition.h \
+#    WPScore/WPPart.h \
+#    WPScore/WPNote.h \
+#    WPScore/WPMultinote.h \
+#    WPScore/WPLib.h \
+#    WPScore/WPInterval.h \
     core/WPOscilloscope.h
 
 FORMS    += mainwindow.ui

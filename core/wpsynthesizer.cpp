@@ -22,7 +22,7 @@ void WPSynthesizer::loadTimbre(TimbreType type, QString timbrename)
 
 WPWave *WPSynthesizer::synthesize(WPNote &note)
 {
-    return waveFunction(note.getFrequency(), note.getTimeSpan());
+    //return waveFunction(note.getFrequency(), note.getTimeSpan());
 }
 
 void WPSynthesizer::setBufferSize(quint32 size)
