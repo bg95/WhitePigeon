@@ -45,7 +45,7 @@ void WPOscilloscope::refresh()
     }
 
     wave.setData(data);
-    printf("oscilloscope: input length = %d\n", wave.data.size());
+    //printf("oscilloscope: input length = %d\n", wave.data.size());
     wave.FFT();
     repaint();
 }
@@ -68,10 +68,12 @@ void WPOscilloscope::paintGL()
     glEnd();
     glColor3d(1.0, 1.0, 0.0);
     glBegin(GL_LINES);
-    for (i = 0; i < wave.FFTdata.size(); i++)
+    for (i = 1; i < wave.FFTdata.size(); i++)
     {
-        glVertex2d(double(i) / wave.FFTdata.size() * wave.data.size(), -1.0);
-        glVertex2d(double(i) / wave.FFTdata.size() * wave.data.size(), -1.0 + std::abs(wave.FFTdata[i]) / 32768.0 / length * 2.0);
+        glVertex2d(std::log(double(2.0 * i)) / std::log(double(wave.FFTdata.size())) * double(wave.data.size()), -1.0);
+        glVertex2d(std::log(double(2.0 * i)) / std::log(double(wave.FFTdata.size())) * double(wave.data.size()), -1.0 + std::abs(wave.FFTdata[i]) / 32768.0 / length * 4.0);
+        //glVertex2d(2.0 * double(i) / wave.FFTdata.size() * wave.data.size(), -1.0);
+        //glVertex2d(2.0 * double(i) / wave.FFTdata.size() * wave.data.size(), -1.0 + std::abs(wave.FFTdata[i]) / 32768.0 / length * 4.0);
     }
     glEnd();
 }

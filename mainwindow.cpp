@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     audioinput = new QAudioInput(format);
     oscilloscope.setInputDevice(*audioinput->start());
-    oscilloscope.start(100, 1024);
+    oscilloscope.start(100, 4096);
 }
 
 MainWindow::~MainWindow()
