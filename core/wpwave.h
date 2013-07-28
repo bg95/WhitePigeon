@@ -21,6 +21,7 @@ public:
     typedef qint16 WaveDataType;
     static const double PI = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
     static const double Ksigma = 6.0;   //The Gauss function is considered very small (as 0) if |x| > Ksigma * sigma
+    //_FFT means Inverse FFT, so as _STFT, _Gabor
     template <class Type> static int FFT(const Type *begin, const Type *end, QVector<std::complex<double> > &FFTout);
     static int _FFT(const std::complex<double> *begin, const std::complex<double> *end, QVector<std::complex<double> > &FFTout);
     template <class Type> static void STFT(const Type *begin, const Type *end, double *window, int width, int period, QVector<QVector<std::complex<double> > > &out);
@@ -31,13 +32,20 @@ public:
 
     explicit WPWave(QObject *parent = 0);
     WPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format, QObject *parent = 0);
+    WPWave(const QByteArray &_data, const QAudioFormat &_format, QObject *parent = 0);
     WPWave(WPWave &b);
 
     void readFile(QString filename);
     void setData(const QVector<WaveDataType> &_data);
+    void setData(const QByteArray &bytearray);
     void setFormat(const QAudioFormat &_format);
+    const QVector<WPWave::WaveDataType> &getData() const;
+    const QVector<std::complex<double> > &getFFTdata() const;
+    const QVector<QVector<std::complex<double> > > &getSTFTdata() const;
     void FFT();
     void _FFT();
+    void STFT(double *window, int width, int period);
+    void _STFT(double *window, int width, int period);
     void Gabor(double sigma, int period);
     void _Gabor(double sigma, int period);
     void append(WPWave &b);
@@ -58,8 +66,8 @@ public slots:
 private:
     QAudioFormat format;
     QAudioDecoder decoder;
-    bool isdecoded;
-    bool isFFTed;
+    bool isdecoded; //never used
+    bool isFFTed; //never used
 
     QByteArray *bytearray;
     QBuffer *buffer;

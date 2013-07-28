@@ -10,11 +10,16 @@ WPWave::WPWave(QObject *parent) :
 
 WPWave::WPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format, QObject *parent) :
     QObject(parent),
-    data(_data),
     format(_format)
 {
-    isdecoded = true;
-    isFFTed = false;
+    setData(_data);
+}
+
+WPWave::WPWave(const QByteArray &bytearray, const QAudioFormat &_format, QObject *parent) :
+    QObject(parent),
+    format(_format)
+{
+    setData(bytearray);
 }
 
 WPWave::WPWave(WPWave &b) :
@@ -55,9 +60,36 @@ void WPWave::setData(const QVector<WaveDataType> &_data)
     isFFTed = false;
 }
 
+void WPWave::setData(const QByteArray &bytearray)
+{
+    quint64 length = bytearray.size() / sizeof(WaveDataType);
+    WaveDataType *begin = (WPWave::WaveDataType *)bytearray.constData();
+    data.clear();
+    for (quint64 i = 0; i < length; i++)
+    {
+        data.push_back(*begin);
+        begin++;
+    }
+}
+
 void WPWave::setFormat(const QAudioFormat &_format)
 {
     format = _format;
+}
+
+const QVector<WPWave::WaveDataType> &WPWave::getData() const
+{
+    return data;
+}
+
+const QVector<std::complex<double> > &WPWave::getFFTdata() const
+{
+    return FFTdata;
+}
+
+const QVector<QVector<std::complex<double> > > &WPWave::getSTFTdata() const
+{
+    return STFTdata;
 }
 
 void WPWave::FFT()
@@ -70,7 +102,20 @@ void WPWave::_FFT()
     _FFT(FFTdata.begin(), FFTdata.end(), auxdata);
     int i;
     for (i = 0; i < data.size(); i++)
-        data[i] = auxdata[i].real()/* + auxdata[i].imag()*/; //?
+        data[i] = auxdata[i].real(); //?
+}
+
+void WPWave::STFT(double *window, int width, int period)
+{
+    STFT(data.begin(), data.end(), window, width, period, STFTdata);
+}
+void WPWave::_STFT(double *window, int width, int period)
+{
+    QVector<std::complex<double> > auxdata;
+    _STFT(STFTdata, window, width, period, auxdata);
+    int i;
+    for (i = 0; i < data.size(); i++)
+        data[i] = auxdata[i].real(); //?
 }
 
 void WPWave::Gabor(double sigma, int period)
@@ -83,7 +128,7 @@ void WPWave::_Gabor(double sigma, int period)
     _Gabor(STFTdata, sigma, period, auxdata);
     int i;
     for (i = 0; i < data.size(); i++)
-        data[i] = auxdata[i].real()/* + auxdata[i].imag()*/; //?
+        data[i] = auxdata[i].real(); //?
 }
 
 void WPWave::append(WPWave &b)

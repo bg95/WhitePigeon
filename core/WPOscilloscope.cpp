@@ -38,7 +38,7 @@ void WPOscilloscope::refresh()
     QByteArray bytearray(inputdevice->readAll().rightJustified(length * sizeof(WPWave::WaveDataType), 0, true));
     WPWave::WaveDataType *begin = (WPWave::WaveDataType *)bytearray.constData();
     QVector<WPWave::WaveDataType> data;
-    for (int i = 0; i < length; i++)
+    for (quint32 i = 0; i < length; i++)
     {
         data.push_back(*begin);
         begin++;
