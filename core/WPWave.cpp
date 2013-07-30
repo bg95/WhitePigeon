@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "wpwave.h"
+#include "WPWave.h"
 
 WPWave::WPWave(QObject *parent) :
     QObject(parent)

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "WPScore/WPNote.h"
-#include "core/wpsynthesizer.h"
+#include "core/WPSynthesizer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),

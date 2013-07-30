@@ -1,4 +1,4 @@
-#include "wpsynthesizer.h"
+#include "WPSynthesizer.h"
 
 WPSynthesizer::WPSynthesizer(QObject *parent) :
     QObject(parent)

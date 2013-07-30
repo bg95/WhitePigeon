@@ -4,7 +4,7 @@
 #include <QGLWidget>
 #include <QIODevice>
 #include <QTimer>
-#include "wpwave.h"
+#include "WPWave.h"
 
 class WPOscilloscope : public QGLWidget
 {

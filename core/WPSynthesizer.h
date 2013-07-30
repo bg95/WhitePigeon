@@ -2,7 +2,7 @@
 #define WPSYNTHESIZER_H
 
 #include <QObject>
-#include "wpwave.h"
+#include "WPWave.h"
 #include "../WPScore/WPNote.h"
 #include "../WPScore/WPPart.h"
 

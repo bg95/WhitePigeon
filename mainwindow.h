@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QGLWidget>
 #include <QAudioInput>
-#include "core/wpwave.h"
+#include "core/WPWave.h"
 #include "core/WPOscilloscope.h"
 #include "myglwidget.h"
 

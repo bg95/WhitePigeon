@@ -19,8 +19,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp\
         myglwidget.cpp \
-    core/wpwave.cpp \
-    core/wpsynthesizer.cpp \
 #    WPScore/WPScore.cpp \
 #    WPScore/WPProperty.cpp \
 #    WPScore/WPPosition.cpp \
@@ -29,12 +27,12 @@ SOURCES += main.cpp\
 #    WPScore/WPMultinote.cpp \
 #    WPScore/WPLib.cpp \
 #    WPScore/WPInterval.cpp \
-    core/WPOscilloscope.cpp
+    core/WPOscilloscope.cpp \
+    core/WPSynthesizer.cpp \
+    core/WPWave.cpp
 
 HEADERS  += mainwindow.h\
             myglwidget.h \
-    core/wpwave.h \
-    core/wpsynthesizer.h \
 #    WPScore/WPSPosition.h \
 #    WPScore/WPScore.h \
 #    WPScore/WPProperty.h \
@@ -44,6 +42,8 @@ HEADERS  += mainwindow.h\
 #    WPScore/WPMultinote.h \
 #    WPScore/WPLib.h \
 #    WPScore/WPInterval.h \
-    core/WPOscilloscope.h
+    core/WPOscilloscope.h \
+    core/WPSynthesizer.h \
+    core/WPWave.h
 
 FORMS    += mainwindow.ui
