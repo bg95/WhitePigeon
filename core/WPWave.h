@@ -29,6 +29,7 @@ public:
     static double Gauss(double sigma, double x);
     template <class Type> static void Gabor(const Type *begin, const Type *end, double sigma, int period, QVector<QVector<std::complex<double> > > &out);
     static void _Gabor(const QVector<QVector<std::complex<double> > > &in, double sigma, int period, QVector<std::complex<double> > &out);
+    static QAudioFormat defaultAudioFormat();
 
     explicit WPWave(QObject *parent = 0);
     WPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format, QObject *parent = 0);

@@ -49,14 +49,8 @@ WPWave::WaveDataType WPSynthesizer::truncateWaveData(double x)
 WPWave *WPSynthesizer::waveTuningFork(double frequency, double duration)
 {
     QVector<WPWave::WaveDataType> tmpdata;
-    QAudioFormat format;
+    QAudioFormat format = WPWave::defaultAudioFormat();
     int i;
-
-    format.setChannelCount(1);
-    format.setCodec("audio/x-raw");
-    format.setSampleType(QAudioFormat::SignedInt);
-    format.setSampleRate(48000);
-    format.setSampleSize(8 * sizeof(WPWave::WaveDataType));
 
     tmpdata.clear();
     for (i = 0; i < duration * format.sampleRate(); i++)

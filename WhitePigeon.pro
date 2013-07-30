@@ -17,7 +17,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp\
         myglwidget.cpp \
 #    WPScore/WPScore.cpp \
 #    WPScore/WPProperty.cpp \
@@ -29,9 +28,10 @@ SOURCES += main.cpp\
 #    WPScore/WPInterval.cpp \
     core/WPOscilloscope.cpp \
     core/WPSynthesizer.cpp \
-    core/WPWave.cpp
+    core/WPWave.cpp \
+    OscilloscopeWindow.cpp
 
-HEADERS  += mainwindow.h\
+HEADERS  +=\
             myglwidget.h \
 #    WPScore/WPSPosition.h \
 #    WPScore/WPScore.h \
@@ -44,6 +44,7 @@ HEADERS  += mainwindow.h\
 #    WPScore/WPInterval.h \
     core/WPOscilloscope.h \
     core/WPSynthesizer.h \
-    core/WPWave.h
+    core/WPWave.h \
+    OscilloscopeWindow.h
 
 FORMS    += mainwindow.ui

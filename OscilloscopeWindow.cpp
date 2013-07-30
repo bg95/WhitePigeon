@@ -1,11 +1,11 @@
-#include "mainwindow.h"
+#include "OscilloscopeWindow.h"
 #include "ui_mainwindow.h"
 #include "WPScore/WPNote.h"
 #include "core/WPSynthesizer.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),/*
+    ui(new Ui::OscilloscopeWindow),/*
     glwidget(this),
     glwidgetR(this),
     glwidgetI(this),
@@ -30,25 +30,18 @@ MainWindow::MainWindow(QWidget *parent) :
     wave.mixWith(0.6, *pwave, 0.3);*/
     //waveDecodeFinished();
 
-    QAudioFormat format;
-    format.setChannelCount(1);
-    format.setCodec("audio/x-raw");
-    format.setSampleType(QAudioFormat::SignedInt);
-    format.setSampleRate(48000);
-    format.setSampleSize(8 * sizeof(WPWave::WaveDataType));
-
-    audioinput = new QAudioInput(format);
+    audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     oscilloscope.setInputDevice(*audioinput->start());
     oscilloscope.start(100, 4096);
 }
 
-MainWindow::~MainWindow()
+OscilloscopeWindow::~OscilloscopeWindow()
 {
     delete ui;
     delete audioinput;
 }
 
-void MainWindow::resizeEvent(QResizeEvent *)
+void OscilloscopeWindow::resizeEvent(QResizeEvent *)
 {/*
     glwidget.setGeometry(0, 0, width(), height() / 5);
     glwidgetR.setGeometry(0, height() / 5 + 1, width(), height() / 5 - 1);
@@ -57,7 +50,7 @@ void MainWindow::resizeEvent(QResizeEvent *)
     oscilloscope.setGeometry(0, 0, width(), height());
 }
 
-void MainWindow::waveDecodeFinished()
+void OscilloscopeWindow::waveDecodeFinished()
 {/*
     qWarning("Gabor");
     wave.Gabor(256, 512);

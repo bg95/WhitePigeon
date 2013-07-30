@@ -38,13 +38,14 @@ void WPWave::readFile(QString filename)
 {
     isdecoded = false;
     data.clear();
-
+/*
     format.setChannelCount(1);
     format.setCodec("audio/x-raw");
     format.setSampleType(QAudioFormat::SignedInt);
     format.setSampleRate(48000);
     format.setSampleSize(8 * sizeof(WaveDataType));
-
+*/
+    format = defaultAudioFormat();
     decoder.setAudioFormat(format);
     decoder.setSourceFilename(filename);
 
@@ -412,4 +413,15 @@ void WPWave::_Gabor(const QVector<QVector<std::complex<double> > > &in, double s
         gausswindow[i] = Gauss(sigma, i);
     _STFT(in, gausswindow, width, period, out);
     delete[] gausswindow;
+}
+
+QAudioFormat WPWave::defaultAudioFormat()
+{
+    QAudioFormat f;
+    f.setChannelCount(1);
+    f.setCodec("audio/x-raw");
+    f.setSampleType(QAudioFormat::SignedInt);
+    f.setSampleRate(48000);
+    f.setSampleSize(8 * sizeof(WaveDataType));
+    return f;
 }

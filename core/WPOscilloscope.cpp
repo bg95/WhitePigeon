@@ -7,13 +7,7 @@ WPOscilloscope::WPOscilloscope(QWidget *parent) :
     inputdevice = 0;
     connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
 
-    QAudioFormat format;
-    format.setChannelCount(1);
-    format.setCodec("audio/x-raw");
-    format.setSampleType(QAudioFormat::SignedInt);
-    format.setSampleRate(48000);
-    format.setSampleSize(8 * sizeof(WPWave::WaveDataType));
-    wave.setFormat(format);
+    wave.setFormat(WPWave::defaultAudioFormat());
 }
 
 WPOscilloscope::~WPOscilloscope()

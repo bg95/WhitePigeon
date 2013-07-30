@@ -9,22 +9,22 @@
 #include "myglwidget.h"
 
 namespace Ui {
-class MainWindow;
+class OscilloscopeWindow;
 }
 
-class MainWindow : public QMainWindow
+class OscilloscopeWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit OscilloscopeWindow(QWidget *parent = 0);
+    ~OscilloscopeWindow();
 
 public slots:
     void waveDecodeFinished();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::OscilloscopeWindow *ui;
     //MyGLWidget glwidget, glwidgetR, glwidgetI, glwidgetSTFT;
     WPOscilloscope oscilloscope;
     WPWave wave;
