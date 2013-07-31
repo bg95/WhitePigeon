@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef OSCILLOSCOPEWINDOW_H
+#define OSCILLOSCOPEWINDOW_H
 
 #include <QMainWindow>
 #include <QGLWidget>
@@ -35,4 +35,4 @@ protected:
 
 };
 
-#endif // MAINWINDOW_H
+#endif // OSCILLOSCOPEWINDOW_H
