@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     core/WPOscilloscope.cpp \
     core/WPSynthesizer.cpp \
     core/WPWave.cpp \
-    OscilloscopeWindow.cpp
+    OscilloscopeWindow.cpp \
+    mainwindow.cpp
 
 HEADERS  +=\
             myglwidget.h \
@@ -45,6 +46,5 @@ HEADERS  +=\
     core/WPOscilloscope.h \
     core/WPSynthesizer.h \
     core/WPWave.h \
-    OscilloscopeWindow.h
-
-FORMS    += mainwindow.ui
+    OscilloscopeWindow.h \
+    mainwindow.h
