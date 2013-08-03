@@ -47,4 +47,6 @@ HEADERS  +=\
     core/WPSynthesizer.h \
     core/WPWave.h \
     OscilloscopeWindow.h \
-    mainwindow.h
+    mainwindow.h \
+    core/WPTimbre.h \
+    core/WPTuningFork.h

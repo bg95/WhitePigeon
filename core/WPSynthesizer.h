@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "WPWave.h"
+#include "WPTimbre.h"
 #include "../WPScore/WPNote.h"
 #include "../WPScore/WPPart.h"
 
@@ -10,17 +11,13 @@ class WPSynthesizer : public QObject
 {
     Q_OBJECT
 public:
-    enum TimbreType
-    {
-        Internal, FromFile
-    };
-
-    static WPWave *waveTuningFork(double frequency, double duration);
+    //static WPWave *waveTuningFork(double frequency, double duration);
+    static WPWave::WaveDataType truncateWaveData(double x);
 
     explicit WPSynthesizer(QObject *parent = 0);
-    explicit WPSynthesizer(TimbreType type, QString timbrename, QObject *parent = 0);
+    explicit WPSynthesizer(WPTimbre *_timbre, QObject *parent = 0);
 
-    void loadTimbre(TimbreType type, QString timbrename);
+    void loadTimbre(WPTimbre *_timbre);
     WPWave *synthesize(WPNote &note);
     void synthesize(WPPart &part);
     QAudioBuffer *getBuffer();
@@ -34,9 +31,8 @@ signals:
 public slots:
     
 private:
-    static WPWave::WaveDataType truncateWaveData(double x);
-
-    WPWave *(*waveFunction)(double, double);
+    WPTimbre *timbre;
+    //WPWave *(*waveFunction)(double, double);
     quint32 buffersize;
 
 };

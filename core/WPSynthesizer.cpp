@@ -5,24 +5,22 @@ WPSynthesizer::WPSynthesizer(QObject *parent) :
 {
 }
 
-WPSynthesizer::WPSynthesizer(TimbreType type, QString timbrename, QObject *parent) :
+WPSynthesizer::WPSynthesizer(WPTimbre *_timbre, QObject *parent) :
     QObject(parent)
 {
-    loadTimbre(type, timbrename);
+    loadTimbre(_timbre);
 }
 
-void WPSynthesizer::loadTimbre(TimbreType type, QString timbrename)
+void WPSynthesizer::loadTimbre(WPTimbre *_timbre)
 {
-    if (type == Internal)
-    {
-        if (timbrename == "Tuning Fork")
-            waveFunction = waveTuningFork;
-    }
+    timbre = _timbre;
 }
 
 WPWave *WPSynthesizer::synthesize(WPNote &note)
 {
     //return waveFunction(note.getFrequency(), note.getTimeSpan());
+    double amp = 1.0, freq = note.getFrequency();
+    return timbre->synthesize(note.getTimeSpan(), &amp, &freq); //take care of overflow
 }
 
 void WPSynthesizer::setBufferSize(quint32 size)
@@ -45,7 +43,7 @@ WPWave::WaveDataType WPSynthesizer::truncateWaveData(double x)
         x = -1.0;
     return WPWave::WaveDataType(x * 32767);
 }
-
+/*
 WPWave *WPSynthesizer::waveTuningFork(double frequency, double duration)
 {
     QVector<WPWave::WaveDataType> tmpdata;
@@ -61,3 +59,4 @@ WPWave *WPSynthesizer::waveTuningFork(double frequency, double duration)
 
     return new WPWave(tmpdata, format);
 }
+*/

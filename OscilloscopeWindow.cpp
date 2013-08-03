@@ -13,21 +13,16 @@ OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     oscilloscope(this)
 {
     //ui->setupUi(this);
-    setGeometry(100, 50, 1000, 600);/*
+    setGeometry(100, 50, 1000, 600);
     //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
     WPNote note(0, Fraction(10, 1));
-    WPSynthesizer synthesizer(WPSynthesizer::Internal, "Tuning Fork");
+    WPSynthesizer synthesizer;
+    synthesizer.loadTimbre(WPTuningFork);
     qWarning("synthesizer constructed");
-    WPWave *pwave = synthesizer.synthesize(note);
+    wave = synthesizer.synthesize(note);
     qWarning("synthesis finished");
-    wave.copy(*pwave);
-    WPNote note2(4, Fraction(10, 1));
-    pwave = synthesizer.synthesize(note2);
-    wave.mixWith(0.3, *pwave, 0.3);
-    WPNote note3(7, Fraction(10, 1));
-    pwave = synthesizer.synthesize(note3);
-    wave.mixWith(0.6, *pwave, 0.3);*/
+    wave.play();
     //waveDecodeFinished();
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
