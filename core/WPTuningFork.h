@@ -6,8 +6,13 @@
 
 class WPTuningFork : public WPTimbre
 {
+public:
+    //const static WPTuningFork TuningFork;
+
+    WPTuningFork()
+    {}
     //needs modification
-    WPWave *synthesize(double dur, double *amp, double *freq)
+    WPWave *synthesize(double dur, double *amp, double *freq) const
     {
           QVector<WPWave::WaveDataType> tmpdata;
           QAudioFormat format = WPWave::defaultAudioFormat();

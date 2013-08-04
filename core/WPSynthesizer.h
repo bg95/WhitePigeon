@@ -17,7 +17,7 @@ public:
     explicit WPSynthesizer(QObject *parent = 0);
     explicit WPSynthesizer(WPTimbre *_timbre, QObject *parent = 0);
 
-    void loadTimbre(WPTimbre *_timbre);
+    void loadTimbre(const WPTimbre *_timbre);
     WPWave *synthesize(WPNote &note);
     void synthesize(WPPart &part);
     QAudioBuffer *getBuffer();
@@ -31,7 +31,7 @@ signals:
 public slots:
     
 private:
-    WPTimbre *timbre;
+    const WPTimbre *timbre;
     //WPWave *(*waveFunction)(double, double);
     quint32 buffersize;
 

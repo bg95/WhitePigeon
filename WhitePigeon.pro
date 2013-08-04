@@ -22,9 +22,9 @@ SOURCES += main.cpp\
 #    WPScore/WPProperty.cpp \
 #    WPScore/WPPosition.cpp \
 #    WPScore/WPPart.cpp \
-#    WPScore/WPNote.cpp \
+    WPScore/WPNote.cpp \
 #    WPScore/WPMultinote.cpp \
-#    WPScore/WPLib.cpp \
+    WPScore/WPLib.cpp \
 #    WPScore/WPInterval.cpp \
     core/WPOscilloscope.cpp \
     core/WPSynthesizer.cpp \
@@ -38,10 +38,10 @@ HEADERS  +=\
 #    WPScore/WPScore.h \
 #    WPScore/WPProperty.h \
 #    WPScore/WPPosition.h \
-#    WPScore/WPPart.h \
-#    WPScore/WPNote.h \
+    WPScore/WPPart.h \
+    WPScore/WPNote.h \
 #    WPScore/WPMultinote.h \
-#    WPScore/WPLib.h \
+    WPScore/WPLib.h \
 #    WPScore/WPInterval.h \
     core/WPOscilloscope.h \
     core/WPSynthesizer.h \

@@ -31,6 +31,7 @@ private:
     QAudioInput *audioinput;
 
 protected:
+    void showEvent(QShowEvent *);
     void resizeEvent(QResizeEvent *);
 
 };

@@ -10,10 +10,11 @@ public:
     const static double ControlRate = 48.0; //Hertz
     //const static WPTuningFork TuningFork;
 
-    WPTimbre();
-    virtual WPWave *synthesize(double dur, double *amp, double *freq) = 0;
+    WPTimbre()
+    {}
+    virtual WPWave *synthesize(double dur, double *amp, double *freq) const = 0;
 };
 
-#include "WPTuningFork.h"
+//#include "WPTuningFork.h"
 
 #endif // WPTIMBRE_H

@@ -11,7 +11,7 @@ WPSynthesizer::WPSynthesizer(WPTimbre *_timbre, QObject *parent) :
     loadTimbre(_timbre);
 }
 
-void WPSynthesizer::loadTimbre(WPTimbre *_timbre)
+void WPSynthesizer::loadTimbre(const WPTimbre *_timbre)
 {
     timbre = _timbre;
 }

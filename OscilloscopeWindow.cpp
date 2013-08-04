@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "WPScore/WPNote.h"
 #include "core/WPSynthesizer.h"
+#include "core/WPTuningFork.h"
 
 OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -14,13 +15,26 @@ OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
 {
     //ui->setupUi(this);
     setGeometry(100, 50, 1000, 600);
+}
+
+OscilloscopeWindow::~OscilloscopeWindow()
+{
+    delete ui;
+    delete audioinput;
+}
+
+void OscilloscopeWindow::showEvent(QShowEvent *)
+{
     //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
     WPNote note(0, Fraction(10, 1));
     WPSynthesizer synthesizer;
-    synthesizer.loadTimbre(WPTuningFork);
+    WPTuningFork tuningfork;
+    synthesizer.loadTimbre(&tuningfork);
     qWarning("synthesizer constructed");
-    wave = synthesizer.synthesize(note);
+    WPWave *twave = synthesizer.synthesize(note);
+    wave.copy(*twave);
+    delete twave;
     qWarning("synthesis finished");
     wave.play();
     //waveDecodeFinished();
@@ -28,12 +42,6 @@ OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     oscilloscope.setInputDevice(*audioinput->start());
     oscilloscope.start(100, 4096);
-}
-
-OscilloscopeWindow::~OscilloscopeWindow()
-{
-    delete ui;
-    delete audioinput;
 }
 
 void OscilloscopeWindow::resizeEvent(QResizeEvent *)
