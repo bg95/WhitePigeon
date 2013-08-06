@@ -49,4 +49,5 @@ HEADERS  +=\
     OscilloscopeWindow.h \
     mainwindow.h \
     core/WPTimbre.h \
-    core/WPTuningFork.h
+    core/WPTuningFork.h \
+    core/WPVarTimbre.h

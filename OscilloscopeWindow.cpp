@@ -33,7 +33,10 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     synthesizer.loadTimbre(&tuningfork);
     qWarning("synthesizer constructed");
     WPWave *twave = synthesizer.synthesize(note);
-    wave.copy(*twave);
+    //twave->play();
+    wave.clear();
+    wave.setFormat(WPWave::defaultAudioFormat());
+    wave.mixWith(0.5, *twave, 0.5);
     delete twave;
     qWarning("synthesis finished");
     wave.play();
@@ -51,6 +54,11 @@ void OscilloscopeWindow::resizeEvent(QResizeEvent *)
     glwidgetI.setGeometry(0, height() / 5 * 2 + 1, width(), height() / 5 - 1);
     glwidgetSTFT.setGeometry(0, height() / 5 * 3 + 1, width(), height() / 5 * 2 - 1);*/
     oscilloscope.setGeometry(0, 0, width(), height());
+}
+
+void OscilloscopeWindow::hideEvent(QHideEvent *)
+{
+    wave.stop();
 }
 
 void OscilloscopeWindow::waveDecodeFinished()

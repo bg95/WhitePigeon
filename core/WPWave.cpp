@@ -4,8 +4,9 @@
 WPWave::WPWave(QObject *parent) :
     QObject(parent)
 {
-    isdecoded = false;
-    isFFTed = false;
+    //isdecoded = false;
+    //isFFTed = false;
+    clear();
 }
 
 WPWave::WPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format, QObject *parent) :
@@ -28,15 +29,15 @@ WPWave::WPWave(WPWave &b) :
     FFTdata(b.FFTdata),
     STFTdata(b.STFTdata),
     format(b.format),
-    decoder(),
-    isdecoded(b.isdecoded),
-    isFFTed(b.isFFTed)
+    decoder()
+    //isdecoded(b.isdecoded),
+    //isFFTed(b.isFFTed)
 {
 }
 
 void WPWave::readFile(QString filename)
 {
-    isdecoded = false;
+    //isdecoded = false;
     data.clear();
 /*
     format.setChannelCount(1);
@@ -54,11 +55,18 @@ void WPWave::readFile(QString filename)
     decoder.start();
 }
 
+void WPWave::clear()
+{
+    data.clear();
+    FFTdata.clear();
+    STFTdata.clear();
+}
+
 void WPWave::setData(const QVector<WaveDataType> &_data)
 {
     data = _data;
-    isdecoded = true;
-    isFFTed = false;
+    //isdecoded = true;
+    //isFFTed = false;
 }
 
 void WPWave::setData(const QByteArray &bytearray)
@@ -137,7 +145,7 @@ void WPWave::append(WPWave &b)
     int i;
     for (i = 0; i < b.data.size(); i++)
         data.push_back(b.data[i]);
-    isFFTed = false;
+    //isFFTed = false;
 }
 
 void WPWave::mixWith(double ra, const WPWave &b, double rb)
@@ -146,6 +154,7 @@ void WPWave::mixWith(double ra, const WPWave &b, double rb)
     n = data.size();
     if (b.data.size() > n)
     {
+        data.resize(b.data.size());
         for (i = 0; i < n; i++)
             data[i] = data[i] * ra + b.data[i] * rb;
         for (i = n; i < b.data.size(); i++)
@@ -166,14 +175,14 @@ void WPWave::copy(WPWave &b)
     FFTdata = b.FFTdata;
     STFTdata = b.STFTdata;
     format = b.format;
-    isdecoded = b.isdecoded;
-    isFFTed = b.isFFTed;
+    //isdecoded = b.isdecoded;
+    //isFFTed = b.isFFTed;
 }
 
 bool WPWave::play()
 {
-    if (!isdecoded)
-        return false;
+    //if (!isdecoded)
+    //    return false; //maybe unnecessary
     bytearray = new QByteArray((const char *)data.begin(), data.size() * format.sampleSize() / 8);
     buffer = new QBuffer(bytearray, this);
     buffer->open(QIODevice::ReadOnly);
@@ -188,6 +197,8 @@ bool WPWave::play()
 
 void WPWave::stop()
 {
+    if (audiooutput->state() != QAudio::ActiveState)
+        return;
     printf("stopped %d\n", audiooutput->state());
     qDebug() << "stopped " << audiooutput->state() << endl;
     audiooutput->stop();
@@ -222,7 +233,7 @@ void WPWave::readBuffer()
 
 void WPWave::decodeFinished()
 {
-    isdecoded = true;
+    //isdecoded = true;
     finished();
 }
 

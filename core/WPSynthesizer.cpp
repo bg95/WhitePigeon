@@ -18,9 +18,14 @@ void WPSynthesizer::loadTimbre(const WPTimbre *_timbre)
 
 WPWave *WPSynthesizer::synthesize(WPNote &note)
 {
-    //return waveFunction(note.getFrequency(), note.getTimeSpan());
-    double amp = 1.0, freq = note.getFrequency();
-    return timbre->synthesize(note.getTimeSpan(), &amp, &freq); //take care of overflow
+    quint32 n = note.getTimeSpan() * WPTimbre::ControlRate, i;
+    double *amp = new double[n];
+    double *freq = new double[n];
+    for (i = 0; i < n; i++)
+        amp[i] = 1.0;
+    for (i = 0; i < n; i++)
+        freq[i] = note.getFrequency();
+    return timbre->synthesize(note.getTimeSpan(), amp, freq); //take care of overflow
 }
 
 void WPSynthesizer::setBufferSize(quint32 size)

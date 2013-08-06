@@ -37,6 +37,7 @@ public:
     WPWave(WPWave &b);
 
     void readFile(QString filename);
+    void clear();
     void setData(const QVector<WaveDataType> &_data);
     void setData(const QByteArray &bytearray);
     void setFormat(const QAudioFormat &_format);
@@ -67,8 +68,8 @@ public slots:
 private:
     QAudioFormat format;
     QAudioDecoder decoder;
-    bool isdecoded; //never used
-    bool isFFTed; //never used
+    //bool isdecoded; //never used
+    //bool isFFTed; //never used
 
     QByteArray *bytearray;
     QBuffer *buffer;
