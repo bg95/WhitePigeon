@@ -3,6 +3,7 @@
 #include "WPScore/WPNote.h"
 #include "core/WPSynthesizer.h"
 #include "core/WPTuningFork.h"
+#include "core/WPPipe.h"
 
 OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -42,9 +43,21 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     wave.play();
     //waveDecodeFinished();
 
+    WPPipe pipe;
+    pipe.open(QIODevice::ReadWrite);
+
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
-    oscilloscope.setInputDevice(*audioinput->start());
+    //oscilloscope.setInputDevice(*audioinput->start());
+    oscilloscope.setInputDevice(pipe);
     oscilloscope.start(100, 4096);
+
+    char *chr = (char *)wave.data.begin();
+    for (int i = 0; i < wave.data.size(); i += 4096)
+    {
+        pipe.write(chr, 4096 * sizeof(WPWave::WaveDataType));
+        int j = 10000000;
+        while (--j);
+    }
 }
 
 void OscilloscopeWindow::resizeEvent(QResizeEvent *)

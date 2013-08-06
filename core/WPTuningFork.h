@@ -16,15 +16,18 @@ public:
         QVector<WPWave::WaveDataType> tmpdata;
         QAudioFormat format = WPWave::defaultAudioFormat();
         int i;
+        double t, phi;
 
         tmpdata.clear();
+        phi = 0;
         for (i = 0; i < dur * format.sampleRate(); i++)
         {
-            double t = double(i) / double(format.sampleRate());
+            t = double(i) / double(format.sampleRate());
             tmpdata.push_back(WPSynthesizer::truncateWaveData(
                 interpolate(amp, t) * std::exp(-1.0 * t) *
-                std::sin(2 * WPWave::PI * interpolate(freq, t) * t)
+                std::sin(phi)
             ));
+            phi += 2 * WPWave::PI * interpolate(freq, t) / double(format.sampleRate());
         }
 
         return new WPWave(tmpdata, format);
