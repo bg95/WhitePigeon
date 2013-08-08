@@ -4,7 +4,19 @@ WPPipe::WPPipe(QObject *parent) :
     QIODevice(parent),
     que(),
     quesize(0),
-    readpos(0)
+    readpos(0),
+    def(0),
+    suf(-1)
+{
+}
+
+WPPipe::WPPipe(qint64 _def, qint64 _suf, QObject *parent) :
+    QIODevice(parent),
+    que(),
+    quesize(0),
+    readpos(0),
+    def(_def),
+    suf(_suf)
 {
 }
 
@@ -46,6 +58,8 @@ qint64 WPPipe::readData(char *data, qint64 maxlen)
         delete (*iter);
         readpos = 0;
     }
+    quesize -= data - data0;
+    checkDef();
     return data - data0;
 }
 
@@ -53,6 +67,8 @@ qint64 WPPipe::writeData(const char *data, qint64 maxlen)
 {
     QByteArray *bytearray = new QByteArray(data, maxlen);
     que.push_back(bytearray);
+    quesize += maxlen;
+    checkSuf();
     return maxlen;
 }
 
@@ -61,4 +77,26 @@ void WPPipe::clear()
     que.clear();
     quesize = 0;
     readpos = 0;
+}
+
+void WPPipe::setThresholds(qint64 _def, qint64 _suf)
+{
+    def = _def;
+    suf = _suf;
+    if (isOpen())
+    {
+        checkDef();
+        checkSuf();
+    }
+}
+
+inline void WPPipe::checkDef()
+{
+    if (quesize <= def)
+        deficientInput();
+}
+inline void WPPipe::checkSuf()
+{
+    if (quesize > suf)
+        sufficientInput();
 }

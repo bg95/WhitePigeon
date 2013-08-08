@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     core/WPWave.cpp \
     OscilloscopeWindow.cpp \
     mainwindow.cpp \
-    core/WPPipe.cpp
+    core/WPPipe.cpp \
+    core/WPMixer.cpp
 
 HEADERS  +=\
             myglwidget.h \
@@ -52,4 +53,5 @@ HEADERS  +=\
     core/WPTimbre.h \
     core/WPTuningFork.h \
     core/WPVarTimbre.h \
-    core/WPPipe.h
+    core/WPPipe.h \
+    core/WPMixer.h

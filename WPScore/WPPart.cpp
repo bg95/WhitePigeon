@@ -61,9 +61,9 @@ void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)
 	else
 	{
 		if (Past < P.getValue())
-		{
-            New.push_back(WPMultinote (WPNote (/*WPNote::Rest*/- 999999, P.getValue() - Past)));
-			New.push_back(N);
+        {
+            New.push_back(WPMultinote (WPNote (WPNote::Rest, P.getValue() - Past)));
+            New.push_back(N);
 		}
 	}
 	Notes = New;

@@ -13,7 +13,7 @@ class WPNote
 	public:
 		static const int Rest = - 999999;
 		WPNote();
-		WPNote(const int &, const Fraction &);
+        WPNote(const int, const Fraction &);
 		~WPNote();
 		bool operator == (const WPNote &) const;
 		int getPitch() const;

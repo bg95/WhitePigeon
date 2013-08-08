@@ -29,7 +29,12 @@ void WPOscilloscope::start(quint32 _period, quint32 _length)
 
 void WPOscilloscope::refresh()
 {
-    QByteArray bytearray(inputdevice->readAll().rightJustified(length * sizeof(WPWave::WaveDataType), 0, true));
+    printf("input available %d\n", (*inputdevice).bytesAvailable()); //SIGSEGV ?
+    fflush(stdout);
+    QByteArray input = inputdevice->read(inputdevice->bytesAvailable());
+    printf("input %d\n", input.isEmpty());
+    fflush(stdout);
+    QByteArray bytearray(input.rightJustified(length * sizeof(WPWave::WaveDataType), 0, true));
     WPWave::WaveDataType *begin = (WPWave::WaveDataType *)bytearray.constData();
     QVector<WPWave::WaveDataType> data;
     for (quint32 i = 0; i < length; i++)

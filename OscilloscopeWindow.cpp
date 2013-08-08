@@ -7,7 +7,7 @@
 
 OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::OscilloscopeWindow),/*
+    /*ui(new Ui::OscilloscopeWindow),
     glwidget(this),
     glwidgetR(this),
     glwidgetI(this),
@@ -45,19 +45,15 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 
     WPPipe pipe;
     pipe.open(QIODevice::ReadWrite);
+    printf("pipe: %X\n", (qint64)&pipe);
+    fflush(stdout);
+    printf("pipe bytesAvailable: %d\n", pipe.bytesAvailable());
+    fflush(stdout);
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     //oscilloscope.setInputDevice(*audioinput->start());
     oscilloscope.setInputDevice(pipe);
     oscilloscope.start(100, 4096);
-
-    char *chr = (char *)wave.data.begin();
-    for (int i = 0; i < wave.data.size(); i += 4096)
-    {
-        pipe.write(chr, 4096 * sizeof(WPWave::WaveDataType));
-        int j = 10000000;
-        while (--j);
-    }
 }
 
 void OscilloscopeWindow::resizeEvent(QResizeEvent *)
