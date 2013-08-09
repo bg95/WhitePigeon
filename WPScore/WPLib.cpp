@@ -80,3 +80,9 @@ double Fraction::toDouble() const
 {
 	return (double) X / (double) Y;
 }
+
+int ran()
+{
+	static int X = rand();
+	X += (X << 2) ^ 137;
+}

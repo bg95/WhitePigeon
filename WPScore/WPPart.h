@@ -5,22 +5,35 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "WPMultinote.h"
-#include "WPProperty.h"
+#include <map>
+#include "WPPersistentTree.h"
+
+class WPPart;
+
+#include "WPScore.h"
 
 class WPPart
 {
 	public:
-		WPPart();
-		WPPart(const std::string &);
+		WPPart(WPScore *);
+		WPPart(WPScore *, const std::string &);
 		~WPPart();
-		std::string getName() const;
+		std::string getName();
 		void insertProperties(const WPProperty &);
 		void insertMultinote(const WPPosition &, const WPMultinote &);
+		void synchronizeWithMaster();
+		void implementVersion();
+		std::pair < Fraction, std::vector <WPProperty> > startFrom(const WPPosition &);
+		std::pair < WPMultinote, std::pair < std::vector <WPProperty>, std::vector <WPProperty> > > nextFragment();
 	private:
-		std::string Name;
-		std::vector <WPMultinote> Notes;
-		std::vector <WPProperty> Properties;
+		WPScore *Master;
+		int MasterVer, MyVer;
+		bool IsToBePlayed, IsDeleted;
+		WPPosition PlayingPosition;
+		std::map <int, int> VerMap;
+		std::vector <std::string> Names;
+		std::vector <WPMultinotePersistentTree> Notes;
+		std::vector <WPPropertyPersistentTree> Properties;
 };
 
 #endif
