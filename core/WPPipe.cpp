@@ -34,7 +34,7 @@ bool WPPipe::open(OpenMode mode)
 
 qint64 WPPipe::bytesAvailable() const
 {
-    return quesize;
+    return quesize + QIODevice::bytesAvailable();
 }
 
 qint64 WPPipe::readData(char *data, qint64 maxlen)
@@ -56,6 +56,7 @@ qint64 WPPipe::readData(char *data, qint64 maxlen)
         data += (*iter)->size() - readpos;
         maxlen -= (*iter)->size() - readpos;
         delete (*iter);
+        que.pop_front();
         readpos = 0;
     }
     quesize -= data - data0;
@@ -97,6 +98,6 @@ inline void WPPipe::checkDef()
 }
 inline void WPPipe::checkSuf()
 {
-    if (quesize > suf)
+    if (suf != -1 && quesize > suf)
         sufficientInput();
 }

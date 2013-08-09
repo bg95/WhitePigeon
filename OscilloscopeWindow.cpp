@@ -16,43 +16,49 @@ OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
 {
     //ui->setupUi(this);
     setGeometry(100, 50, 1000, 600);
+    pipe = new WPPipe();
 }
 
 OscilloscopeWindow::~OscilloscopeWindow()
 {
-    delete ui;
+    //delete ui;
     delete audioinput;
+    delete pipe;
 }
 
 void OscilloscopeWindow::showEvent(QShowEvent *)
 {
     //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
-    WPNote note(0, Fraction(10, 1));
     WPSynthesizer synthesizer;
     WPTuningFork tuningfork;
     synthesizer.loadTimbre(&tuningfork);
     qWarning("synthesizer constructed");
-    WPWave *twave = synthesizer.synthesize(note);
-    //twave->play();
     wave.clear();
     wave.setFormat(WPWave::defaultAudioFormat());
-    wave.mixWith(0.5, *twave, 0.5);
+    WPNote note1(0, Fraction(10, 1)), note2(4, Fraction(10, 1)), note3(7, Fraction(10, 1));
+    WPWave *twave = synthesizer.synthesize(note1);
+    wave.mixWith(0.5, *twave, 1);
+    delete twave;
+    twave = synthesizer.synthesize(note2);
+    wave.mixWith(0.5, *twave, 0.3);
+    delete twave;
+    twave = synthesizer.synthesize(note3);
+    wave.mixWith(1, *twave, 0.2);
     delete twave;
     qWarning("synthesis finished");
     wave.play();
     //waveDecodeFinished();
 
-    WPPipe pipe;
-    pipe.open(QIODevice::ReadWrite);
-    printf("pipe: %X\n", (qint64)&pipe);
+    pipe->open(QIODevice::ReadWrite);
+    printf("pipe: %X\n", (qint64)pipe);
     fflush(stdout);
-    printf("pipe bytesAvailable: %d\n", pipe.bytesAvailable());
+    printf("pipe bytesAvailable: %d\n", pipe->bytesAvailable());
     fflush(stdout);
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
-    //oscilloscope.setInputDevice(*audioinput->start());
-    oscilloscope.setInputDevice(pipe);
+    oscilloscope.setInputDevice(*audioinput->start());
+    //oscilloscope.setInputDevice(*pipe);
     oscilloscope.start(100, 4096);
 }
 
@@ -116,6 +122,5 @@ void OscilloscopeWindow::waveDecodeFinished()
         }
     printf("points: %d", glwidgetSTFT.getNumPoints());
     glwidgetSTFT.repaint();
-*/
-    wave.play();
+    wave.play();*/
 }

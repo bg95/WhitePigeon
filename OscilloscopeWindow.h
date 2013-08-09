@@ -6,6 +6,7 @@
 #include <QAudioInput>
 #include "core/WPWave.h"
 #include "core/WPOscilloscope.h"
+#include "core/WPPipe.h"
 #include "myglwidget.h"
 
 namespace Ui {
@@ -29,6 +30,7 @@ private:
     WPOscilloscope oscilloscope;
     WPWave wave;
     QAudioInput *audioinput;
+    WPPipe *pipe;
 
 protected:
     void showEvent(QShowEvent *);
