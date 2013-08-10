@@ -1,3 +1,4 @@
+#include <QObject>
 #include "WPPart.h"
 
 WPPart::WPPart (WPScore *M)
@@ -81,7 +82,11 @@ void WPPart::insertProperties(const WPProperty &P)
 void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)
 {
 	implementVersion();
+    qDebug("insert note: %d", MyVer);
 	Notes[MyVer].insert(P, N);
+    std::vector <WPMultinote> bg = Notes[MyVer].traverse();
+    for (int k = 0; k < (int) bg.size(); ++ k)
+        qDebug("note: %d l = %d/%d", bg[k].getNotes().back().getPitch(), bg[k].getLength().X, bg[k].getLength().Y);
 	// Need to change properties;
 }
 
@@ -100,6 +105,7 @@ std::pair < Fraction, std::vector <WPProperty> > WPPart::startFrom(const WPPosit
 std::pair < WPMultinote, std::pair < std::vector <WPProperty>, std::vector <WPProperty> > > WPPart::nextFragment()
 {
 	synchronizeWithMaster();
+    qDebug("playing position = %d/%d", PlayingPosition.getValue().X, PlayingPosition.getValue().Y);
 	WPMultinote Nt = Notes[MyVer].query(PlayingPosition).second;
 	std::vector <WPProperty> Starting = Properties[MyVer].query(WPInterval (PlayingPosition, PlayingPosition + Nt.getLength())).traverse();
 	std::vector <WPProperty> V = Properties[MyVer].query(WPInterval (WPPosition (Fraction (0, 1)), PlayingPosition + Nt.getLength())).traverse();

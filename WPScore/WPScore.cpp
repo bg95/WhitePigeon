@@ -48,7 +48,7 @@ void WPScore::load(const std::string &FileName)
 //~ {
 //~ }
 //~ 
-std::vector <WPPart> WPScore::getPartList() const
+std::vector<WPPart> &WPScore::getPartList()
 {
 	return PartList;
 }

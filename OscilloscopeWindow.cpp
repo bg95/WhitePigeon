@@ -33,28 +33,23 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     WPSynthesizer synthesizer;
     WPTuningFork tuningfork;
     synthesizer.loadTimbre(&tuningfork);
-    qWarning("synthesizer constructed");
-    wave.clear();
-    wave.setFormat(WPWave::defaultAudioFormat());
-    WPNote note1(0, Fraction(10, 1)), note2(4, Fraction(10, 1)), note3(7, Fraction(10, 1));
-    WPWave *twave = synthesizer.synthesize(note1);
-    wave.mixWith(0.5, *twave, 1);
-    delete twave;
-    twave = synthesizer.synthesize(note2);
-    wave.mixWith(0.5, *twave, 0.3);
-    delete twave;
-    twave = synthesizer.synthesize(note3);
-    wave.mixWith(1, *twave, 0.2);
-    delete twave;
-    qWarning("synthesis finished");
-    wave.play();
-    //waveDecodeFinished();
+    qDebug("synthesizer constructed");
+    WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 1)), note3(7, Fraction(1, 1));
+    score = new WPScore;
+    qDebug("part num = %d\n", score->getPartList().size());
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note2));
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note3));
+    score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
 
     pipe->open(QIODevice::ReadWrite);
-    printf("pipe: %X\n", (qint64)pipe);
-    fflush(stdout);
-    printf("pipe bytesAvailable: %d\n", pipe->bytesAvailable());
-    fflush(stdout);
+    qDebug("pipe: %X", (qint64)pipe);
+    qDebug("pipe bytesAvailable: %d", pipe->bytesAvailable());
+    synthesizer.setOutputDevice(*pipe);
+
+    static QAudioOutput *audiooutput = new QAudioOutput(WPWave::defaultAudioFormat());
+    audiooutput->start(pipe);
+    synthesizer.startSynthesis(score->getPartList()[0]);
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     oscilloscope.setInputDevice(*audioinput->start());
@@ -73,7 +68,8 @@ void OscilloscopeWindow::resizeEvent(QResizeEvent *)
 
 void OscilloscopeWindow::hideEvent(QHideEvent *)
 {
-    wave.stop();
+    //wave.stop();
+    delete score;
 }
 
 void OscilloscopeWindow::waveDecodeFinished()

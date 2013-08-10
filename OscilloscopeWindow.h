@@ -7,6 +7,7 @@
 #include "core/WPWave.h"
 #include "core/WPOscilloscope.h"
 #include "core/WPPipe.h"
+#include "WPScore/WPScore.h"
 #include "myglwidget.h"
 
 namespace Ui {
@@ -31,6 +32,7 @@ private:
     WPWave wave;
     QAudioInput *audioinput;
     WPPipe *pipe;
+    WPScore *score;
 
 protected:
     void showEvent(QShowEvent *);

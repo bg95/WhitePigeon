@@ -1,14 +1,21 @@
 #include "WPSynthesizer.h"
 
 WPSynthesizer::WPSynthesizer(QObject *parent) :
-    QObject(parent),
-    newthread(new QTimer)
+    QObject(parent)
 {
+    newthread = new QTimer;
+    connect(newthread, SIGNAL(timeout()), this, SLOT(synthesizePart()));
+    newthread->setSingleShot(true);
+    newthread->setInterval(1);
 }
 
 WPSynthesizer::WPSynthesizer(WPTimbre *_timbre, QObject *parent) :
     QObject(parent)
 {
+    newthread = new QTimer;
+    connect(newthread, SIGNAL(timeout()), this, SLOT(synthesizePart()));
+    newthread->setSingleShot(true);
+    newthread->setInterval(1);
     loadTimbre(_timbre);
 }
 
@@ -33,7 +40,7 @@ WPWave *WPSynthesizer::synthesize(WPNote &note)
     double *amp = new double[n];
     double *freq = new double[n];
     for (i = 0; i < n; i++)
-        amp[i] = 1.0;
+        amp[i] = 0.5;
     for (i = 0; i < n; i++)
         freq[i] = note.getFrequency();
     return timbre->synthesize(note.getTimeSpan(), amp, freq); //take care of overflow
@@ -42,12 +49,33 @@ WPWave *WPSynthesizer::synthesize(WPNote &note)
 void WPSynthesizer::startSynthesis(WPPart &_part)
 {
     part = &_part;
-    newthread->singleShot(0, this, SLOT(synthesizePart()));
+    qDebug("statSynthesis");
+    //newthread->singleShot(1, this, SLOT(synthesizePart()));
+    newthread->start();
+    synthesizePart();
 }
 
 void WPSynthesizer::synthesizePart()
 {
-    //...
+    std::pair<WPMultinote, std::pair<std::vector<WPProperty>, std::vector<WPProperty> > > fragment;
+    WPWave *swave = new WPWave;
+    qDebug("%d", fragment.first.getLength().X);
+    fflush(stdout);
+    fflush(stderr);
+    while (fragment = part->nextFragment(), !(fragment.first.getLength() == Fraction(-1, 1)))
+    {
+        std::vector<WPNote> notes = fragment.first.getNotes();
+        std::vector<WPNote>::iterator iter;
+        swave->clear();
+        for (iter = notes.begin(); iter != notes.end(); iter++)
+        {
+            WPWave *twave;
+            twave = synthesize(*iter);
+            swave->mixWith(1.0, *twave, 1.0);
+        }
+        output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType));
+    }
+    delete swave;
     synthesisFinished();
 }
 
