@@ -13,6 +13,7 @@ class WPScore;
 #include "WPInterval.h"
 #include "WPProperty.h"
 #include "WPPart.h"
+#include "WPAllocator.h"
 
 class WPScore
 {

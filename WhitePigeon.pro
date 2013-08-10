@@ -32,7 +32,9 @@ SOURCES += main.cpp\
     OscilloscopeWindow.cpp \
     mainwindow.cpp \
     core/WPPipe.cpp \
-    core/WPMixer.cpp
+    core/WPMixer.cpp \
+    WPScore/WPPersistentTree.cpp \
+#    WPScore/WPAllocator.cpp
 
 HEADERS  +=\
             myglwidget.h \
@@ -54,4 +56,6 @@ HEADERS  +=\
     core/WPTuningFork.h \
     core/WPVarTimbre.h \
     core/WPPipe.h \
-    core/WPMixer.h
+    core/WPMixer.h \
+    WPScore/WPPersistentTree.h \
+    WPScore/WPAllocator.h

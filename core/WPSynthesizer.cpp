@@ -47,7 +47,7 @@ void WPSynthesizer::startSynthesis(WPPart &_part)
 
 void WPSynthesizer::synthesizePart()
 {
-    ...
+    //...
     synthesisFinished();
 }
 
