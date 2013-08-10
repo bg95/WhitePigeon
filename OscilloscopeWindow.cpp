@@ -4,6 +4,7 @@
 #include "core/WPSynthesizer.h"
 #include "core/WPTuningFork.h"
 #include "core/WPPipe.h"
+#include "core/WPSynthesisController.h"
 
 OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,11 +31,18 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 {
     //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
-    WPSynthesizer synthesizer;
-    WPTuningFork tuningfork;
-    synthesizer.loadTimbre(&tuningfork);
-    qDebug("synthesizer constructed");
+
     WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 1)), note3(7, Fraction(1, 1));
+/*
+    WPWave *twave = synthesizer.synthesize(note1);
+    //twave->play();
+    wave.clear();
+    wave.setFormat(WPWave::defaultAudioFormat());
+    wave.mixWith(0.5, *twave, 0.5);
+    delete twave;
+    qDebug("synthesis finished");
+    wave.play();
+*/
     score = new WPScore;
     qDebug("part num = %d\n", score->getPartList().size());
     score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
@@ -42,14 +50,20 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note3));
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
 
+    WPSynthesisController controller;
+    controller.synthesize(*score);
+/*
+    WPSynthesizer synthesizer;
+    WPTuningFork tuningfork;
+    synthesizer.loadTimbre(&tuningfork);
+    qDebug("synthesizer constructed");
     pipe->open(QIODevice::ReadWrite);
-    qDebug("pipe: %X", (qint64)pipe);
-    qDebug("pipe bytesAvailable: %d", pipe->bytesAvailable());
-    synthesizer.setOutputDevice(*pipe);
 
+    synthesizer.setOutputDevice(*pipe);
+    synthesizer.startSynthesis(score->getPartList()[0]);
     static QAudioOutput *audiooutput = new QAudioOutput(WPWave::defaultAudioFormat());
     audiooutput->start(pipe);
-    synthesizer.startSynthesis(score->getPartList()[0]);
+*/
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     oscilloscope.setInputDevice(*audioinput->start());

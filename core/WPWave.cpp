@@ -190,7 +190,7 @@ bool WPWave::play()
     audiooutput = new QAudioOutput(format, this);
     connect(audiooutput, SIGNAL(stateChanged(QAudio::State)), this, SLOT(audiooutputStateChanged(QAudio::State)));
     audiooutput->start(buffer);
-    printf("playing\n");
+    printf("WPWave playing\n");
     fflush(stdout);
     return true;
 }
@@ -216,7 +216,9 @@ void WPWave::audiooutputStateChanged(QAudio::State state)
         break;
     case QAudio::StoppedState:
         if (audiooutput->error() != QAudio::NoError)
-            printf("error!");
+        {
+            qDebug("error! %d", audiooutput->error());
+        }
         break;
     }
 }

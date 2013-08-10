@@ -49,9 +49,9 @@ WPWave *WPSynthesizer::synthesize(WPNote &note)
 void WPSynthesizer::startSynthesis(WPPart &_part)
 {
     part = &_part;
-    qDebug("statSynthesis");
+    qDebug("startSynthesis");
     //newthread->singleShot(1, this, SLOT(synthesizePart()));
-    newthread->start();
+    //newthread->start(); //this does not recieve the timeout() signal and run synthesizePart()
     synthesizePart();
 }
 
@@ -72,9 +72,21 @@ void WPSynthesizer::synthesizePart()
             WPWave *twave;
             twave = synthesize(*iter);
             swave->mixWith(1.0, *twave, 1.0);
+            delete twave;
         }
-        output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType));
+        if (-1 == output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType)))
+        {
+            QChar *ch;
+            for (ch = output->errorString().begin(); ch != output->errorString().end(); ch++)
+            {
+                printf("%c", *ch);
+            }
+            printf("\n");
+            fflush(stdout);
+        }
     }
+    //swave->setFormat(WPWave::defaultAudioFormat());
+    //swave->play();
     delete swave;
     synthesisFinished();
 }

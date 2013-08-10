@@ -177,18 +177,18 @@ std::pair <Fraction, WPMultinote> WPMultinotePersistentTree::query(const WPPosit
 	WPMultinotePersistentTreeNode *T = Root;
 	while (T)
 	{
-        fprintf(stderr, "query! T: %d/%d, %d %d/%d\n", T->Sum.X, T->Sum.Y, T->Element.getNotes().back().getPitch(), T->Element.getLength().X, T->Element.getLength().Y);
+        //fprintf(stderr, "query! T: %d/%d, %d %d/%d\n", T->Sum.X, T->Sum.Y, T->Element.getNotes().back().getPitch(), T->Element.getLength().X, T->Element.getLength().Y);
 		if (F < (T->Left ? T->Left->Sum : Fraction (0, 1)))
 		{
-            fprintf(stderr, "go left\n");
+            //fprintf(stderr, "go left\n");
 			T = T->Left;
 			continue;
 		}
 		F -= (T->Left ? T->Left->Sum : Fraction (0, 1));
-        fprintf(stderr, "F = %d/%d\n", F.X, F.Y);
+        //fprintf(stderr, "F = %d/%d\n", F.X, F.Y);
         if (F >= T->Element.getLength())
         {
-            fprintf(stderr, "go right %d/%d\n", T->Element.getLength().X, T->Element.getLength().Y);
+            //fprintf(stderr, "go right %d/%d\n", T->Element.getLength().X, T->Element.getLength().Y);
             F -= T->Element.getLength();
 			T = T->Right;
 			continue;

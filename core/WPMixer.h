@@ -18,8 +18,10 @@ public:
     void setOutput(QIODevice &_output);
     void setWatingTime(int msec);
     void setReadLength(quint64 length);
+    void start();
     
 signals:
+    void allInputClosed();
     
 public slots:
 
@@ -33,6 +35,7 @@ private:
     quint64 readlength; //in number of samples
     QIODevice *output;
     QTimer timer;
+    int waitingtime;
     WPWave::WaveDataType *sdata, *tdata;
 
 };

@@ -28,7 +28,6 @@ bool WPMixer::openInputChannels(int number_of_channels)
             delete[] channel;
             return false;
         }
-    sumUp();
     return true;
 }
 
@@ -46,7 +45,7 @@ void WPMixer::setOutput(QIODevice &_output)
 
 void WPMixer::setWatingTime(int msec)
 {
-    timer.setInterval(msec);
+    waitingtime = msec;
 }
 
 void WPMixer::setReadLength(quint64 length)
@@ -60,26 +59,58 @@ void WPMixer::setReadLength(quint64 length)
     tdata = new WPWave::WaveDataType[readlength];
 }
 
+void WPMixer::start()
+{
+    timer.start(0);
+}
+
 void WPMixer::sumUp()
 {
     //assume no other threads are reading the channel
     int i, j;
-    for (i = 0; i < chcnt; i++)
-        if (channel[i].bytesAvailable() < readlength * sizeof(WPWave::WaveDataType))
-            break;
-    if (i < chcnt)
+    bool existopen;
+    while (true)
     {
-        timer.start();
-        return;
+        existopen = false;
+        for (i = 0; i < chcnt; i++)
+        {
+            if (channel[i].isOpen())
+                existopen = true;
+            if (channel[i].isOpen() && !channel[i].isClosing() &&
+                channel[i].bytesAvailable() < readlength * sizeof(WPWave::WaveDataType))
+                break;
+        }
+        if (i < chcnt)
+        {
+            timer.start(waitingtime);
+            return;
+        }
+        if (!existopen)
+        {
+            allInputClosed();
+            return;
+        }
+        memset(sdata, 0, sizeof(WPWave::WaveDataType) * readlength);
+        for (i = 0; i < chcnt; i++)
+        {
+            if (channel[i].isOpen())
+            {
+                if (channel[i].bytesAvailable() >= readlength * sizeof(WPWave::WaveDataType))
+                {
+                    channel[i].read((char *)tdata, readlength * sizeof(WPWave::WaveDataType));
+                    for (j = 0; j < readlength; j++)
+                        truncateAdd(sdata[j], tdata[j]);
+                }
+                else
+                {
+                    channel[i].read((char *)tdata, channel[i].bytesAvailable());
+                    for (j = 0; j < channel[i].bytesAvailable() / sizeof(WPWave::WaveDataType); j++)
+                        truncateAdd(sdata[j], tdata[j]);
+                }
+            }
+        }
+        output->write((char *)sdata, readlength * sizeof(WPWave::WaveDataType));
     }
-    memset(sdata, 0, sizeof(WPWave::WaveDataType) * readlength);
-    for (i = 0; i < chcnt; i++)
-    {
-        channel[i].read((char *)tdata, readlength * sizeof(WPWave::WaveDataType));
-        for (j = 0; j < readlength; j++)
-            truncateAdd(sdata[j], tdata[j]);
-    }
-    output->write((char *)sdata, readlength * sizeof(WPWave::WaveDataType));
 }
 
 void WPMixer::truncateAdd(WPWave::WaveDataType &a, WPWave::WaveDataType b)

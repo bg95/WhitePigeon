@@ -45,6 +45,7 @@ qint64 WPPipe::bytesAvailable() const
 qint64 WPPipe::readData(char *data, qint64 maxlen)
 {
     lock.lock();
+    qDebug("pipe %X read %d", (quint64)this, maxlen);
 
     char *data0 = data;
     std::deque<QByteArray *>::iterator iter;
@@ -82,7 +83,7 @@ qint64 WPPipe::writeData(const char *data, qint64 maxlen)
     QByteArray *bytearray = new QByteArray(data, maxlen);
 
     lock.lock();
-    qDebug("pipe write");
+    qDebug("pipe %X write %d", (quint64)this, maxlen);
 
     que.push_back(bytearray);
     quesize += maxlen;
