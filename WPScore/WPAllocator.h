@@ -18,11 +18,10 @@ template <class T> class WPAllocator
 		std::vector <T *> Memo;
 };
 
-
 template <class T> WPAllocator <T>::WPAllocator()
 {
-    I = - 1;
-    J = 0;
+	I = - 1;
+	J = 0;
     Memo.clear();
 }
 

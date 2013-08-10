@@ -85,4 +85,5 @@ int ran()
 {
 	static int X = rand();
 	X += (X << 2) ^ 137;
+	return X;
 }

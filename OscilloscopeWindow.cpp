@@ -33,6 +33,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
 
     WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 1)), note3(7, Fraction(1, 1));
+    WPNote note4(-5, Fraction(1, 1)), note5(-1, Fraction(1, 1)), note6(4, Fraction(1, 1));
 /*
     WPWave *twave = synthesizer.synthesize(note1);
     //twave->play();
@@ -49,9 +50,15 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note2));
     score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note3));
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
+    /*
+    score->getPartList()[1].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note4));
+    score->getPartList()[1].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note5));
+    score->getPartList()[1].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note6));
+    score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
+    */
 
     WPSynthesisController controller;
-    controller.synthesize(*score);
+    controller.synthesizeAndPlay(*score);
 /*
     WPSynthesizer synthesizer;
     WPTuningFork tuningfork;
@@ -66,6 +73,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 */
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
+    audioinput->setVolume(0.1);
     oscilloscope.setInputDevice(*audioinput->start());
     //oscilloscope.setInputDevice(*pipe);
     oscilloscope.start(100, 4096);

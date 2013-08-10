@@ -3,7 +3,7 @@
 WPScore::WPScore()
 {
 	PartList.clear();
-	PartList.push_back(WPPart (this));
+	CurVer = 0;
 }
 
 WPScore::~WPScore()
@@ -16,6 +16,18 @@ void WPScore::save(const std::string &FileName)
 
 void WPScore::load(const std::string &FileName)
 {
+}
+
+WPPart *WPScore::newPart()
+{
+	PartList.push_back(WPPart (this));
+	return &PartList[PartList.size() - 1];
+}
+
+WPPart *WPScore::newPart(std::string S)
+{
+	PartList.push_back(WPPart (this, S));
+	return &PartList[PartList.size() - 1];
 }
 
 //~ void WPScore::insertNote(const WPPosition &P, const WPNote &N)
@@ -47,8 +59,8 @@ void WPScore::load(const std::string &FileName)
 //~ void WPScore::deletePart(const WPPart &)
 //~ {
 //~ }
-//~ 
-std::vector<WPPart> &WPScore::getPartList()
+//~
+std::vector <WPPart> &WPScore::getPartList()
 {
 	return PartList;
 }

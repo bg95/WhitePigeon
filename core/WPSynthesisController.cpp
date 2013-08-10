@@ -17,16 +17,16 @@ WPSynthesisController::~WPSynthesisController()
 QIODevice *WPSynthesisController::synthesize(WPScore &score)
 {
     std::vector<WPPart> &partlist = score.getPartList();
-    //int partnum, i;
+    int partnum, i;
     WPTuningFork tuningfork; //for test
-    //partnum = partlist.size();
+    partnum = partlist.size();
 
     recycle();
-    synthesizer = new WPSynthesizer[/*partnum*/1];
-    //mixer = new WPMixer;
+    synthesizer = new WPSynthesizer[partnum];
+    mixer = new WPMixer;
     outpipe = new WPPipe;
     outpipe->open(QIODevice::ReadWrite);
-    /*
+
     mixer->setWatingTime(10);
     mixer->setOutput(*outpipe);
     mixer->setReadLength(1600);
@@ -38,20 +38,19 @@ QIODevice *WPSynthesisController::synthesize(WPScore &score)
     }
     for (i = 0; i < partnum; i++)
         synthesizer[i].startSynthesis(partlist[i]);
-    mixer->start();*/
+    mixer->start();
 
     //debug
     /*
     file = new QFile("wave.out");
     file->open(QIODevice::WriteOnly);
-    synthesizer[0].setOutputDevice(*file);*/
+    synthesizer[0].setOutputDevice(*file);
 
     synthesizer[0].setOutputDevice(*outpipe);
     synthesizer[0].loadTimbre(&tuningfork);
     //connect(&synthesizer[0], SIGNAL(synthesisFinished()), this, SLOT(synthesisFinished()));
     synthesizer[0].startSynthesis(partlist[0]);
-    QAudioOutput *audiooutput = new QAudioOutput(WPWave::defaultAudioFormat());
-    audiooutput->start(outpipe);
+    //audiooutput->start(outpipe);*/
     return outpipe;
 }
 
@@ -70,8 +69,8 @@ void WPSynthesisController::synthesisFinished()
 
 void WPSynthesisController::synthesizeAndPlay(WPScore &score)
 {
-    //QIODevice *outputpipe = synthesize(score);
-    //audiooutput->start(outputpipe);
+    QAudioOutput *audiooutput = new QAudioOutput(WPWave::defaultAudioFormat());
+    audiooutput->start(synthesize(score));
 }
 
 void WPSynthesisController::recycle()

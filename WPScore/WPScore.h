@@ -27,8 +27,7 @@ class WPScore
 		//~ WPProperty insertProperty(const WPInterval &, const WPProperty &);
 		//~ void deleteProperty(const WPProperty &);
 		WPPart *newPart();
-		WPPart *newPart(std::string);
-		void deletePart(WPPart *);
+        WPPart *newPart(std::string);
         std::vector <WPPart> &getPartList();
 		//~ std::vector <WPProperty> getPropertyList() const;
 		int getCurrentVersion() const;

@@ -117,6 +117,21 @@ std::pair < WPMultinote, std::pair < std::vector <WPProperty>, std::vector <WPPr
 	return std::make_pair(Nt, std::make_pair(Starting, Ending));
 }
 
+void WPPart::setToBeMuted()
+{
+	IsToBePlayed = 0;
+}
+
+void WPPart::setToBePlayed()
+{
+	IsToBePlayed = 1;
+}
+
+bool WPPart::isToBePlayed()
+{
+	return IsToBePlayed;
+}
+
 //~ void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)
 //~ {
 	//~ std::vector <WPMultinote> New;
