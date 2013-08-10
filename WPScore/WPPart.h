@@ -23,6 +23,10 @@ class WPPart
 		void insertMultinote(const WPPosition &, const WPMultinote &);
 		void synchronizeWithMaster();
 		void implementVersion();
+		void newVersion();
+		void setToBeMuted();
+		void setToBePlayed();
+		bool isToBePlayed();
 		std::pair < Fraction, std::vector <WPProperty> > startFrom(const WPPosition &);
 		std::pair < WPMultinote, std::pair < std::vector <WPProperty>, std::vector <WPProperty> > > nextFragment();
 	private:

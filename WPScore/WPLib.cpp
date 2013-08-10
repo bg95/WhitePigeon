@@ -36,7 +36,7 @@ bool Fraction::operator > (const Fraction &F) const
 
 bool Fraction::operator >= (const Fraction &F) const
 {
-	return (long long) X * F.Y < (long long) F.X * Y;
+	return (long long) X * F.Y >= (long long) F.X * Y;
 }
 
 Fraction Fraction::operator = (const Fraction &F)
@@ -85,4 +85,5 @@ int ran()
 {
 	static int X = rand();
 	X += (X << 2) ^ 137;
+	return X;
 }
