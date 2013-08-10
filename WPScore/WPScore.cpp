@@ -2,7 +2,8 @@
 
 WPScore::WPScore()
 {
-	NoteList.clear();
+	PartList.clear();
+	PartList.push_back(WPPart (this));
 }
 
 WPScore::~WPScore()
@@ -17,47 +18,62 @@ void WPScore::load(const std::string &FileName)
 {
 }
 
-void WPScore::insertNote(const WPPosition &P, const WPNote &N)
-{
-	NoteList.push_back(std::make_pair(P, N));
-	for (int k = (int) NoteList.size() - 1; k > 0; -- k)
-		if (NoteList[k].first.getValue() < NoteList[k - 1].first.getValue())
-			std::swap(NoteList[k], NoteList[k - 1]);
-}
-
-void WPScore::deleteNote(const WPPosition &P, const WPNote &N)
-{
-}
-
-WPProperty WPScore::insertProperty(const WPInterval &I, const WPProperty &P)
-{
-	return P;
-}
-
-void WPScore::deleteProperty(const WPProperty &)
-{
-}
-
-void WPScore::insertPart(const WPPart &P)
-{
-	PartList.push_back(P);
-}
-
-void WPScore::deletePart(const WPPart &)
-{
-}
-
+//~ void WPScore::insertNote(const WPPosition &P, const WPNote &N)
+//~ {
+	//~ NoteList.push_back(std::make_pair(P, N));
+	//~ for (int k = (int) NoteList.size() - 1; k > 0; -- k)
+		//~ if (NoteList[k].first.getValue() < NoteList[k - 1].first.getValue())
+			//~ std::swap(NoteList[k], NoteList[k - 1]);
+//~ }
+//~ 
+//~ void WPScore::deleteNote(const WPPosition &P, const WPNote &N)
+//~ {
+//~ }
+//~ 
+//~ WPProperty WPScore::insertProperty(const WPInterval &I, const WPProperty &P)
+//~ {
+	//~ return P;
+//~ }
+//~ 
+//~ void WPScore::deleteProperty(const WPProperty &)
+//~ {
+//~ }
+//~ 
+//~ void WPScore::insertPart(const WPPart &P)
+//~ {
+	//~ PartList.push_back(P);
+//~ }
+//~ 
+//~ void WPScore::deletePart(const WPPart &)
+//~ {
+//~ }
+//~ 
 std::vector <WPPart> WPScore::getPartList() const
 {
-	return std::vector <WPPart> ();
+	return PartList;
+}
+//~ 
+//~ std::vector < std::pair <WPPosition, WPNote> > WPScore::getNoteList() const
+//~ {
+	//~ return NoteList;
+//~ }
+//~ 
+//~ std::vector <WPProperty> WPScore::getPropertyList() const
+//~ {
+	//~ return std::vector <WPProperty> ();
+//~ }
+
+int WPScore::getCurrentVersion() const
+{
+	return CurVer;
 }
 
-std::vector < std::pair <WPPosition, WPNote> > WPScore::getNoteList() const
+WPAllocator <WPMultinotePersistentTreeNode> *WPScore::getMultinotePersistentTreeNodeAllocator()
 {
-	return NoteList;
+	return &MPTNAlloc;
 }
 
-std::vector <WPProperty> WPScore::getPropertyList() const
+WPAllocator <WPPropertyPersistentTreeNode> *WPScore::getPropertyPersistentTreeNodeAllocator()
 {
-	return std::vector <WPProperty> ();
+	return &PPTNAlloc;
 }

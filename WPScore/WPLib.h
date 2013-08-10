@@ -28,4 +28,6 @@ class Fraction
 		int X, Y;
 };
 
+int ran();
+
 #endif
