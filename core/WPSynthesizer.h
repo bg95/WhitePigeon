@@ -2,6 +2,7 @@
 #define WPSYNTHESIZER_H
 
 #include <QObject>
+#include <QTimer>
 #include "WPWave.h"
 #include "WPTimbre.h"
 #include "../WPScore/WPNote.h"
@@ -16,24 +17,26 @@ public:
 
     explicit WPSynthesizer(QObject *parent = 0);
     explicit WPSynthesizer(WPTimbre *_timbre, QObject *parent = 0);
+    ~WPSynthesizer();
 
-    void loadTimbre(const WPTimbre *_timbre);
     WPWave *synthesize(WPNote &note);
-    void synthesize(WPPart &part);
-    QAudioBuffer *getBuffer();
-    void setBufferSize(quint32);
-    quint32 getBufferSize() const;
+    void loadTimbre(const WPTimbre *_timbre);
+    void setOutputDevice(QIODevice &_output);
+    void startSynthesis(WPPart &_part);
 
 signals:
-    void bufferReady();
     void synthesisFinished();
     
 public slots:
-    
+
+private slots:
+    void synthesizePart();
+
 private:
     const WPTimbre *timbre;
-    //WPWave *(*waveFunction)(double, double);
-    quint32 buffersize;
+    QIODevice *output;
+    QTimer *newthread;
+    WPPart *part;
 
 };
 

@@ -1,7 +1,8 @@
 #include "WPSynthesizer.h"
 
 WPSynthesizer::WPSynthesizer(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    newthread(new QTimer)
 {
 }
 
@@ -11,9 +12,19 @@ WPSynthesizer::WPSynthesizer(WPTimbre *_timbre, QObject *parent) :
     loadTimbre(_timbre);
 }
 
+WPSynthesizer::~WPSynthesizer()
+{
+    delete newthread;
+}
+
 void WPSynthesizer::loadTimbre(const WPTimbre *_timbre)
 {
     timbre = _timbre;
+}
+
+void WPSynthesizer::setOutputDevice(QIODevice &_output)
+{
+    output = &_output;
 }
 
 WPWave *WPSynthesizer::synthesize(WPNote &note)
@@ -28,14 +39,16 @@ WPWave *WPSynthesizer::synthesize(WPNote &note)
     return timbre->synthesize(note.getTimeSpan(), amp, freq); //take care of overflow
 }
 
-void WPSynthesizer::setBufferSize(quint32 size)
+void WPSynthesizer::startSynthesis(WPPart &_part)
 {
-    buffersize = size;
+    part = &_part;
+    newthread->singleShot(0, this, SLOT(synthesizePart()));
 }
 
-quint32 WPSynthesizer::getBufferSize() const
+void WPSynthesizer::synthesizePart()
 {
-    return buffersize;
+    ...
+    synthesisFinished();
 }
 
 //static

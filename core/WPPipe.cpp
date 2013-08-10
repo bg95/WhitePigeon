@@ -6,7 +6,9 @@ WPPipe::WPPipe(QObject *parent) :
     quesize(0),
     readpos(0),
     def(0),
-    suf(-1)
+    suf(-1),
+    isclosing(false),
+    lock(QMutex::NonRecursive)
 {
 }
 
@@ -16,7 +18,9 @@ WPPipe::WPPipe(qint64 _def, qint64 _suf, QObject *parent) :
     quesize(0),
     readpos(0),
     def(_def),
-    suf(_suf)
+    suf(_suf),
+    isclosing(false),
+    lock(QMutex::NonRecursive)
 {
 }
 
@@ -29,6 +33,7 @@ bool WPPipe::open(OpenMode mode)
     if (mode != ReadWrite)
         return false;
     clear();
+    isclosing = false;
     return QIODevice::open(mode);
 }
 
@@ -39,6 +44,8 @@ qint64 WPPipe::bytesAvailable() const
 
 qint64 WPPipe::readData(char *data, qint64 maxlen)
 {
+    lock.lock();
+
     char *data0 = data;
     std::deque<QByteArray *>::iterator iter;
     if (maxlen > quesize)
@@ -60,28 +67,43 @@ qint64 WPPipe::readData(char *data, qint64 maxlen)
         readpos = 0;
     }
     quesize -= data - data0;
+    if (isclosing && quesize == 0)
+    {
+        close();
+    }
     checkDef();
+
+    lock.unlock();
     return data - data0;
 }
 
 qint64 WPPipe::writeData(const char *data, qint64 maxlen)
 {
     QByteArray *bytearray = new QByteArray(data, maxlen);
+
+    lock.lock();
+
     que.push_back(bytearray);
     quesize += maxlen;
     checkSuf();
+
+    lock.unlock();
     return maxlen;
 }
 
 void WPPipe::clear()
 {
+    lock.lock();
     que.clear();
     quesize = 0;
     readpos = 0;
+    checkDef();
+    lock.unlock();
 }
 
 void WPPipe::setThresholds(qint64 _def, qint64 _suf)
 {
+    lock.lock();
     def = _def;
     suf = _suf;
     if (isOpen())
@@ -89,14 +111,27 @@ void WPPipe::setThresholds(qint64 _def, qint64 _suf)
         checkDef();
         checkSuf();
     }
+    lock.unlock();
 }
 
-inline void WPPipe::checkDef()
+bool WPPipe::isClosing() const
 {
-    if (quesize <= def)
+    return isclosing;
+}
+
+void WPPipe::closeInput()
+{
+    lock.lock();
+    isclosing = true;
+    lock.unlock();
+}
+
+inline void WPPipe::checkDef() const
+{
+    if (!isclosing && quesize <= def)
         deficientInput();
 }
-inline void WPPipe::checkSuf()
+inline void WPPipe::checkSuf() const
 {
     if (suf != -1 && quesize > suf)
         sufficientInput();

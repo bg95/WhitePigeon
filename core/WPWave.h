@@ -19,6 +19,7 @@ class WPWave : public QObject
     Q_OBJECT
 public:
     typedef qint16 WaveDataType;
+    static const WaveDataType maxWaveDataType = 32767, minWaveDataType = -32768;
     static const double PI = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
     static const double Ksigma = 6.0;   //The Gauss function is considered very small (as 0) if |x| > Ksigma * sigma
     //_FFT means Inverse FFT, so as _STFT, _Gabor
