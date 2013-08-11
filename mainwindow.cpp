@@ -11,6 +11,7 @@ MainWindow::MainWindow()
     createToolBar();
     createMenus();
     createStatusBar();
+    drawMusic();
 
     // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
 }
@@ -48,4 +49,11 @@ void MainWindow::createStatusBar()
 {
     QLabel *statusmsg = new QLabel;
     statusBar()->addWidget(statusmsg);
+}
+
+void MainWindow::drawMusic()
+{
+    QGraphicsScene *scene = new QGraphicsScene(this);
+    QGraphicsView *view = new QGraphicsView(scene, this);
+    setCentralWidget(view);
 }

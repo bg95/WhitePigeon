@@ -22,6 +22,7 @@ private:
     void createMenus();
     void createToolBar();
     void createStatusBar();
+    void drawMusic();
 
     QAction *oscilloscopeAction;
 
