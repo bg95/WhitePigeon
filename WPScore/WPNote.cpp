@@ -1,5 +1,7 @@
 #include "WPNote.h"
 
+const int WPNote::Rest = -999999;
+
 WPNote::WPNote ()
 {
 }
@@ -8,7 +10,7 @@ WPNote::~WPNote ()
 {
 }
 
-WPNote::WPNote (const int P, const Fraction &L)
+WPNote::WPNote (const int &P, const Fraction &L)
 {
 	Pitch = P;
 	Length = L;
