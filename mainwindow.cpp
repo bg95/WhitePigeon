@@ -8,8 +8,9 @@
 MainWindow::MainWindow()
 {
     oscilloscopeWindow = new OscilloscopeWindow(this);
-
+    setWindowTitle(tr("WhitePigeon"));
     createActions();
+    //createtoolbar();
     createMenus();
 
     // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
@@ -35,3 +36,10 @@ void MainWindow::showOscilloscope()
 {
     oscilloscopeWindow->show();
 }
+
+/*
+void MainWindow::createtoolbar()
+{
+
+}
+*/
