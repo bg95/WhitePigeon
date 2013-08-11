@@ -1,11 +1,9 @@
-#include <QObject>
 #include "WPPart.h"
 
 WPPart::WPPart (WPScore *M)
 {
 	Master = M;
 	IsToBePlayed = 1;
-	IsDeleted = 0;
 	PlayingPosition = WPPosition (Fraction (0, 1));
 	VerMap.clear();
 	MasterVer = Master->getCurrentVersion();
@@ -13,6 +11,8 @@ WPPart::WPPart (WPScore *M)
 	MyVer = 0;
 	Names.clear();
 	Names.push_back("");
+	Orders.clear();
+	Orders.push_back(- 1);
 	Notes.clear();
 	Notes.push_back(WPMultinotePersistentTree (Master->getMultinotePersistentTreeNodeAllocator()));
 	Properties.clear();
@@ -23,7 +23,6 @@ WPPart::WPPart (WPScore *M, const std::string &S)
 {
 	Master = M;
 	IsToBePlayed = 1;
-	IsDeleted = 0;
 	PlayingPosition = WPPosition (Fraction (0, 1));
 	VerMap.clear();
 	MasterVer = Master->getCurrentVersion();
@@ -31,6 +30,8 @@ WPPart::WPPart (WPScore *M, const std::string &S)
 	MyVer = 0;
 	Names.clear();
 	Names.push_back(S);
+	Orders.clear();
+	Orders.push_back(- 1);
 	Notes.clear();
 	Notes.push_back(WPMultinotePersistentTree (Master->getMultinotePersistentTreeNodeAllocator()));
 	Properties.clear();
@@ -56,15 +57,28 @@ void WPPart::synchronizeWithMaster()
 
 void WPPart::implementVersion()
 {
-	synchronizeWithMaster();
+	//~ synchronizeWithMaster();
+	MasterVer = Master->getCurrentVersion();
 	if (!VerMap.count(MasterVer))
 	{
-		VerMap[MasterVer] = VerMap.size();
-		Names.push_back(Names[MyVer]);
-		Notes.push_back(Notes[MyVer]);
-		Properties.push_back(Properties[MyVer]);
-		MyVer = VerMap[MasterVer];
+		if (MyVer == - 1)
+			VerMap[MasterVer] = - 1;
+		else
+		{
+			VerMap[MasterVer] = VerMap.size();
+			Names.push_back(Names[MyVer]);
+			Orders.push_back(Orders[MyVer]);
+			Notes.push_back(Notes[MyVer]);
+			Properties.push_back(Properties[MyVer]);
+			MyVer = VerMap[MasterVer];
+		}
 	}
+}
+
+void WPPart::newVersion()
+{
+	Master->newVersion();
+	synchronizeWithMaster();
 }
 
 std::string WPPart::getName()
@@ -75,18 +89,16 @@ std::string WPPart::getName()
 
 void WPPart::insertProperties(const WPProperty &P)
 {
+	synchronizeWithMaster();
 	implementVersion();
 	Properties[MyVer].insert(P);
 }
 
 void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)
 {
+	synchronizeWithMaster();
 	implementVersion();
-    //qDebug("insert note: %d", MyVer);
 	Notes[MyVer].insert(P, N);
-    std::vector <WPMultinote> bg = Notes[MyVer].traverse();
-    //for (int k = 0; k < (int) bg.size(); ++ k)
-    //    qDebug("note: %d l = %d/%d", bg[k].getNotes().back().getPitch(), bg[k].getLength().X, bg[k].getLength().Y);
 	// Need to change properties;
 }
 
@@ -105,7 +117,6 @@ std::pair < Fraction, std::vector <WPProperty> > WPPart::startFrom(const WPPosit
 std::pair < WPMultinote, std::pair < std::vector <WPProperty>, std::vector <WPProperty> > > WPPart::nextFragment()
 {
 	synchronizeWithMaster();
-    //qDebug("playing position = %d/%d", PlayingPosition.getValue().X, PlayingPosition.getValue().Y);
 	WPMultinote Nt = Notes[MyVer].query(PlayingPosition).second;
 	std::vector <WPProperty> Starting = Properties[MyVer].query(WPInterval (PlayingPosition, PlayingPosition + Nt.getLength())).traverse();
 	std::vector <WPProperty> V = Properties[MyVer].query(WPInterval (WPPosition (Fraction (0, 1)), PlayingPosition + Nt.getLength())).traverse();
@@ -130,6 +141,25 @@ void WPPart::setToBePlayed()
 bool WPPart::isToBePlayed()
 {
 	return IsToBePlayed;
+}
+
+int WPPart::displayOrder()
+{
+	synchronizeWithMaster();
+	return Orders[MyVer];
+}
+
+void WPPart::setOrder(const int &K)
+{
+	synchronizeWithMaster();
+	implementVersion();
+	Orders[MyVer] = K;
+}
+
+std::vector <WPMultinote> WPPart::getAllNotes()
+{
+	synchronizeWithMaster();
+	return Notes[MyVer].traverse();
 }
 
 //~ void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)

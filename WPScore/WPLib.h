@@ -8,6 +8,19 @@
 #include <cstdio>
 #include <cmath>
 
+template <class T> T checkmax(T &a, T b);
+template <class T> T checkmin(T &a, T b);
+
+template <class T> T checkmax(T &a, T b)
+{
+	return (a > b) ? a : a = b;
+}
+
+template <class T> T checkmin(T &a, T b)
+{
+	return (a < b) ? a : a = b;
+}
+
 class Fraction
 {
 	public:
@@ -21,7 +34,7 @@ class Fraction
 		bool operator >= (const Fraction &) const;
 		Fraction operator = (const Fraction &);
 		Fraction operator + (const Fraction &) const;
-        Fraction operator += (const Fraction &);
+		Fraction operator += (const Fraction &);
 		Fraction operator - (const Fraction &) const;
 		Fraction operator -= (const Fraction &);
 		double toDouble() const;
