@@ -1,6 +1,4 @@
-#include <QAction>
-#include <QMenu>
-#include <QMenuBar>
+#include <QtWidgets>
 
 #include "OscilloscopeWindow.h"
 #include "mainwindow.h"
@@ -10,20 +8,23 @@ MainWindow::MainWindow()
     oscilloscopeWindow = new OscilloscopeWindow(this);
     setWindowTitle(tr("WhitePigeon"));
     createActions();
-    //createtoolbar();
+    createToolBar();
     createMenus();
+    createStatusBar();
+    drawMusic();
 
     // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
 }
 
 void MainWindow::createActions()
 {
-    oscilloscopeAction = new QAction(tr("Oscilloscope"), this);
+    oscilloscopeAction = new QAction(tr("&Oscilloscope"), this);
     // oscilloscopeAction->setIcon(QIcon(":/images/oscilloscope.jpg"));
     // oscilloscopeAction->setShortcut();
-    // oscilloscopeAction->setStatusTip("Show an oscilloscope");
-    connect(oscilloscopeAction, SIGNAL(triggered()), this,
-            SLOT(showOscilloscope()));
+    oscilloscopeAction->setStatusTip("Show an oscilloscope");
+    oscilloscopeAction->setToolTip("Show an oscilloscope");
+    //oscilloscopeAction->setCheckable(true);
+    connect(oscilloscopeAction, SIGNAL(triggered()), this, SLOT(showOscilloscope()));
 }
 
 void MainWindow::createMenus()
@@ -37,9 +38,22 @@ void MainWindow::showOscilloscope()
     oscilloscopeWindow->show();
 }
 
-/*
-void MainWindow::createtoolbar()
-{
 
+void MainWindow::createToolBar()
+{
+    toolBar = addToolBar(tr("&Tools"));
+    toolBar->addAction(oscilloscopeAction);
 }
-*/
+
+void MainWindow::createStatusBar()
+{
+    QLabel *statusmsg = new QLabel;
+    statusBar()->addWidget(statusmsg);
+}
+
+void MainWindow::drawMusic()
+{
+    QGraphicsScene *scene = new QGraphicsScene(this);
+    QGraphicsView *view = new QGraphicsView(scene, this);
+    setCentralWidget(view);
+}
