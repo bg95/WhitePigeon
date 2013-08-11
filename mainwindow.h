@@ -20,10 +20,12 @@ private slots:
 private:
     void createActions();
     void createMenus();
+    void createToolBar();
 
     QAction *oscilloscopeAction;
 
     QMenu *toolsMenu;
+    QToolBar *toolbar;
 
     OscilloscopeWindow *oscilloscopeWindow;
 };

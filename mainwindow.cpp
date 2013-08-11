@@ -1,6 +1,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QMenuBar>
+#include <QToolBar>
 
 #include "OscilloscopeWindow.h"
 #include "mainwindow.h"
@@ -10,7 +11,7 @@ MainWindow::MainWindow()
     oscilloscopeWindow = new OscilloscopeWindow(this);
     setWindowTitle(tr("WhitePigeon"));
     createActions();
-    //createtoolbar();
+    createToolBar();
     createMenus();
 
     // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
@@ -37,9 +38,9 @@ void MainWindow::showOscilloscope()
     oscilloscopeWindow->show();
 }
 
-/*
-void MainWindow::createtoolbar()
-{
 
+void MainWindow::createToolBar()
+{
+    toolbar = addToolBar(tr("Tools"));
+    toolbar->addAction(oscilloscopeAction);
 }
-*/
