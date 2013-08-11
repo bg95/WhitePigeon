@@ -21,11 +21,12 @@ private:
     void createActions();
     void createMenus();
     void createToolBar();
+    void createStatusBar();
 
     QAction *oscilloscopeAction;
 
     QMenu *toolsMenu;
-    QToolBar *toolbar;
+    QToolBar *toolBar;
 
     OscilloscopeWindow *oscilloscopeWindow;
 };
