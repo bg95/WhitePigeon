@@ -21,11 +21,13 @@ class Fraction
 		bool operator >= (const Fraction &) const;
 		Fraction operator = (const Fraction &);
 		Fraction operator + (const Fraction &) const;
-		Fraction operator += (const Fraction &);
+        Fraction operator += (const Fraction &);
 		Fraction operator - (const Fraction &) const;
 		Fraction operator -= (const Fraction &);
 		double toDouble() const;
 		int X, Y;
 };
+
+int ran();
 
 #endif

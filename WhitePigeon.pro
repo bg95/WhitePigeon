@@ -17,33 +17,47 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp\
         myglwidget.cpp \
-#    WPScore/WPScore.cpp \
-#    WPScore/WPProperty.cpp \
-#    WPScore/WPPosition.cpp \
-#    WPScore/WPPart.cpp \
-#    WPScore/WPNote.cpp \
-#    WPScore/WPMultinote.cpp \
-#    WPScore/WPLib.cpp \
-#    WPScore/WPInterval.cpp \
+    WPScore/WPScore.cpp \
+    WPScore/WPProperty.cpp \
+    WPScore/WPPosition.cpp \
+    WPScore/WPPart.cpp \
+    WPScore/WPNote.cpp \
+    WPScore/WPMultinote.cpp \
+    WPScore/WPLib.cpp \
+    WPScore/WPInterval.cpp \
     core/WPOscilloscope.cpp \
     core/WPSynthesizer.cpp \
-    core/WPWave.cpp
+    core/WPWave.cpp \
+    OscilloscopeWindow.cpp \
+    mainwindow.cpp \
+    core/WPPipe.cpp \
+    core/WPMixer.cpp \
+    WPScore/WPPersistentTree.cpp \
+#    WPScore/WPAllocator.cpp
+    core/WPSynthesisController.cpp
 
-HEADERS  += mainwindow.h\
+HEADERS  +=\
             myglwidget.h \
-#    WPScore/WPSPosition.h \
-#    WPScore/WPScore.h \
-#    WPScore/WPProperty.h \
-#    WPScore/WPPosition.h \
-#    WPScore/WPPart.h \
-#    WPScore/WPNote.h \
-#    WPScore/WPMultinote.h \
-#    WPScore/WPLib.h \
-#    WPScore/WPInterval.h \
+    WPScore/WPSPosition.h \
+    WPScore/WPScore.h \
+    WPScore/WPProperty.h \
+    WPScore/WPPosition.h \
+    WPScore/WPPart.h \
+    WPScore/WPNote.h \
+    WPScore/WPMultinote.h \
+    WPScore/WPLib.h \
+    WPScore/WPInterval.h \
     core/WPOscilloscope.h \
     core/WPSynthesizer.h \
-    core/WPWave.h
-
-FORMS    += mainwindow.ui
+    core/WPWave.h \
+    OscilloscopeWindow.h \
+    mainwindow.h \
+    core/WPTimbre.h \
+    core/WPTuningFork.h \
+    core/WPVarTimbre.h \
+    core/WPPipe.h \
+    core/WPMixer.h \
+    WPScore/WPPersistentTree.h \
+    WPScore/WPAllocator.h \
+    core/WPSynthesisController.h

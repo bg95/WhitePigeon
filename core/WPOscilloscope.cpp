@@ -1,4 +1,5 @@
 #include "WPOscilloscope.h"
+#include "WPPipe.h"
 
 WPOscilloscope::WPOscilloscope(QWidget *parent) :
     QGLWidget(parent)
@@ -7,13 +8,7 @@ WPOscilloscope::WPOscilloscope(QWidget *parent) :
     inputdevice = 0;
     connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
 
-    QAudioFormat format;
-    format.setChannelCount(1);
-    format.setCodec("audio/x-raw");
-    format.setSampleType(QAudioFormat::SignedInt);
-    format.setSampleRate(48000);
-    format.setSampleSize(8 * sizeof(WPWave::WaveDataType));
-    wave.setFormat(format);
+    wave.setFormat(WPWave::defaultAudioFormat());
 }
 
 WPOscilloscope::~WPOscilloscope()
@@ -35,7 +30,8 @@ void WPOscilloscope::start(quint32 _period, quint32 _length)
 
 void WPOscilloscope::refresh()
 {
-    QByteArray bytearray(inputdevice->readAll().rightJustified(length * sizeof(WPWave::WaveDataType), 0, true));
+    QByteArray input = inputdevice->readAll();
+    QByteArray bytearray(input.rightJustified(length * sizeof(WPWave::WaveDataType), 0, true));
     WPWave::WaveDataType *begin = (WPWave::WaveDataType *)bytearray.constData();
     QVector<WPWave::WaveDataType> data;
     for (quint32 i = 0; i < length; i++)
