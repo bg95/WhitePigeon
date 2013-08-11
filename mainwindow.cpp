@@ -12,6 +12,7 @@ MainWindow::MainWindow()
     createActions();
     createMenus();
 
+    oscilloscopeWindow->show();
     // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
 }
 

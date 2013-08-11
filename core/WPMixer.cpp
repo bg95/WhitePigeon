@@ -61,6 +61,11 @@ void WPMixer::setReadLength(quint64 length)
 
 void WPMixer::start()
 {
+    if (chcnt == 0)
+    {
+        qCritical("Input channels not opened!");
+        return;
+    }
     timer.start(0);
 }
 
@@ -68,6 +73,8 @@ void WPMixer::sumUp()
 {
     //assume no other threads are reading the channel
     int i, j;
+    quint64 bytesavailable, maxbytesread;
+    quint64 readlengthbytes = readlength * sizeof(WPWave::WaveDataType);
     bool existopen;
     while (true)
     {
@@ -77,7 +84,7 @@ void WPMixer::sumUp()
             if (channel[i].isOpen())
                 existopen = true;
             if (channel[i].isOpen() && !channel[i].isClosing() &&
-                channel[i].bytesAvailable() < readlength * sizeof(WPWave::WaveDataType))
+                channel[i].bytesAvailable() < readlengthbytes)
                 break;
         }
         if (i < chcnt)
@@ -87,29 +94,38 @@ void WPMixer::sumUp()
         }
         if (!existopen)
         {
+            delete[] channel;
+            chcnt = 0;
             allInputClosed();
             return;
         }
-        memset(sdata, 0, sizeof(WPWave::WaveDataType) * readlength);
+        memset(sdata, 0, readlengthbytes);
+        maxbytesread = 0;
         for (i = 0; i < chcnt; i++)
         {
             if (channel[i].isOpen())
             {
-                if (channel[i].bytesAvailable() >= readlength * sizeof(WPWave::WaveDataType))
+                bytesavailable = channel[i].bytesAvailable();
+                if (bytesavailable >= readlengthbytes)
                 {
-                    channel[i].read((char *)tdata, readlength * sizeof(WPWave::WaveDataType));
+                    if (maxbytesread < readlengthbytes)
+                        maxbytesread = readlengthbytes;
+                    channel[i].read((char *)tdata, readlengthbytes);
                     for (j = 0; j < readlength; j++)
                         truncateAdd(sdata[j], tdata[j]);
                 }
                 else
                 {
-                    channel[i].read((char *)tdata, channel[i].bytesAvailable());
-                    for (j = 0; j < channel[i].bytesAvailable() / sizeof(WPWave::WaveDataType); j++)
+                    if (maxbytesread < bytesavailable)
+                        maxbytesread = bytesavailable;
+                    qDebug("channel %d is closing and has only %d bytes available", i, bytesavailable);
+                    channel[i].read((char *)tdata, bytesavailable);
+                    for (j = 0; j < bytesavailable / sizeof(WPWave::WaveDataType); j++)
                         truncateAdd(sdata[j], tdata[j]);
                 }
             }
         }
-        output->write((char *)sdata, readlength * sizeof(WPWave::WaveDataType));
+        output->write((char *)sdata, maxbytesread);
     }
 }
 

@@ -4,7 +4,6 @@
 #include "core/WPSynthesizer.h"
 #include "core/WPTuningFork.h"
 #include "core/WPPipe.h"
-#include "core/WPSynthesisController.h"
 
 OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -32,8 +31,9 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
 
-    WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 1)), note3(7, Fraction(1, 1));
-    WPNote note4(-5, Fraction(1, 1)), note5(-1, Fraction(1, 1)), note6(4, Fraction(1, 1));
+    WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 16)), note3(7, Fraction(1, 16));
+    WPNote note4(-5, Fraction(1, 1)), note5(-1, Fraction(1, 16)), note6(2, Fraction(1, 16));
+    WPNote longnote(0, Fraction(10, 1));
 /*
     WPWave *twave = synthesizer.synthesize(note1);
     //twave->play();
@@ -45,20 +45,31 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     wave.play();
 */
     score = new WPScore;
+    score->newPart();
+    //score->newPart();
     qDebug("part num = %d\n", score->getPartList().size());
     score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note2));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note3));
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(100, 1)), WPMultinote(note2));
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(200, 1)), WPMultinote(note3));/*
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(300, 1)), WPMultinote(note2));
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(400, 1)), WPMultinote(note3));
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(500, 1)), WPMultinote(note2));
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(600, 1)), WPMultinote(note3));
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(700, 1)), WPMultinote(note2));
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(800, 1)), WPMultinote(note3));*/
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
-    /*
+/*
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note4));
-    score->getPartList()[1].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note5));
-    score->getPartList()[1].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note6));
+    score->getPartList()[1].insertMultinote(WPPosition(Fraction(200, 1)), WPMultinote(note5));
+    score->getPartList()[1].insertMultinote(WPPosition(Fraction(500, 2)), WPMultinote(note6));
     score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
-    */
-
-    WPSynthesisController controller;
-    controller.synthesizeAndPlay(*score);
+*/
+    file = new QFile("wave.out");
+    file->open(QIODevice::WriteOnly);
+    controller = new WPSynthesisController;
+    //connect(controller, SIGNAL(synthesisFinished()), this, SLOT(waveDecodeFinished()));
+    //controller->synthesizeAndOutput(*score, file);
+    controller->synthesizeAndPlay(*score);
 /*
     WPSynthesizer synthesizer;
     WPTuningFork tuningfork;
@@ -76,7 +87,9 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     audioinput->setVolume(0.1);
     oscilloscope.setInputDevice(*audioinput->start());
     //oscilloscope.setInputDevice(*pipe);
-    oscilloscope.start(100, 4096);
+    //oscilloscope.setInputDevice(*controller->synthesize(*score));
+    //oscilloscope.start(100, 4096);
+    oscilloscope.start(100, 512);
 }
 
 void OscilloscopeWindow::resizeEvent(QResizeEvent *)
@@ -95,7 +108,13 @@ void OscilloscopeWindow::hideEvent(QHideEvent *)
 }
 
 void OscilloscopeWindow::waveDecodeFinished()
-{/*
+{
+    qDebug("synthesis finished");
+    file->close();
+    file->open(QIODevice::ReadOnly);
+    QAudioOutput *audiooutput = new QAudioOutput(WPWave::defaultAudioFormat());
+    audiooutput->start(file);
+    /*
     qWarning("Gabor");
     wave.Gabor(256, 512);
     QVector<QVector<std::complex<double> > > tmp;

@@ -59,7 +59,6 @@ void WPSynthesizer::synthesizePart()
 {
     std::pair<WPMultinote, std::pair<std::vector<WPProperty>, std::vector<WPProperty> > > fragment;
     WPWave *swave = new WPWave;
-    qDebug("%d", fragment.first.getLength().X);
     fflush(stdout);
     fflush(stderr);
     while (fragment = part->nextFragment(), !(fragment.first.getLength() == Fraction(-1, 1)))
@@ -88,6 +87,7 @@ void WPSynthesizer::synthesizePart()
     //swave->setFormat(WPWave::defaultAudioFormat());
     //swave->play();
     delete swave;
+    //output->open(output->openMode() & (~QIODevice::WriteOnly));
     synthesisFinished();
 }
 

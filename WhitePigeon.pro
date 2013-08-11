@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     core/WPMixer.cpp \
     WPScore/WPPersistentTree.cpp \
 #    WPScore/WPAllocator.cpp
-    core/WPSynthesisController.cpp
+    core/WPSynthesisController.cpp \
+    core/WPTuningFork.cpp
 
 HEADERS  +=\
             myglwidget.h \

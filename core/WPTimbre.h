@@ -2,7 +2,6 @@
 #define WPTIMBRE_H
 
 #include "WPWave.h"
-#include "WPSynthesizer.h"
 
 class WPTimbre
 {
