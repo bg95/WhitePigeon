@@ -30,6 +30,7 @@ class WPPart
 		int displayOrder(); // -1 means deleted.
 		void setOrder(const int &);
 		std::vector <WPMultinote> getAllNotes();
+		std::vector <WPProperty> getAllProperties();
 		std::pair < Fraction, std::vector <WPProperty> > startFrom(const WPPosition &);
 		std::pair < WPMultinote, std::pair < std::vector <WPProperty>, std::vector <WPProperty> > > nextFragment();
 	private:

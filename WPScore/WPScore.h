@@ -21,6 +21,7 @@ class WPScore
 		~WPScore();
 		void save(const std::string &);
 		void load(const std::string &);
+		void close();
 		//~ void insertNote(const WPPosition &, const WPNote &);
 		//~ void deleteNote(const WPPosition &, const WPNote &);
 		//~ WPProperty insertProperty(const WPInterval &, const WPProperty &);
@@ -45,6 +46,10 @@ class WPScore
 		std::vector <WPPart> PartList;
 		WPAllocator <WPMultinotePersistentTreeNode> MPTNAlloc;
 		WPAllocator <WPPropertyPersistentTreeNode> PPTNAlloc;
+		void AnalysisScore0a(const std::string &);
+		void AnalysisPart0a(WPPart *, const std::string &);
+		WPMultinote AnalysisMultinote0a(const std::string &);
+		WPNote AnalysisNote0a(const std::string &);
 };
 
 #endif

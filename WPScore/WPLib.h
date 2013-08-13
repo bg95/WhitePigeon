@@ -41,6 +41,7 @@ class Fraction
 		int X, Y;
 };
 
+Fraction stringToFraction(const std::string &);
 int ran();
 
 #endif

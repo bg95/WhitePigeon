@@ -81,6 +81,14 @@ double Fraction::toDouble() const
 	return (double) X / (double) Y;
 }
 
+Fraction stringToFraction(const std::string &S)
+{
+	int X, Y;
+	X = Y = 0;
+	sscanf(S.c_str(), "%d/%d", &X, &Y);
+	return Fraction (X, Y);
+}
+
 int ran()
 {
 	static int X = rand();

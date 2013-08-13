@@ -10,6 +10,7 @@ WPScore::WPScore()
 
 WPScore::~WPScore()
 {
+	
 }
 
 void WPScore::save(const std::string &FileName)
@@ -42,6 +43,33 @@ void WPScore::save(const std::string &FileName)
 
 void WPScore::load(const std::string &FileName)
 {
+	FILE *fi = fopen(FileName.c_str(), "r");
+	std::string V = "";
+	char Ch;
+	const int Version_Size = 9; // length of "<version>"
+	while (fscanf(fi, "%c", &Ch) != EOF)
+	{
+		V = V + Ch;
+		if ((int) V.size() > Version_Size && "</version>" == V.substr(V.size() - (Version_Size + 1), Version_Size + 1))
+			break;
+	}
+	V = V.substr(Version_Size, V.size() - (Version_Size * 2 + 1));
+	std::string Rest = "";
+	while (fscanf(fi, "%c", &Ch) != EOF)
+		Rest.push_back(Ch);
+	if (V == "Score File Format 0a")
+		AnalysisScore0a(Rest);
+	fclose(fi);
+}
+
+void WPScore::close()
+{
+	MPTNAlloc.Recycle();
+	PPTNAlloc.Recycle();
+	PartList.clear();
+	CurVer = 0;
+	VerLink.clear();
+	VerLink.push_back(std::make_pair(- 1, - 1));
 }
 
 WPPart *WPScore::newPart()
@@ -169,4 +197,114 @@ WPAllocator <WPMultinotePersistentTreeNode> *WPScore::getMultinotePersistentTree
 WPAllocator <WPPropertyPersistentTreeNode> *WPScore::getPropertyPersistentTreeNodeAllocator()
 {
 	return &PPTNAlloc;
+}
+
+void WPScore::AnalysisScore0a(const std::string &S)
+{
+	int PS = 0;
+	WPPart *LastPart = NULL;
+	for (; PS < (int) S.size(); ++ PS)
+		if (S[PS] == '<')
+		{
+			std::string::size_type FoundPos = S.find('>', PS);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PE = FoundPos;
+			int L = PE - PS - 1;
+			std::string Tag = S.substr(PS + 1, L);
+			FoundPos = S.find("</" + Tag + ">", PE);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PB = FoundPos;
+			std::string Inner = S.substr(PE + 1, PB - PE - 1);
+			if (Tag == "newpart")
+				LastPart = newPart(Inner);
+			if (Tag == "part")
+			{
+				if (LastPart)
+					AnalysisPart0a(LastPart, Inner);
+			}
+			PS = PB + L + 2;
+		}
+}
+
+void WPScore::AnalysisPart0a(WPPart *P, const std::string &S)
+{
+	WPPosition PP(Fraction (0, 1));
+	int PS = 0;
+	for (; PS < (int) S.size(); ++ PS)
+		if (S[PS] == '<')
+		{
+			std::string::size_type FoundPos = S.find('>', PS);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PE = FoundPos;
+			int L = PE - PS - 1;
+			std::string Tag = S.substr(PS + 1, L);
+			FoundPos = S.find("</" + Tag + ">", PE);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PB = FoundPos;
+			std::string Inner = S.substr(PE + 1, PB - PE - 1);
+			if (Tag == "multinote")
+			{
+				WPMultinote MNt = AnalysisMultinote0a(Inner);
+				P->insertMultinote(PP, MNt);
+				PP += MNt.getLength();
+			}
+			PS = PB + L + 2;
+		}
+}
+
+WPMultinote WPScore::AnalysisMultinote0a(const std::string &S)
+{
+	WPMultinote Result;
+	int PS = 0;
+	for (; PS < (int) S.size(); ++ PS)
+		if (S[PS] == '<')
+		{
+			std::string::size_type FoundPos = S.find('>', PS);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PE = FoundPos;
+			int L = PE - PS - 1;
+			std::string Tag = S.substr(PS + 1, L);
+			FoundPos = S.find("</" + Tag + ">", PE);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PB = FoundPos;
+			std::string Inner = S.substr(PE + 1, PB - PE - 1);
+			if (Tag == "note")
+				Result.insertNote(AnalysisNote0a(Inner));
+			PS = PB + L + 2;
+		}
+	return Result;
+}
+
+WPNote WPScore::AnalysisNote0a(const std::string &S)
+{
+	int Pitch = WPNote::Rest;
+	Fraction Length(- 1, 1);
+	int PS = 0;
+	for (; PS < (int) S.size(); ++ PS)
+		if (S[PS] == '<')
+		{
+			std::string::size_type FoundPos = S.find('>', PS);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PE = FoundPos;
+			int L = PE - PS - 1;
+			std::string Tag = S.substr(PS + 1, L);
+			FoundPos = S.find("</" + Tag + ">", PE);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PB = FoundPos;
+			std::string Inner = S.substr(PE + 1, PB - PE - 1);
+			if (Tag == "pitch")
+				Pitch = atoi(Inner.c_str());
+			if (Tag == "length")
+				Length = stringToFraction(Inner);
+			PS = PB + L + 2;
+		}
+	return WPNote (Pitch, Length);
 }
