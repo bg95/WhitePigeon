@@ -41,7 +41,8 @@ bool WPPipe::open(OpenMode mode)
     if ((mode & WriteOnly) == 0)
     {
         closeInput();
-        return QIODevice::open(mode); //?
+        if (isOpen())
+            return QIODevice::open(mode);
     }
     if (mode != (ReadWrite | Unbuffered))
         return false;
@@ -65,6 +66,7 @@ void WPPipe::close()
 {
     if (!isOpen())
         return;
+    qDebug("pipe %X closed", (quint64)this);
     //lock.lock();
 /*
     if (filein)
@@ -214,6 +216,8 @@ void WPPipe::closeInput()
     lock.lock();
     qDebug("pipe %X close input", (quint64)this);
     isclosing = true;
+    if (quesize == 0)
+        close();
     lock.unlock();
 }
 /*

@@ -179,12 +179,12 @@ void WPMixer::sumUp()
             //if (bytesread > 0)
             //    filein->write((char *)tdata, bytesread);
             qDebug("%lld bytes read from channel %d", bytesread, i);
-        }
+        }/*
         for (i = 0; i < maxbytesread / sizeof(WPWave::WaveDataType); i++)
             if (sdata[i] != tdata[i])
             {
                 qDebug("not equal at %d", i);
-            }
+            }*/
         //fileout->write((char *)sdata, maxbytesread);
         output->write((char *)sdata, maxbytesread);
     }
