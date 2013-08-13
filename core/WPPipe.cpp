@@ -8,10 +8,10 @@ WPPipe::WPPipe(QObject *parent) :
     def(0),
     suf(-1),
     isclosing(false),
-    lock(QMutex::NonRecursive),
+    lock(QMutex::NonRecursive)/*,
     filein(0),
     fileout(0),
-    closingtimer(0)
+    closingtimer(0)*/
 {
 }
 
@@ -23,10 +23,10 @@ WPPipe::WPPipe(qint64 _def, qint64 _suf, QObject *parent) :
     def(_def),
     suf(_suf),
     isclosing(false),
-    lock(QMutex::NonRecursive),
+    lock(QMutex::NonRecursive)/*,
     filein(0),
     fileout(0),
-    closingtimer(0)
+    closingtimer(0)*/
 {
 }
 
@@ -49,7 +49,7 @@ bool WPPipe::open(OpenMode mode)
     isclosing = false;
 
     //for debug
-
+/*
     char filename[256];
     sprintf(filename, "%llX.in", (quint64)this);
     filein = new QFile(filename);
@@ -57,7 +57,7 @@ bool WPPipe::open(OpenMode mode)
     sprintf(filename, "%llX.out", (quint64)this);
     fileout = new QFile(filename);
     qDebug("fileout.open %d", fileout->open(QIODevice::WriteOnly));
-
+*/
     return QIODevice::open(mode);
 }
 
@@ -66,7 +66,7 @@ void WPPipe::close()
     if (!isOpen())
         return;
     //lock.lock();
-
+/*
     if (filein)
     {
         if (filein->isOpen())
@@ -92,7 +92,7 @@ void WPPipe::close()
         }
         else
             qWarning("pipe %X fileout is not open!", (quint64)this);
-    }
+    }*/
     QIODevice::close();
     //lock.unlock();
 }
@@ -136,8 +136,8 @@ qint64 WPPipe::readData(char *data, qint64 maxlen)
     quesize -= data - data0;
     checkDef();
     maxlen = data - data0;
-    if (maxlen)
-        fileout->write(data0, maxlen);
+    //if (maxlen)
+    //    fileout->write(data0, maxlen);
 
     if (isclosing && quesize == 0)
     {
@@ -158,8 +158,8 @@ qint64 WPPipe::writeData(const char *data, qint64 maxlen)
 
     lock.lock();
     qDebug("pipe %X write %d", (quint64)this, maxlen);
-    if (maxlen)
-        filein->write(data, maxlen);
+    //if (maxlen)
+    //    filein->write(data, maxlen);
 
     que.push_back(bytearray);
     quesize += maxlen;
@@ -196,7 +196,7 @@ bool WPPipe::isClosing() const
 {
     return isclosing;
 }
-
+/*
 void WPPipe::closeSoon()
 {
     if (closingtimer == 0)
@@ -208,7 +208,7 @@ void WPPipe::closeSoon()
         //closeSlot();
     }
 }
-
+*/
 void WPPipe::closeInput()
 {
     lock.lock();
@@ -216,14 +216,14 @@ void WPPipe::closeInput()
     isclosing = true;
     lock.unlock();
 }
-
+/*
 void WPPipe::closeSlot()
 {
     qDebug("sender %X", (quint64)sender());
     qDebug("pipe %X closeSlot", (quint64)this);
     close();
 }
-
+*/
 inline void WPPipe::checkDef() const
 {
     if (!isclosing && quesize <= def)

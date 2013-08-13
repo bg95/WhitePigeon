@@ -38,7 +38,7 @@ private:
     int waitingtime;
     WPWave::WaveDataType *sdata, *tdata;
     //debug
-    QFile *filein, *fileout, *fileout2;
+    //QFile *filein, *fileout, *fileout2;
 
 };
 

@@ -11,10 +11,10 @@ WPMixer::WPMixer(QObject *parent) :
     sdata = 0;
     tdata = 0;
     setReadLength(1);
-    //debug
+    /*//debug
     filein = 0;
     fileout = 0;
-    fileout2 = 0;
+    fileout2 = 0;*/
 }
 
 WPMixer::~WPMixer()
@@ -78,7 +78,7 @@ void WPMixer::start()
         qCritical("Input channels not opened!");
         return;
     }
-
+/*
     char filename[256];
     //sprintf(filename, "%llX.in", (quint64)this);
     sprintf(filename, "mixer.in");
@@ -88,7 +88,7 @@ void WPMixer::start()
     sprintf(filename, "mixer.out");
     fileout = new QFile(filename);
     qDebug("fileout.open %d", fileout->open(QIODevice::WriteOnly));
-
+*/
     timer.start(0);
 }
 
@@ -120,7 +120,7 @@ void WPMixer::sumUp()
         {
             delete[] channel;
             chcnt = 0;
-            //debug
+            /*//debug
             if (filein)
             {
                 if (filein->isOpen())
@@ -146,7 +146,7 @@ void WPMixer::sumUp()
                 }
                 else
                     qWarning("mixer %X fileout is not open!", (quint64)this);
-            }
+            }*/
             //debug end
             allInputClosed();
             return;
@@ -176,8 +176,8 @@ void WPMixer::sumUp()
                         truncateAdd(sdata[j], tdata[j]);
                 }
             }
-            if (bytesread > 0)
-                filein->write((char *)tdata, bytesread);
+            //if (bytesread > 0)
+            //    filein->write((char *)tdata, bytesread);
             qDebug("%lld bytes read from channel %d", bytesread, i);
         }
         for (i = 0; i < maxbytesread / sizeof(WPWave::WaveDataType); i++)
@@ -185,7 +185,7 @@ void WPMixer::sumUp()
             {
                 qDebug("not equal at %d", i);
             }
-        fileout->write((char *)sdata, maxbytesread);
+        //fileout->write((char *)sdata, maxbytesread);
         output->write((char *)sdata, maxbytesread);
     }
 }
