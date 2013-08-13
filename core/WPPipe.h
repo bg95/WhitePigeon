@@ -3,6 +3,9 @@
 
 #include <QIODevice>
 #include <QMutex>
+#include <QFile>
+#include <QTimer>
+#include <QtDebug>
 #include <deque>
 
 class WPPipe : public QIODevice
@@ -29,12 +32,14 @@ public:
         return true;
     }
     bool open(OpenMode mode);
+    void close();
     qint64 bytesAvailable() const;
     qint64 readData(char *data, qint64 maxlen);
     qint64 writeData(const char *data, qint64 maxlen);
     void clear();
     void setThresholds(qint64 _def = 0, qint64 _suf = -1);
     bool isClosing() const;
+    void closeSoon();
 
 signals: //I don't know whether signals can be const
     void deficientInput() const;
@@ -42,6 +47,9 @@ signals: //I don't know whether signals can be const
     
 public slots:
     void closeInput(); //After calling this function, the WPPipe will close when all its buffer is read
+
+private slots:
+    void closeSlot();
 
 private:
     inline void checkDef() const;
@@ -51,6 +59,9 @@ private:
     qint64 def, suf;
     bool isclosing; //correspond to closeInput();
     QMutex lock; //make sure to resopnd to sufficientInput() to prevent writeData(...,...) keeping the lock locked
+    //for debug
+    QFile *filein, *fileout;
+    QTimer *closingtimer;
 
 };
 

@@ -31,12 +31,14 @@ private slots:
 private:
     static void truncateAdd(WPWave::WaveDataType &a, WPWave::WaveDataType b);
     WPPipe *channel;
-    int chcnt;
+    quint32 chcnt;
     quint64 readlength; //in number of samples
     QIODevice *output;
     QTimer timer;
     int waitingtime;
     WPWave::WaveDataType *sdata, *tdata;
+    //debug
+    QFile *filein, *fileout, *fileout2;
 
 };
 

@@ -47,7 +47,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score = new WPScore;
     score->newPart();
     //score->newPart();
-    qDebug("part num = %d\n", score->getPartList().size());
+    qDebug("part num = %lu\n", score->getPartList().size());
     score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
     score->getPartList()[0].insertMultinote(WPPosition(Fraction(100, 1)), WPMultinote(note2));
     score->getPartList()[0].insertMultinote(WPPosition(Fraction(200, 1)), WPMultinote(note3));/*
