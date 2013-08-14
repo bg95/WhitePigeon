@@ -109,7 +109,7 @@ void WPSynthesizer::synthesizePart()
             QChar *ch;
             for (ch = output->errorString().begin(); ch != output->errorString().end(); ch++)
             {
-                printf("%c", *ch);
+                printf("%c", ch->toLatin1());
             }
             printf("\n");
             fflush(stdout);

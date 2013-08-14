@@ -8,7 +8,7 @@ WPNote::~WPNote ()
 {
 }
 
-WPNote::WPNote (const int P, const Fraction &L)
+WPNote::WPNote (const int &P, const Fraction &L)
 {
 	Pitch = P;
 	Length = L;

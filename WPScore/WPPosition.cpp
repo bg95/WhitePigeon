@@ -52,6 +52,6 @@ WPPosition WPPosition::operator + (const Fraction &F) const
 
 WPPosition WPPosition::operator += (const Fraction &F)
 {
-    Value += F;
-    return *this;
+	*this = *this + F;
+	return *this;
 }
