@@ -127,8 +127,8 @@ WPMultinotePersistentTreeNode *WPMultinotePersistentTree::Insert(WPMultinotePers
 	WPMultinotePersistentTreeNode *D = Alloc->Allocate();
 	if (T == NULL)
 	{
-        D->Element = Item;
-        D->Update();
+		D->Element = Item;
+		D->Update();
 		return D;
 	}
 	*D = *T;
@@ -177,17 +177,15 @@ std::pair <Fraction, WPMultinote> WPMultinotePersistentTree::query(const WPPosit
 	WPMultinotePersistentTreeNode *T = Root;
 	while (T)
 	{
-        //fprintf(stderr, "query! T: %d/%d, %d %d/%d\n", T->Sum.X, T->Sum.Y, T->Element.getNotes().back().getPitch(), T->Element.getLength().X, T->Element.getLength().Y);
 		if (F < (T->Left ? T->Left->Sum : Fraction (0, 1)))
 		{
-            //fprintf(stderr, "go left\n");
 			T = T->Left;
 			continue;
 		}
-        F -= (T->Left ? T->Left->Sum : Fraction (0, 1));
+		F -= (T->Left ? T->Left->Sum : Fraction (0, 1));
 		if (F >= T->Element.getLength())
 		{
-            F -= T->Element.getLength();
+			F -= T->Element.getLength();
 			T = T->Right;
 			continue;
 		}
@@ -320,8 +318,8 @@ WPPropertyPersistentTreeNode *WPPropertyPersistentTree::Insert(WPPropertyPersist
 	WPPropertyPersistentTreeNode *D = Alloc->Allocate();
 	if (T == NULL)
 	{
-        D->Element = Item;
-        D->Update();
+		D->Element = Item;
+		D->Update();
 		return D;
 	}
 	*D = *T;

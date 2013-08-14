@@ -1,5 +1,5 @@
 #include "OscilloscopeWindow.h"
-#include "ui_mainwindow.h"
+//#include "ui_mainwindow.h"
 #include "WPScore/WPNote.h"
 #include "core/WPSynthesizer.h"
 #include "core/WPTuningFork.h"
