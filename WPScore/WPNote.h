@@ -27,7 +27,5 @@ class WPNote
 		int Pitch; /// 0 = 440 Hz
 };
 
-const int WPNote::Rest = - 999999;
-
 #endif
 
