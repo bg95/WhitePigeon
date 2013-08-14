@@ -31,7 +31,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
 
-    WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 6)), note3(7, Fraction(1, 6));
+    WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 16)), note3(7, Fraction(1, 16));
     WPNote note4(-5, Fraction(1, 1)), note5(-1, Fraction(1, 6)), note6(2, Fraction(1, 6));
     WPNote longnote(0, Fraction(10, 1));
 /*
@@ -46,20 +46,20 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 */
     score = new WPScore;
     score->newPart();
-    //score->newPart();
-    qDebug("part num = %lu\n", score->getPartList().size());/*
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
-    for (int i = 0; i < 100; i++)
+    score->newPart();
+    qDebug("part num = %lu\n", score->getPartList().size());
+    //score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
+    for (int i = 0; i < 1000; i++)
     {
         score->getPartList()[0].insertMultinote(WPPosition(Fraction(700, 1)), WPMultinote(note2));
         score->getPartList()[0].insertMultinote(WPPosition(Fraction(800, 1)), WPMultinote(note3));
-    }*/
+    }
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
 /*
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note4));
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(200, 1)), WPMultinote(note5));
-    score->getPartList()[1].insertMultinote(WPPosition(Fraction(500, 2)), WPMultinote(note6));
-    score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));*/
+    score->getPartList()[1].insertMultinote(WPPosition(Fraction(500, 2)), WPMultinote(note6));*/
+    score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
 
     file = new QFile("wave.out");
     file->open(QIODevice::WriteOnly);

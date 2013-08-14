@@ -39,6 +39,7 @@ public:
     void clear();
     void setThresholds(qint64 _def = 0, qint64 _suf = -1);
     bool isClosing() const;
+    int isDefSuf() const; //returns -1, 0 or 1 when the input is deficient, moderate or sufficient, respectively
     //void closeSoon();
 
 signals: //I don't know whether signals can be const

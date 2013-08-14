@@ -99,6 +99,7 @@ void WPMixer::sumUp()
     qint64 bytesavailable, maxbytesread, bytesread;
     qint64 readlengthbytes = readlength * sizeof(WPWave::WaveDataType);
     bool existopen;
+    qDebug("mixer sumUp()");
     while (true)
     {
         existopen = false;
@@ -120,41 +121,14 @@ void WPMixer::sumUp()
         {
             delete[] channel;
             chcnt = 0;
-            /*//debug
-            if (filein)
-            {
-                if (filein->isOpen())
-                {
-                    filein->close();
-                    qDebug("mixer %X filein closed", (quint64)this);
-                    delete filein;
-                    filein = 0;
-                }
-                else
-                    qWarning("mixer %X filein is not open!", (quint64)this);
-            }
-            if (fileout)
-            {
-                if (fileout->isOpen())
-                {
-                    fileout->flush();
-                    //qDebug() << fileout->errorString();
-                    fileout->close();
-                    qDebug("mixer %X fileout closed", (quint64)this);
-                    delete fileout;
-                    fileout = 0;
-                }
-                else
-                    qWarning("mixer %X fileout is not open!", (quint64)this);
-            }*/
-            //debug end
-            allInputClosed();
+            emit allInputClosed();
             return;
         }
         memset(sdata, 0, readlengthbytes);
         maxbytesread = 0;
         for (i = 0; i < chcnt; i++)
         {
+            bytesread = 0;
             if (channel[i].isOpen())
             {
                 bytesavailable = channel[i].bytesAvailable();
@@ -176,16 +150,8 @@ void WPMixer::sumUp()
                         truncateAdd(sdata[j], tdata[j]);
                 }
             }
-            //if (bytesread > 0)
-            //    filein->write((char *)tdata, bytesread);
             qDebug("%lld bytes read from channel %d", bytesread, i);
-        }/*
-        for (i = 0; i < maxbytesread / sizeof(WPWave::WaveDataType); i++)
-            if (sdata[i] != tdata[i])
-            {
-                qDebug("not equal at %d", i);
-            }*/
-        //fileout->write((char *)sdata, maxbytesread);
+        }
         output->write((char *)sdata, maxbytesread);
     }
 }

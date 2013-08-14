@@ -3,12 +3,13 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QThread>
 #include "WPWave.h"
 #include "WPTimbre.h"
 #include "../WPScore/WPNote.h"
 #include "../WPScore/WPPart.h"
 
-class WPSynthesizer : public QObject
+class WPSynthesizer : public QThread
 {
     Q_OBJECT
 public:
@@ -23,11 +24,16 @@ public:
     void loadTimbre(const WPTimbre *_timbre);
     void setOutputDevice(QIODevice &_output);
     void startSynthesis(WPPart &_part);
+    void setPart(WPPart &_part);
 
 signals:
     void synthesisFinished();
     
 public slots:
+    void slowDown();
+
+protected:
+    void run();
 
 private slots:
     void synthesizePart();
@@ -37,6 +43,7 @@ private:
     QIODevice *output;
     QTimer *newthread;
     WPPart *part;
+    bool slowingdown;
 
 };
 

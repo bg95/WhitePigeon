@@ -1,7 +1,7 @@
 #include "WPSynthesizer.h"
 
 WPSynthesizer::WPSynthesizer(QObject *parent) :
-    QObject(parent)
+    QThread(parent)
 {
     newthread = new QTimer;
     connect(newthread, SIGNAL(timeout()), this, SLOT(synthesizePart()));
@@ -10,7 +10,7 @@ WPSynthesizer::WPSynthesizer(QObject *parent) :
 }
 
 WPSynthesizer::WPSynthesizer(WPTimbre *_timbre, QObject *parent) :
-    QObject(parent)
+    QThread(parent)
 {
     newthread = new QTimer;
     connect(newthread, SIGNAL(timeout()), this, SLOT(synthesizePart()));
@@ -21,7 +21,11 @@ WPSynthesizer::WPSynthesizer(WPTimbre *_timbre, QObject *parent) :
 
 WPSynthesizer::~WPSynthesizer()
 {
+    if (isRunning())
+        qDebug("Synthesizer %X is running", (quint64)this);
     delete newthread;
+    qDebug("Synthesizer waiting");
+    wait();
 }
 
 void WPSynthesizer::loadTimbre(const WPTimbre *_timbre)
@@ -51,8 +55,34 @@ void WPSynthesizer::startSynthesis(WPPart &_part)
     part = &_part;
     qDebug("startSynthesis");
     //newthread->singleShot(1, this, SLOT(synthesizePart()));
-    //newthread->start(); //this does not recieve the timeout() signal and run synthesizePart()
+    newthread->start();
+    //synthesizePart();
+    //start();
+}
+
+void WPSynthesizer::setPart(WPPart &_part)
+{
+    part = &_part;
+}
+
+void WPSynthesizer::slowDown()
+{
+    //does not work
+    if (!slowingdown)
+    {
+        slowingdown = true;
+        qDebug("synthesizer slowing down");
+        QThread::usleep(100000);
+        slowingdown = false;
+    }
+}
+
+void WPSynthesizer::run()
+{
+    qDebug("synthesizer run");
+    slowingdown = false;
     synthesizePart();
+    qDebug("synthesizer returned from run");
 }
 
 void WPSynthesizer::synthesizePart()
@@ -73,6 +103,7 @@ void WPSynthesizer::synthesizePart()
             swave->mixWith(1.0, *twave, 1.0);
             delete twave;
         }
+        QThread::usleep(10000); //remember to remove
         if (-1 == output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType)))
         {
             QChar *ch;

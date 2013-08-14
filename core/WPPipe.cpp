@@ -106,6 +106,7 @@ qint64 WPPipe::bytesAvailable() const
 
 qint64 WPPipe::readData(char *data, qint64 maxlen)
 {
+    qDebug("pipe %X waiting to read %d", (quint64)this, maxlen);
     lock.lock();
     qDebug("pipe %X read %d", (quint64)this, maxlen);
 
@@ -150,6 +151,8 @@ qint64 WPPipe::readData(char *data, qint64 maxlen)
             return -1;
         }
     }
+
+    qDebug("pipe %X read end", (quint64)this);
     lock.unlock();
     return maxlen;
 }
@@ -158,6 +161,7 @@ qint64 WPPipe::writeData(const char *data, qint64 maxlen)
 {
     QByteArray *bytearray = new QByteArray(data, maxlen);
 
+    qDebug("pipe %X waiting to write %d", (quint64)this, maxlen);
     lock.lock();
     qDebug("pipe %X write %d", (quint64)this, maxlen);
     //if (maxlen)
@@ -167,6 +171,7 @@ qint64 WPPipe::writeData(const char *data, qint64 maxlen)
     quesize += maxlen;
     checkSuf();
 
+    qDebug("pipe %X write end", (quint64)this);
     lock.unlock();
     return maxlen;
 }
@@ -197,6 +202,15 @@ void WPPipe::setThresholds(qint64 _def, qint64 _suf)
 bool WPPipe::isClosing() const
 {
     return isclosing;
+}
+
+int WPPipe::isDefSuf() const
+{
+    if (!isclosing && quesize <= def)
+        return -1;
+    if (suf != -1 && quesize > suf)
+        return 1;
+    return 0;
 }
 /*
 void WPPipe::closeSoon()
@@ -236,5 +250,8 @@ inline void WPPipe::checkDef() const
 inline void WPPipe::checkSuf() const
 {
     if (suf != -1 && quesize > suf)
+    {
+        qDebug("pipe %X suf input", (quint64)this);
         emit sufficientInput();
+    }
 }
