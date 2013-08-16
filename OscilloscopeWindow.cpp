@@ -6,13 +6,13 @@
 #include "core/WPPipe.h"
 
 OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
-    QMainWindow(parent),
-    /*ui(new Ui::OscilloscopeWindow),
+    QMainWindow(parent)/*,
+    ui(new Ui::OscilloscopeWindow),
     glwidget(this),
     glwidgetR(this),
     glwidgetI(this),
-    glwidgetSTFT(this),*/
-    oscilloscope(this)
+    glwidgetSTFT(this),
+    oscilloscope(this)*/
 {
     //ui->setupUi(this);
     setGeometry(100, 50, 1000, 600);
@@ -28,10 +28,11 @@ OscilloscopeWindow::~OscilloscopeWindow()
 
 void OscilloscopeWindow::showEvent(QShowEvent *)
 {
+    WPCallbackManager::init();
     //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
 
-    WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 16)), note3(7, Fraction(1, 16));
+    WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 8)), note3(7, Fraction(1, 8));
     WPNote note4(-5, Fraction(1, 1)), note5(-1, Fraction(1, 6)), note6(2, Fraction(1, 6));
     WPNote longnote(0, Fraction(10, 1));
 /*
@@ -45,28 +46,34 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     wave.play();
 */
     score = new WPScore;
+
     score->newPart();
     score->newPart();
     qDebug("part num = %lu\n", score->getPartList().size());
     //score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
-    for (int i = 0; i < 1000; i++)
+    //score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(longnote));
+
+    for (int i = 0; i < 10; i++)
     {
         score->getPartList()[0].insertMultinote(WPPosition(Fraction(700, 1)), WPMultinote(note2));
         score->getPartList()[0].insertMultinote(WPPosition(Fraction(800, 1)), WPMultinote(note3));
     }
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
+    /*score->save("score.wps");*/
+    //score->load("score.wps");
 /*
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note4));
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(200, 1)), WPMultinote(note5));
-    score->getPartList()[1].insertMultinote(WPPosition(Fraction(500, 2)), WPMultinote(note6));*/
+    score->getPartList()[1].insertMultinote(WPPosition(Fraction(500, 2)), WPMultinote(note6));
     score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
-
-    file = new QFile("wave.out");
-    file->open(QIODevice::WriteOnly);
+*/
+    //file = new QFile("wave.out");
+    //file->open(QIODevice::WriteOnly);
     controller = new WPSynthesisController;
     //connect(controller, SIGNAL(synthesisFinished()), this, SLOT(waveDecodeFinished()));
     //controller->synthesizeAndOutput(*score, file);
     controller->synthesizeAndPlay(*score);
+    //this->
 /*
     WPSynthesizer synthesizer;
     WPTuningFork tuningfork;
@@ -79,14 +86,14 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     static QAudioOutput *audiooutput = new QAudioOutput(WPWave::defaultAudioFormat());
     audiooutput->start(pipe);
 */
-
+/*
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     audioinput->setVolume(0.1);
     oscilloscope.setInputDevice(*audioinput->start());
     //oscilloscope.setInputDevice(*pipe);
     //oscilloscope.setInputDevice(*controller->synthesize(*score));
     //oscilloscope.start(100, 4096);
-    oscilloscope.start(100, 512);
+    oscilloscope.start(100, 512);*/
 }
 
 void OscilloscopeWindow::resizeEvent(QResizeEvent *)
@@ -95,22 +102,23 @@ void OscilloscopeWindow::resizeEvent(QResizeEvent *)
     glwidgetR.setGeometry(0, height() / 5 + 1, width(), height() / 5 - 1);
     glwidgetI.setGeometry(0, height() / 5 * 2 + 1, width(), height() / 5 - 1);
     glwidgetSTFT.setGeometry(0, height() / 5 * 3 + 1, width(), height() / 5 * 2 - 1);*/
-    oscilloscope.setGeometry(0, 0, width(), height());
+    //oscilloscope.setGeometry(0, 0, width(), height());
 }
 
 void OscilloscopeWindow::hideEvent(QHideEvent *)
 {
     //wave.stop();
     delete score;
+    //controller.stopAll();
 }
 
 void OscilloscopeWindow::waveDecodeFinished()
-{
+{/*
     qDebug("synthesis finished");
     file->close();
     file->open(QIODevice::ReadOnly);
     QAudioOutput *audiooutput = new QAudioOutput(WPWave::defaultAudioFormat());
-    audiooutput->start(file);
+    audiooutput->start(file);*/
     /*
     qWarning("Gabor");
     wave.Gabor(256, 512);

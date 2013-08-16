@@ -13,7 +13,7 @@ MainWindow::MainWindow()
     createStatusBar();
     drawMusic();
 
-    oscilloscopeWindow->show();
+    //oscilloscopeWindow->show();
     // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
 }
 

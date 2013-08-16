@@ -9,6 +9,7 @@
 #include "core/WPPipe.h"
 #include "core/WPSynthesisController.h"
 #include "WPScore/WPScore.h"
+#include "WPDLLManager/WPCallbackManager.h"
 #include "myglwidget.h"
 
 namespace Ui {

@@ -10,6 +10,7 @@
 #include "WPMixer.h"
 #include "WPTuningFork.h"
 #include "../WPScore/WPScore.h"
+#include "../WPDLLManager/WPDLLTimbre.h"
 
 class WPSynthesisController : public QObject
 {
@@ -41,7 +42,8 @@ private:
     QMutex lock;
     int partnum;
 
-    WPTuningFork *tuningfork; //for test
+    //WPTuningFork *tuningfork; //for test
+    WPDLLTimbre *dlltimbre; //for test
     
 };
 

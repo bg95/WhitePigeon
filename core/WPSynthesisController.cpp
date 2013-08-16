@@ -6,9 +6,12 @@ WPSynthesisController::WPSynthesisController(QObject *parent) :
     mixer(new WPMixer),
     outpipe(new WPPipe),
     audiooutput(new QAudioOutput(WPWave::defaultAudioFormat())),
-    tuningfork(new WPTuningFork),
-    lock(QMutex::NonRecursive)
+    //tuningfork(new WPTuningFork),
+    lock(QMutex::NonRecursive),
+    dlltimbre(new WPDLLTimbre)
 {
+    if (!dlltimbre->loadDLL("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/plugins/WPTimbre/libWPTuningFork.so"))
+        qWarning("unable to open dlltimbre");
 }
 
 WPSynthesisController::~WPSynthesisController()
@@ -16,7 +19,8 @@ WPSynthesisController::~WPSynthesisController()
     delete mixer;
     delete outpipe;
     delete audiooutput;
-    delete tuningfork;
+    //delete tuningfork;
+    delete dlltimbre;
 }
 
 void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *output)
@@ -34,7 +38,8 @@ void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *outpu
     for (i = 0; i < partnum; i++)
     {
         synthesizer[i].setOutputDevice(*mixer->getInputChannel(i));
-        synthesizer[i].loadTimbre(tuningfork); //load tuningfork for test
+        synthesizer[i].loadTimbre(dlltimbre);
+        //synthesizer[i].loadTimbre(tuningfork); //load tuningfork for test
         synthesizer[i].setPart(score.getPartList()[i]);
         connect(&synthesizer[i], SIGNAL(synthesisFinished()), this, SLOT(oneSynthesizerFinished()));
         //connect(&synthesizer[i], SIGNAL(finished()), &synthesizer[i], SLOT(deleteLater()));
@@ -76,13 +81,14 @@ void WPSynthesisController::oneSynthesizerFinished()
     }
     quint32 i = (WPSynthesizer *)sender() - synthesizer;
     qDebug("synthesizer %d finished", i);
-    qDebug("closing input %d, %d", i, mixer->getInputChannel(i)->open(QIODevice::ReadOnly));
+    if (mixer->getInputChannel(i)->isOpen())
+        qDebug("closing input %d, %d", i, mixer->getInputChannel(i)->open(QIODevice::ReadOnly));
 }
 
 void WPSynthesisController::mixerFinished()
 {
     qDebug("mixer finished");
-    //delete[] synthesizer;
+    delete[] synthesizer;
     //for (int i = 0; i < partnum; i++)
     //    synthesizer[i].deleteLater();
     if (outpipe->isOpen())

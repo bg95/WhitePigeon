@@ -1,7 +1,7 @@
 #include "WPMixer.h"
 
 WPMixer::WPMixer(QObject *parent) :
-    QObject(parent),
+    QThread(parent),
     channel(0),
     chcnt(0),
     output(0)
@@ -71,7 +71,7 @@ void WPMixer::setReadLength(quint64 length)
     //tdata = (WPWave::WaveDataType *)malloc(sizeof(WPWave::WaveDataType) * readlength);
 }
 
-void WPMixer::start()
+void WPMixer::run()
 {
     if (chcnt == 0)
     {
@@ -90,6 +90,7 @@ void WPMixer::start()
     qDebug("fileout.open %d", fileout->open(QIODevice::WriteOnly));
 */
     timer.start(0);
+    exec();
 }
 
 void WPMixer::sumUp()
@@ -122,6 +123,7 @@ void WPMixer::sumUp()
             delete[] channel;
             chcnt = 0;
             emit allInputClosed();
+            quit(); //?
             return;
         }
         memset(sdata, 0, readlengthbytes);

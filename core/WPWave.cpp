@@ -434,7 +434,12 @@ QAudioFormat WPWave::defaultAudioFormat()
     f.setChannelCount(1);
     f.setCodec("audio/x-raw");
     f.setSampleType(QAudioFormat::SignedInt);
-    f.setSampleRate(48000);
+    f.setSampleRate(SamplingRate);
     f.setSampleSize(8 * sizeof(WaveDataType));
     return f;
+}
+
+WPWave *WPWave::newWPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format)
+{
+    return new WPWave(_data, _format);
 }

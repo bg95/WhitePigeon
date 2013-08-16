@@ -19,6 +19,8 @@ public:
 
     WPTimbre()
     {}
+    virtual ~WPTimbre()
+    {}
     virtual WPWave *synthesize(double dur, double *amp, double *freq) const = 0;
 };
 

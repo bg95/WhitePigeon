@@ -1,0 +1,6 @@
+#ifndef WPPROPERTYDLL_H
+#define WPPROPERTYDLL_H
+
+
+
+#endif // WPPROPERTYDLL_H

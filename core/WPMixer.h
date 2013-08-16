@@ -2,11 +2,12 @@
 #define WPMIXER_H
 
 #include <QObject>
+#include <QThread>
 #include <QTimer>
 #include "WPPipe.h"
 #include "WPWave.h"
 
-class WPMixer : public QObject
+class WPMixer : public QThread
 {
     Q_OBJECT
 public:
@@ -18,12 +19,14 @@ public:
     void setOutput(QIODevice &_output);
     void setWatingTime(int msec);
     void setReadLength(quint64 length);
-    void start();
     
 signals:
     void allInputClosed();
     
 public slots:
+
+protected:
+    void run();
 
 private slots:
     void sumUp();

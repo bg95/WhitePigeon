@@ -14,6 +14,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = WhitePigeon
 TEMPLATE = app
+LIBS += -ldl
 
 
 SOURCES += main.cpp\
@@ -36,8 +37,10 @@ SOURCES += main.cpp\
     WPScore/WPPersistentTree.cpp \
 #    WPScore/WPAllocator.cpp
     core/WPSynthesisController.cpp \
-    core/WPTuningFork.cpp \
-    core/WPDLLManager.cpp
+#    core/WPTuningFork.cpp \
+    WPDLLManager/WPDLLManager.cpp \
+    WPDLLManager/WPDLLTimbre.cpp \
+    WPDLLManager/WPCallbackManager.cpp
 
 HEADERS  +=\
             myglwidget.h \
@@ -56,11 +59,14 @@ HEADERS  +=\
     OscilloscopeWindow.h \
     mainwindow.h \
     core/WPTimbre.h \
-    core/WPTuningFork.h \
+#    core/WPTuningFork.h \
     core/WPVarTimbre.h \
     core/WPPipe.h \
     core/WPMixer.h \
     WPScore/WPPersistentTree.h \
     WPScore/WPAllocator.h \
     core/WPSynthesisController.h \
-    core/WPDLLManager.h
+    WPDLLManager/WPDLLManager.h \
+    WPDLLManager/WPPropertyDLL.h \
+    WPDLLManager/WPDLLTimbre.h \
+    WPDLLManager/WPCallbackManager.h

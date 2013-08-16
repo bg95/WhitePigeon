@@ -3,27 +3,19 @@
 WPSynthesizer::WPSynthesizer(QObject *parent) :
     QThread(parent)
 {
-    newthread = new QTimer;
-    connect(newthread, SIGNAL(timeout()), this, SLOT(synthesizePart()));
-    newthread->setSingleShot(true);
-    newthread->setInterval(1);
 }
 
 WPSynthesizer::WPSynthesizer(WPTimbre *_timbre, QObject *parent) :
     QThread(parent)
 {
-    newthread = new QTimer;
-    connect(newthread, SIGNAL(timeout()), this, SLOT(synthesizePart()));
-    newthread->setSingleShot(true);
-    newthread->setInterval(1);
     loadTimbre(_timbre);
 }
 
 WPSynthesizer::~WPSynthesizer()
 {
     if (isRunning())
-        qDebug("Synthesizer %X is running", (quint64)this);
-    delete newthread;
+        qDebug("Synthesizer %X is still running", (quint64)this);
+    quit(); //?
     qDebug("Synthesizer waiting");
     wait();
 }
@@ -44,7 +36,7 @@ WPWave *WPSynthesizer::synthesize(WPNote &note)
     double *amp = new double[n];
     double *freq = new double[n];
     for (i = 0; i < n; i++)
-        amp[i] = 0.5;
+        amp[i] = 0.2;
     for (i = 0; i < n; i++)
         freq[i] = note.getFrequency();
     return timbre->synthesize(note.getTimeSpan(), amp, freq); //take care of overflow
@@ -54,8 +46,6 @@ void WPSynthesizer::startSynthesis(WPPart &_part)
 {
     part = &_part;
     qDebug("startSynthesis");
-    //newthread->singleShot(1, this, SLOT(synthesizePart()));
-    newthread->start();
     //synthesizePart();
     //start();
 }
@@ -82,6 +72,7 @@ void WPSynthesizer::run()
     qDebug("synthesizer run");
     slowingdown = false;
     synthesizePart();
+    exec();
     qDebug("synthesizer returned from run");
 }
 

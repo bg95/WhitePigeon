@@ -41,7 +41,6 @@ private slots:
 private:
     const WPTimbre *timbre;
     QIODevice *output;
-    QTimer *newthread;
     WPPart *part;
     bool slowingdown;
 
