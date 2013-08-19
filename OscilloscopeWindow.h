@@ -2,6 +2,8 @@
 #define OSCILLOSCOPEWINDOW_H
 
 #include <QMainWindow>
+#include <QCoreApplication>
+#include <QEventLoop>
 #include <QGLWidget>
 #include <QAudioInput>
 #include "core/WPWave.h"

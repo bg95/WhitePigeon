@@ -13,13 +13,10 @@ public:
         WPWave_newWPWave,
         WPSynthesizer_truncateWaveData
     };
-    static void init();
     static void *call(CallbackFunc func);
 
 private:
-    static const int CallbackFuncNum;
     static void *CallbackFuncList[];
-    static bool initialized;
 
 };
 

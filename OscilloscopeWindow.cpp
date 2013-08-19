@@ -28,7 +28,7 @@ OscilloscopeWindow::~OscilloscopeWindow()
 
 void OscilloscopeWindow::showEvent(QShowEvent *)
 {
-    WPCallbackManager::init();
+    //WPCallbackManager::init();
     //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
 
