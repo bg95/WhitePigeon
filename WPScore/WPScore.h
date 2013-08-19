@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include <QByteArray>
+
 class WPScore;
 
 #include "WPNote.h"

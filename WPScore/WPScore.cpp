@@ -18,7 +18,9 @@ WPScore::~WPScore()
 void WPScore::save(const std::string &FileName)
 {
 	FILE *fo = fopen(FileName.c_str(), "w");
-	fprintf(fo, "<version>Score File Format 0a</version><versioninfo>All rights reserved.</versioninfo>");
+	fprintf(fo, "<version>Score File Format 0b</version>");
+	QByteArray BA;
+	BA.append("<versioninfo>All rights reserved.</versioninfo>");
 	for (int k = 0; k < countPartNumber(); ++ k)
 	{
 		WPPart *P = getPartByOrder(k);
@@ -27,25 +29,33 @@ void WPScore::save(const std::string &FileName)
 			fprintf(stderr, "error when saving!\n");
 			continue;
 		}
-		fprintf(fo, "<newpart>%s</newpart>", P->getName().c_str());
+		BA.append("<newpart>");
+		BA.append(P->getName().c_str());
+		BA.append("</newpart>");
 		std::vector <WPMultinote> Nt = P->getAllNotes();
-		fprintf(fo, "<part>");
+		BA.append("<part>");
 		for (std::vector <WPMultinote> :: iterator it = Nt.begin(); it != Nt.end(); ++ it)
 		{
-			fprintf(fo, "<multinote>");
+			BA.append("<multinote>");
 			std::vector <WPNote> Nts = it->getNotes();
 			for (std::vector <WPNote> :: iterator eit = Nts.begin(); eit != Nts.end(); ++ eit)
-				fprintf(fo, "<note><pitch>%d</pitch><length>%d/%d</length></note>", eit->getPitch(), eit->getLength().X, eit->getLength().Y);
-			fprintf(fo, "</multinote>");
+				BA.append(("<note><pitch>" + intToString(eit->getPitch()) + "</pitch><length>" + fractionToString(eit->getLength()) + "</length></note>").c_str());
+			BA.append("</multinote>");
 		}
 		std::vector <WPProperty> Pp = P->getAllProperties();
 		for (std::vector <WPProperty> :: iterator it = Pp.begin(); it != Pp.end(); ++ it)
-			fprintf(fo, "<property><interval><position>%d/%d</position><position>%d/%d</position></interval><arg>%s</arg></property>", it->getInterval().begin().getValue().X, it->getInterval().begin().getValue().Y, it->getInterval().end().getValue().X, it->getInterval().end().getValue().Y, it->getArg().c_str());
-		fprintf(fo, "</part>");
+			BA.append(("<property><interval><position>" + fractionToString(it->getInterval().begin().getValue()) + "</position><position>" + fractionToString(it->getInterval().end().getValue()) + "</position></interval><arg>" + it->getArg() + "</arg></property>").c_str());
+		BA.append("</part>");
 	}
 	std::vector <WPProperty> Pp = getAllProperties();
 	for (std::vector <WPProperty> :: iterator it = Pp.begin(); it != Pp.end(); ++ it)
-		fprintf(fo, "<property><interval><position>%d/%d</position><position>%d/%d</position></interval><arg>%s</arg></property>", it->getInterval().begin().getValue().X, it->getInterval().begin().getValue().Y, it->getInterval().end().getValue().X, it->getInterval().end().getValue().Y, it->getArg().c_str());
+		BA.append(("<property><interval><position>" + fractionToString(it->getInterval().begin().getValue()) + "</position><position>" + fractionToString(it->getInterval().end().getValue()) + "</position></interval><arg>" + it->getArg() + "</arg></property>").c_str());
+	BA = qCompress(BA, 9);
+	int NS = BA.size();
+	fprintf(stderr, "size = %u\n", BA.size());
+	char *S = BA.data();
+	for (int k = 0; k < NS; ++ k)
+		fprintf(fo, "%c", S[k]);
 	fclose(fo);
 }
 
@@ -65,9 +75,17 @@ void WPScore::load(const std::string &FileName)
 	std::string Rest = "";
 	while (fscanf(fi, "%c", &Ch) != EOF)
 		Rest.push_back(Ch);
+	fclose(fi);
 	if (V == "Score File Format 0a")
 		AnalysisScore0a(Rest);
-	fclose(fi);
+	if (V == "Score File Format 0b")
+	{
+		fprintf(stderr, "restore size = %u\n", Rest.size());
+		QByteArray BA = QByteArray::fromRawData(Rest.c_str(), Rest.size());
+		BA = qUncompress(BA);
+		Rest = BA.data();
+		AnalysisScore0a(Rest);
+	}
 }
 
 void WPScore::close()
@@ -78,6 +96,8 @@ void WPScore::close()
 	CurVer = 0;
 	VerLink.clear();
 	VerLink.push_back(std::make_pair(- 1, - 1));
+	Properties.clear();
+	Properties.push_back(WPPropertyPersistentTree (getPropertyPersistentTreeNodeAllocator()));
 }
 
 WPPart *WPScore::newPart()
