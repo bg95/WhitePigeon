@@ -86,6 +86,7 @@ class WPPropertyPersistentTree
 		~WPPropertyPersistentTree();
 		void insert(const WPProperty &);
 		void remove(const WPInterval &);
+		bool remove(const WPProperty &);
 		WPPropertyPersistentTree query(const WPInterval &);
 		std::vector <WPProperty> traverse();
 	private:
@@ -96,7 +97,9 @@ class WPPropertyPersistentTree
 		WPPropertyPersistentTreeNode *SingleRotateWithLeft(WPPropertyPersistentTreeNode *&);
 		WPPropertyPersistentTreeNode *SingleRotateWithRight(WPPropertyPersistentTreeNode *&);
 		WPPropertyPersistentTreeNode *Insert(WPPropertyPersistentTreeNode *&, const WPProperty &);
+		WPPropertyPersistentTreeNode *Remove(WPPropertyPersistentTreeNode *T, const WPProperty &P);
 		void DFS(WPPropertyPersistentTreeNode *, std::vector <WPProperty> &);
+		bool Compare(const WPProperty &, const WPProperty &);
 };
 
 #endif

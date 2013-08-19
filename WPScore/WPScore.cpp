@@ -6,6 +6,8 @@ WPScore::WPScore()
 	CurVer = 0;
 	VerLink.clear();
 	VerLink.push_back(std::make_pair(- 1, - 1));
+	Properties.clear();
+	Properties.push_back(WPPropertyPersistentTree (getPropertyPersistentTreeNodeAllocator()));
 }
 
 WPScore::~WPScore()
@@ -36,8 +38,14 @@ void WPScore::save(const std::string &FileName)
 				fprintf(fo, "<note><pitch>%d</pitch><length>%d/%d</length></note>", eit->getPitch(), eit->getLength().X, eit->getLength().Y);
 			fprintf(fo, "</multinote>");
 		}
+		std::vector <WPProperty> Pp = P->getAllProperties();
+		for (std::vector <WPProperty> :: iterator it = Pp.begin(); it != Pp.end(); ++ it)
+			fprintf(fo, "<property><interval><position>%d/%d</position><position>%d/%d</position></interval><arg>%s</arg></property>", it->getInterval().begin().getValue().X, it->getInterval().begin().getValue().Y, it->getInterval().end().getValue().X, it->getInterval().end().getValue().Y, it->getArg().c_str());
 		fprintf(fo, "</part>");
 	}
+	std::vector <WPProperty> Pp = getAllProperties();
+	for (std::vector <WPProperty> :: iterator it = Pp.begin(); it != Pp.end(); ++ it)
+		fprintf(fo, "<property><interval><position>%d/%d</position><position>%d/%d</position></interval><arg>%s</arg></property>", it->getInterval().begin().getValue().X, it->getInterval().begin().getValue().Y, it->getInterval().end().getValue().X, it->getInterval().end().getValue().Y, it->getArg().c_str());
 	fclose(fo);
 }
 
@@ -150,6 +158,21 @@ WPPart *WPScore::getPartByOrder(const int &K)
 	return Result;
 }
 
+void WPScore::insertProperty(const WPProperty &P)
+{
+	Properties[CurVer].insert(P);
+}
+
+bool WPScore::deleteProperty(const WPProperty &P)
+{
+	return Properties[CurVer].remove(P);
+}
+
+std::vector<WPProperty> WPScore::getAllProperties()
+{
+	return Properties[CurVer].traverse();
+}
+
 int WPScore::getCurrentVersion() const
 {
 	return CurVer;
@@ -159,6 +182,7 @@ int WPScore::newVersion()
 {
 	VerLink[CurVer].second = VerLink.size();
 	VerLink.push_back(std::make_pair(CurVer, - 1));
+	Properties.push_back(Properties[CurVer]);
 	if (CurVer + 1 != VerLink[CurVer].second)
 		for (std::vector <WPPart> :: iterator it = PartList.begin(); it != PartList.end(); ++ it)
 			it->synchronizeWithMaster();
@@ -224,6 +248,8 @@ void WPScore::AnalysisScore0a(const std::string &S)
 				if (LastPart)
 					AnalysisPart0a(LastPart, Inner);
 			}
+			if (Tag == "property")
+				insertProperty(AnalysisProperty0a(Inner));
 			PS = PB + L + 2;
 		}
 }
@@ -252,6 +278,8 @@ void WPScore::AnalysisPart0a(WPPart *P, const std::string &S)
 				P->insertMultinote(PP, MNt);
 				PP += MNt.getLength();
 			}
+			if (Tag == "property")
+				P->insertProperty(AnalysisProperty0a(Inner));
 			PS = PB + L + 2;
 		}
 }
@@ -307,4 +335,64 @@ WPNote WPScore::AnalysisNote0a(const std::string &S)
 			PS = PB + L + 2;
 		}
 	return WPNote (Pitch, Length);
+}
+
+WPProperty WPScore::AnalysisProperty0a(const std::string &S)
+{
+	WPInterval Interval(WPPosition (Fraction (0, 1)), WPPosition (Fraction (1, 0)));
+	std::string Arg;
+	int PS = 0;
+	for (; PS < (int) S.size(); ++ PS)
+		if (S[PS] == '<')
+		{
+			std::string::size_type FoundPos = S.find('>', PS);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PE = FoundPos;
+			int L = PE - PS - 1;
+			std::string Tag = S.substr(PS + 1, L);
+			FoundPos = S.find("</" + Tag + ">", PE);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PB = FoundPos;
+			std::string Inner = S.substr(PE + 1, PB - PE - 1);
+			if (Tag == "arg")
+				Arg = Inner;
+			if (Tag == "interval")
+				Interval = AnalysisInterval0a(Inner);
+			PS = PB + L + 2;
+		}
+	return WPProperty (Interval, Arg);
+}
+
+WPInterval WPScore::AnalysisInterval0a(const std::string &S)
+{
+	WPPosition St(Fraction (0, 1)), Tt(Fraction (1, 0));
+	int Cnt = 0;
+	int PS = 0;
+	for (; PS < (int) S.size(); ++ PS)
+		if (S[PS] == '<')
+		{
+			std::string::size_type FoundPos = S.find('>', PS);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PE = FoundPos;
+			int L = PE - PS - 1;
+			std::string Tag = S.substr(PS + 1, L);
+			FoundPos = S.find("</" + Tag + ">", PE);
+			if (FoundPos == std::string::npos)
+				continue;
+			int PB = FoundPos;
+			std::string Inner = S.substr(PE + 1, PB - PE - 1);
+			if (Tag == "position")
+			{
+				if (Cnt == 0)
+					St = WPPosition (stringToFraction(Inner));
+				if (Cnt == 1)
+					Tt = WPPosition (stringToFraction(Inner));
+				++ Cnt;
+			}
+			PS = PB + L + 2;
+		}
+	return WPInterval (St, Tt);
 }

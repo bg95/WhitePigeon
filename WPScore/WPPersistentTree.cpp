@@ -323,7 +323,7 @@ WPPropertyPersistentTreeNode *WPPropertyPersistentTree::Insert(WPPropertyPersist
 		return D;
 	}
 	*D = *T;
-	if (Item.getInterval().begin() < T->Element.getInterval().begin())
+	if (Compare(Item, T->Element))
 	{
 		D->Left = Insert(T->Left, Item);
 		D->Update();
@@ -367,4 +367,67 @@ std::vector <WPProperty> WPPropertyPersistentTree::traverse()
 	std::vector <WPProperty> Result;
 	DFS(Root, Result);
 	return Result;
+}
+
+bool WPPropertyPersistentTree::Compare(const WPProperty &A, const WPProperty &B)
+{
+	if (A.getInterval().begin() < B.getInterval().begin())
+		return 1;
+	if (A.getInterval().begin() == B.getInterval().begin() && A.getInterval().end() < B.getInterval().end())
+		return 1;
+	if (A.getInterval().begin() == B.getInterval().begin() && A.getInterval().end() == B.getInterval().end() && A.getArg() < B.getArg())
+		return 1;
+	return 0;
+}
+
+bool WPPropertyPersistentTree::remove(const WPProperty &P)
+{
+	WPPropertyPersistentTreeNode *OldRoot = Root;
+	Root = Remove(Root, P);
+	return (Root != OldRoot);
+}
+
+WPPropertyPersistentTreeNode *WPPropertyPersistentTree::Remove(WPPropertyPersistentTreeNode *T, const WPProperty &P)
+{
+	if (T == NULL)
+		return T;
+	if (P.getInterval() == T->Element.getInterval() && T->Element.getArg().compare(0, P.getArg().size(), P.getArg()) == 0)
+	{
+		WPPropertyPersistentTreeNode *Tmp1 = T->Left;
+		WPPropertyPersistentTreeNode *Tmp2 = Remove(T->Left, P);
+		if (Tmp1 == Tmp2)
+			return Merge(Tmp2, T->Right);
+		WPPropertyPersistentTreeNode *D = Alloc->Allocate();
+		*D = *T;
+		D->Left = Tmp2;
+		D->Update();
+		return D;
+	}
+	else
+	{
+		if (Compare(P, T->Element))
+		{
+			WPPropertyPersistentTreeNode *Tmp1 = T->Left;
+			WPPropertyPersistentTreeNode *Tmp2 = Remove(T->Left, P);
+			if (Tmp1 == Tmp2)
+				return T;
+			WPPropertyPersistentTreeNode *D = Alloc->Allocate();
+			*D = *T;
+			D->Left = Tmp2;
+			D->Update();
+			return D;
+		}
+		else
+		{
+			WPPropertyPersistentTreeNode *Tmp1 = T->Right;
+			WPPropertyPersistentTreeNode *Tmp2 = Remove(T->Right, P);
+			if (Tmp1 == Tmp2)
+				return T;
+			WPPropertyPersistentTreeNode *D = Alloc->Allocate();
+			*D = *T;
+			D->Right = Tmp2;
+			D->Update();
+			return D;
+		}
+	}
 }
