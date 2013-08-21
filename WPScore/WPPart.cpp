@@ -87,11 +87,18 @@ std::string WPPart::getName()
 	return Names[MyVer];
 }
 
-void WPPart::insertProperties(const WPProperty &P)
+void WPPart::insertProperty(const WPProperty &P)
 {
 	synchronizeWithMaster();
 	implementVersion();
 	Properties[MyVer].insert(P);
+}
+
+bool WPPart::deleteProperty(const WPProperty &P)
+{
+	synchronizeWithMaster();
+	implementVersion();
+	return Properties[MyVer].remove(P);
 }
 
 void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)
@@ -99,6 +106,14 @@ void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)
 	synchronizeWithMaster();
 	implementVersion();
 	Notes[MyVer].insert(P, N);
+	// Need to change properties;
+}
+
+void WPPart::deleteMultinote(const WPInterval &I)
+{
+	synchronizeWithMaster();
+	implementVersion();
+	Notes[MyVer].remove(I);
 	// Need to change properties;
 }
 
@@ -160,6 +175,18 @@ std::vector <WPMultinote> WPPart::getAllNotes()
 {
 	synchronizeWithMaster();
 	return Notes[MyVer].traverse();
+}
+
+std::vector<WPProperty> WPPart::getAllProperties()
+{
+	synchronizeWithMaster();
+	return Properties[MyVer].traverse();
+}
+
+std::vector<WPMultinote> WPPart::getNotesByInterval(WPInterval &I)
+{
+	synchronizeWithMaster();
+	return Notes[MyVer].query(I).traverse();
 }
 
 //~ void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)

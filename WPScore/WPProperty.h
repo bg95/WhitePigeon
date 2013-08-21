@@ -11,21 +11,15 @@
 class WPProperty
 {
 	public:
-		enum WPPropertyType
-		{
-			Staccato
-		};
 		WPProperty();
-		WPProperty(const WPInterval &, const WPPropertyType &, const std::string &);
+		WPProperty(const WPInterval &, const std::string &);
 		~WPProperty();
 		WPInterval getInterval() const;
-		WPPropertyType getType() const;
 		std::string getArg() const;
 		void lengthen(const Fraction &);
 		void shiftRight(const Fraction &);
 	private:
 		WPInterval Interval;
-		WPPropertyType Type;
 		std::string Arg;
 };
 

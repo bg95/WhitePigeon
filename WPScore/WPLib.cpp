@@ -95,3 +95,17 @@ int ran()
 	X += (X << 2) ^ 137;
 	return X;
 }
+
+
+std::string intToString(const int &I)
+{
+	char St[50];
+	sprintf(St, "%d", I);
+	return St;
+}
+
+
+std::string fractionToString(const Fraction &F)
+{
+	return intToString(F.X) + "/" + intToString(F.Y);
+}
