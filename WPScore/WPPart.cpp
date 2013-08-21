@@ -183,6 +183,12 @@ std::vector<WPProperty> WPPart::getAllProperties()
 	return Properties[MyVer].traverse();
 }
 
+std::vector<WPMultinote> WPPart::getNotesByInterval(WPInterval &I)
+{
+	synchronizeWithMaster();
+	return Notes[MyVer].query(I).traverse();
+}
+
 //~ void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)
 //~ {
 	//~ std::vector <WPMultinote> New;

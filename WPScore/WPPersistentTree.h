@@ -47,10 +47,12 @@ class WPMultinotePersistentTree
 {
 	public:
 		WPMultinotePersistentTree(WPAllocator <WPMultinotePersistentTreeNode> *);
+		WPMultinotePersistentTree(WPAllocator <WPMultinotePersistentTreeNode> *, WPMultinotePersistentTreeNode *);
 		~WPMultinotePersistentTree();
 		void insert(const WPPosition &, const WPMultinote &);
 		void remove(const WPInterval &);
 		std::pair <Fraction, WPMultinote> query(const WPPosition &);
+		WPMultinotePersistentTree query(const WPInterval &);
 		std::vector <WPMultinote> traverse();
 	private:
 		WPMultinotePersistentTreeNode *Root;

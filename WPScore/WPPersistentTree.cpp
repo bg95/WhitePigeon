@@ -44,6 +44,12 @@ WPMultinotePersistentTree::WPMultinotePersistentTree(WPAllocator <WPMultinotePer
 	Alloc = A;
 }
 
+WPMultinotePersistentTree::WPMultinotePersistentTree(WPAllocator<WPMultinotePersistentTreeNode> *A, WPMultinotePersistentTreeNode *R)
+{
+	Root = R;
+	Alloc = A;
+}
+
 WPMultinotePersistentTree::~WPMultinotePersistentTree()
 {
 }
@@ -194,6 +200,14 @@ std::pair <Fraction, WPMultinote> WPMultinotePersistentTree::query(const WPPosit
 	if (!T)
 		return std::make_pair(Fraction (- 1, 1), WPMultinote (WPNote (WPNote::Rest, Fraction (- 1, 1))));
 	return std::make_pair(F, T->Element);
+}
+
+WPMultinotePersistentTree WPMultinotePersistentTree::query(const WPInterval &I)
+{
+	WPMultinotePersistentTreeNode *A, *B, *C, *D;
+	Split(Root, D, C, I.end().getValue());
+	Split(D, A, B, I.begin().getValue());
+	return WPMultinotePersistentTree (Alloc, B);
 }
 
 std::vector <WPMultinote> WPMultinotePersistentTree::traverse()
