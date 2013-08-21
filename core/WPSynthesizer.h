@@ -6,8 +6,10 @@
 #include <QThread>
 #include "WPWave.h"
 #include "WPTimbre.h"
+#include "WPModifier.h"
 #include "../WPScore/WPNote.h"
 #include "../WPScore/WPPart.h"
+#include "WPDLLManager/WPDLLModifier.h"
 
 class WPSynthesizer : public QThread
 {

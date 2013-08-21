@@ -79,31 +79,53 @@ void WPSynthesizer::run()
 void WPSynthesizer::synthesizePart()
 {
     std::pair<WPMultinote, std::pair<std::vector<WPProperty>, std::vector<WPProperty> > > fragment;
+    std::vector<WPModifier *> cmodi;
+    std::vector<WPProperty> cprop;
     WPWave *swave = new WPWave;
-    fflush(stdout);
-    fflush(stderr);
+    //fflush(stdout);
+    //fflush(stderr);
+    cmodi.clear();
     while (fragment = part->nextFragment(), !(fragment.first.getLength() == Fraction(-1, 1)))
     {
         std::vector<WPNote> notes = fragment.first.getNotes();
         std::vector<WPNote>::iterator iter;
-        swave->clear();
-        for (iter = notes.begin(); iter != notes.end(); iter++)
+        std::vector<WPProperty> sprop = fragment.second.first, eprop = fragment.second.second;
+        std::vector<WPProperty>::iterator propiter;
+        std::vector<WPModifier *>::iterator modiiter;
+        WPDLLModifier *modifier;
+        //process properties
+        for (propiter = sprop.begin(); propiter != sprop.end(); propiter++)
         {
-            WPWave *twave;
-            twave = synthesize(*iter);
-            swave->mixWith(1.0, *twave, 1.0);
-            delete twave;
-        }
-        QThread::usleep(10000); //remember to remove
-        if (-1 == output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType)))
-        {
-            QChar *ch;
-            for (ch = output->errorString().begin(); ch != output->errorString().end(); ch++)
+            modifier = new WPDLLModifier;
+            if (modifier->loadDLL((*propiter).getNotesByInterval()))
             {
-                printf("%c", ch->toLatin1());
+                cprop.push_back((*propiter));
+                cmodi.push_back(modifier);
+                if (!(*modiiter).isSingleNote())
+                    (*modiiter).setNotes(part->getNotesBetween((*propiter).getInterva()));
             }
-            printf("\n");
-            fflush(stdout);
+        }
+        //scan time
+        {
+            swave->clear();
+            for (iter = notes.begin(); iter != notes.end(); iter++)
+            {
+                WPWave *twave;
+                twave = synthesize(*iter);
+                swave->mixWith(1.0, *twave, 1.0);
+                delete twave;
+            }
+            QThread::usleep(10000); //remember to remove
+            if (output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType)) == -1)
+            {
+                QChar *ch;
+                for (ch = output->errorString().begin(); ch != output->errorString().end(); ch++)
+                {
+                    printf("%c", ch->toLatin1());
+                }
+                printf("\n");
+                fflush(stdout);
+            }
         }
     }
     //swave->setFormat(WPWave::defaultAudioFormat());

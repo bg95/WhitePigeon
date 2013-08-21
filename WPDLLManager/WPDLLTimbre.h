@@ -11,6 +11,7 @@ public:
     WPDLLTimbre();
     ~WPDLLTimbre();
     bool loadDLL(QString name);
+    WPWave *synthesize(double dur, double time0, double time1, double amp0, double amp1, double freq0, double freq1);
     WPWave *synthesize(double dur, double *amp, double *freq) const;
 
 private:

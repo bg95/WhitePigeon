@@ -11,12 +11,12 @@ public:
     inline double getTime() const;
     inline double getPrevTime() const;
     bool timePassed(double t);
-    virtual void reset();
+    virtual void reset(); //call this when overwriting
 
     virtual void setNotes(const std::vector<WPNote> &_notes);
     //setNotes will be called before calling all modify* functions, telling the notes for the modifier
     //call WPModifier::setNotes when overwriting, or getNotes won't work
-    inline std::vector<WPNote> &getNotes();
+    std::vector<WPNote> &getNotes(); //why can't be inline?
 
     virtual bool isGlobal(); //true if the modifier applies to all parts
     virtual bool isSingleNote();
