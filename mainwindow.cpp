@@ -5,49 +5,71 @@
 
 MainWindow::MainWindow()
 {
-    oscilloscopeWindow = new OscilloscopeWindow(this);
+    /* MainWindow settings */
     setWindowTitle(tr("WhitePigeon"));
+    // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
+    setContextMenuPolicy(Qt::ActionsContextMenu);
+
+    /* Private widget settings */
+    oscilloscopeWindow = 0;
+
+    /* UI settings */
     createActions();
     createToolBar();
     createMenus();
     createStatusBar();
     drawMusic();
+}
 
-    // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
+MainWindow::~MainWindow()
+{
+    delete oscilloscopeWindow;
 }
 
 void MainWindow::createActions()
 {
-    oscilloscopeAction = new QAction(tr("&Oscilloscope"), this);
+    oscilloscopeAction = new QAction(this);
+    oscilloscopeAction->setText(tr("&Oscilloscope"));
     // oscilloscopeAction->setIcon(QIcon(":/images/oscilloscope.jpg"));
     // oscilloscopeAction->setShortcut();
-    oscilloscopeAction->setStatusTip("Show an oscilloscope");
-    oscilloscopeAction->setToolTip("Show an oscilloscope");
-    //oscilloscopeAction->setCheckable(true);
-    connect(oscilloscopeAction, SIGNAL(triggered()), this, SLOT(showOscilloscope()));
+    oscilloscopeAction->setStatusTip(tr("Show an oscilloscope"));
+    oscilloscopeAction->setToolTip(tr("Show an oscilloscope"));
+    connect(oscilloscopeAction, SIGNAL(triggered()),
+            this, SLOT(showOscilloscope()));
 }
 
 void MainWindow::createMenus()
 {
-    toolsMenu = menuBar()->addMenu(tr("&Tools"));
+    /* Create all menus */
+    toolsMenu = new QMenu;
+    toolsMenu->setTitle(tr("&Tools"));
     toolsMenu->addAction(oscilloscopeAction);
+
+    /* add the menus to the MainWindow */
+    menuBar()->addMenu(toolsMenu);
 }
 
 void MainWindow::showOscilloscope()
 {
+    if (!oscilloscopeWindow)
+        oscilloscopeWindow = new OscilloscopeWindow(this);
     oscilloscopeWindow->show();
 }
 
-
 void MainWindow::createToolBar()
 {
-    toolBar = addToolBar(tr("&Tools"));
+    /* Create all toolbars */
+    toolBar = new QToolBar;
     toolBar->addAction(oscilloscopeAction);
+    toolBar->setToolTip(tr("&Tools"));
+
+    /* add the toolbars to the MainWindow */
+    addToolBar(toolBar);
 }
 
 void MainWindow::createStatusBar()
 {
-    QLabel *statusmsg = new QLabel;
+    statusmsg = new QLabel;
     statusBar()->addWidget(statusmsg);
 }
 

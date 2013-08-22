@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 
-class QAction;
-class QMenu;
+/* Class declearation */
+class QLabel;
 class OscilloscopeWindow;
 
 class MainWindow : public QMainWindow
@@ -13,8 +13,10 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow();
+    ~MainWindow();
 
 private slots:
+    /* Action functions */
     void showOscilloscope();
 
 private:
@@ -24,11 +26,17 @@ private:
     void createStatusBar();
     void drawMusic();
 
+    /* Action list */
     QAction *oscilloscopeAction;
 
+    /* Menu list */
     QMenu *toolsMenu;
+
+    /* ToolBar list */
     QToolBar *toolBar;
 
+    /* Private widget list */
+    QLabel *statusmsg;
     OscilloscopeWindow *oscilloscopeWindow;
 };
 

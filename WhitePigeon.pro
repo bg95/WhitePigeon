@@ -61,3 +61,5 @@ HEADERS  +=\
     WPScore/WPPersistentTree.h \
     WPScore/WPAllocator.h \
     core/WPSynthesisController.h
+
+TRANSLATIONS += Chinese.ts
