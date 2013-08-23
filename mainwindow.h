@@ -8,6 +8,7 @@ class QLabel;
 class OscilloscopeWindow;
 class QRecentFilesMenu;
 class QMdiArea;
+class QMdiSubWindow;
 
 class MainWindow : public QMainWindow
 {
@@ -19,7 +20,9 @@ public:
 
 private slots:
     /* Action functions */
+    void newFile();
     void showOscilloscope();
+    void updateStatusBar(QMdiSubWindow* window);
 
 private:
     void createActions();
@@ -28,18 +31,20 @@ private:
     void createStatusBar();
 
     /* Action list */
+    QAction *newAction;
     QAction *oscilloscopeAction;
 
     /* Menu list */
+    QMenu *fileMenu;
     QRecentFilesMenu *recentFilesMenu;
     QMenu *toolsMenu;
 
     /* ToolBar list */
+    QToolBar *fileToolBar;
     QToolBar *toolBar;
 
     /* Private widget list */
     QMdiArea *mdiArea;
-    QLabel *statusmsg;
     OscilloscopeWindow *oscilloscopeWindow;
     int countNumber;
 };

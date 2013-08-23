@@ -16,11 +16,8 @@ MainWindow::MainWindow()
     mdiArea->setParent(this);
     mdiArea->setViewMode(QMdiArea::TabbedView);
     mdiArea->setActivationOrder(QMdiArea::CreationOrder);
-
-    mdiArea->addSubWindow(new WPWindow(this));
-    mdiArea->addSubWindow(new WPWindow(this));
-    mdiArea->addSubWindow(new WPWindow(this));
-    mdiArea->addSubWindow(new WPWindow(this));
+    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
+            this, SLOT(updateStatusBar(QMdiSubWindow*)));
 
     /* MainWindow settings */
     setWindowTitle(tr("WhitePigeon"));
@@ -32,7 +29,6 @@ MainWindow::MainWindow()
     createActions();
     createToolBar();
     createMenus();
-    createStatusBar();
 }
 
 MainWindow::~MainWindow()
@@ -42,6 +38,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::createActions()
 {
+    newAction = new QAction(this);
+    newAction->setText(tr("&New"));
+    // newAction->setIcon(QIcon(":/images/new.jpg"));
+    newAction->setShortcut(QKeySequence::New);
+    newAction->setStatusTip(tr("Create a new file"));
+    newAction->setToolTip(tr("Create a new file"));
+    connect(newAction, SIGNAL(triggered()),
+            this, SLOT(newFile()));
+
     oscilloscopeAction = new QAction(this);
     oscilloscopeAction->setText(tr("&Oscilloscope"));
     // oscilloscopeAction->setIcon(QIcon(":/images/oscilloscope.jpg"));
@@ -55,8 +60,39 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 {
     /* Create all menus */
+    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(newAction);
+
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
     toolsMenu->addAction(oscilloscopeAction);
+}
+
+void MainWindow::createToolBar()
+{
+    /* Create all toolbars */
+    fileToolBar = new QToolBar;
+    fileToolBar->addAction(newAction);
+    fileToolBar->setToolTip(tr("&File"));
+
+    toolBar = new QToolBar;
+    toolBar->addAction(oscilloscopeAction);
+    toolBar->setToolTip(tr("&Tools"));
+
+    /* add the toolbars to the MainWindow */
+    addToolBar(fileToolBar);
+    addToolBar(toolBar);
+}
+
+
+/* private slots */
+
+void MainWindow::newFile()
+{
+    ++countNumber;
+    WPWindow *window = new WPWindow;
+    window->setWindowTitle(tr("untitled %1").arg(countNumber));
+    mdiArea->addSubWindow(window);
+    window->show();
 }
 
 void MainWindow::showOscilloscope()
@@ -66,19 +102,8 @@ void MainWindow::showOscilloscope()
     oscilloscopeWindow->show();
 }
 
-void MainWindow::createToolBar()
+void MainWindow::updateStatusBar(QMdiSubWindow* window)
 {
-    /* Create all toolbars */
-    toolBar = new QToolBar;
-    toolBar->addAction(oscilloscopeAction);
-    toolBar->setToolTip(tr("&Tools"));
-
-    /* add the toolbars to the MainWindow */
-    addToolBar(toolBar);
-}
-
-void MainWindow::createStatusBar()
-{
-    statusmsg = new QLabel;
-    statusBar()->addWidget(statusmsg);
+    if (window)
+        statusBar()->showMessage(window->windowTitle());
 }
