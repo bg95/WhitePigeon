@@ -149,4 +149,3 @@ void QRecentFilesMenu::updateRecentFileActions()
 
     setEnabled(numRecentFiles > 0);
 }
-

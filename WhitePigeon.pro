@@ -35,7 +35,9 @@ SOURCES += main.cpp\
     core/WPMixer.cpp \
     WPScore/WPPersistentTree.cpp \
 #    WPScore/WPAllocator.cpp
-    core/WPSynthesisController.cpp
+    core/WPSynthesisController.cpp \
+    QRecentFilesMenu.cpp \
+    WPWindow.cpp
 
 HEADERS  +=\
             myglwidget.h \
@@ -60,6 +62,8 @@ HEADERS  +=\
     core/WPMixer.h \
     WPScore/WPPersistentTree.h \
     WPScore/WPAllocator.h \
-    core/WPSynthesisController.h
+    core/WPSynthesisController.h \
+    QRecentFilesMenu.h \
+    WPWindow.h
 
 TRANSLATIONS += Chinese.ts

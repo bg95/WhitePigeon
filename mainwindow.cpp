@@ -1,24 +1,38 @@
 #include <QtWidgets>
 
+#include "QRecentFilesMenu.h"
 #include "OscilloscopeWindow.h"
+#include "WPWindow.h"
+
 #include "mainwindow.h"
 
 MainWindow::MainWindow()
 {
+    /* Private widget settings */
+    oscilloscopeWindow = 0;
+    countNumber = 0;
+
+    mdiArea = new QMdiArea;
+    mdiArea->setParent(this);
+    mdiArea->setViewMode(QMdiArea::TabbedView);
+    mdiArea->setActivationOrder(QMdiArea::CreationOrder);
+
+    mdiArea->addSubWindow(new WPWindow(this));
+    mdiArea->addSubWindow(new WPWindow(this));
+    mdiArea->addSubWindow(new WPWindow(this));
+    mdiArea->addSubWindow(new WPWindow(this));
+
     /* MainWindow settings */
     setWindowTitle(tr("WhitePigeon"));
     // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
     setContextMenuPolicy(Qt::ActionsContextMenu);
-
-    /* Private widget settings */
-    oscilloscopeWindow = 0;
+    setCentralWidget(mdiArea);
 
     /* UI settings */
     createActions();
     createToolBar();
     createMenus();
     createStatusBar();
-    drawMusic();
 }
 
 MainWindow::~MainWindow()
@@ -41,12 +55,8 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 {
     /* Create all menus */
-    toolsMenu = new QMenu;
-    toolsMenu->setTitle(tr("&Tools"));
+    toolsMenu = menuBar()->addMenu(tr("&Tools"));
     toolsMenu->addAction(oscilloscopeAction);
-
-    /* add the menus to the MainWindow */
-    menuBar()->addMenu(toolsMenu);
 }
 
 void MainWindow::showOscilloscope()
@@ -71,11 +81,4 @@ void MainWindow::createStatusBar()
 {
     statusmsg = new QLabel;
     statusBar()->addWidget(statusmsg);
-}
-
-void MainWindow::drawMusic()
-{
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    QGraphicsView *view = new QGraphicsView(scene, this);
-    setCentralWidget(view);
 }
