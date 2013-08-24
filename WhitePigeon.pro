@@ -34,7 +34,6 @@ SOURCES += main.cpp\
     core/WPPipe.cpp \
     core/WPMixer.cpp \
     WPScore/WPPersistentTree.cpp \
-#    WPScore/WPAllocator.cpp
     core/WPSynthesisController.cpp
 
 HEADERS  +=\
