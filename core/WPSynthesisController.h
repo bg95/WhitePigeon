@@ -23,9 +23,13 @@ public:
     QIODevice *synthesize(WPScore &score);
     void synthesizeAndPlay(WPScore &score);
     void stopPlaying();
+    void stopAll();
+    ///void pause();
+    ///void unpause();
     
 signals:
     void synthesisFinished();
+    void playingStopped();
     
 private slots:
     void oneSynthesizerFinished();

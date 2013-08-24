@@ -18,7 +18,7 @@ WPDLLModifier::~WPDLLModifier()
     //manager = 0;
 }
 
-bool WPDLLModifier::loadDLL(QString name)
+bool WPDLLModifier::loadDLL(std::string name)
 {
     if (manager)
         delete manager;
@@ -45,6 +45,11 @@ void WPDLLModifier::reset()
 void WPDLLModifier::setNotes(const std::vector<WPNote> &_notes)
 {
     modifier->setNotes(_notes);
+}
+
+void WPDLLModifier::setNote(const WPNote &_note)
+{
+    modifier->setNote(_note);
 }
 
 void WPDLLModifier::set(std::string para)

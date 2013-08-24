@@ -25,7 +25,7 @@ public:
         return true;
     }
 
-    void setNotes(const std::vector<WPNote> &_notes);
+    void setNote(const WPNote&_note);
 
     double modifyNote(double time);
     double modifyAmp(double time, double amp);

@@ -2,6 +2,7 @@
 #define WPMODIFIER_H
 
 #include "WPScore/WPNote.h"
+#include "WPScore/WPMultinote.h"
 
 class WPModifier
 {
@@ -13,10 +14,12 @@ public:
     bool timePassed(double t);
     virtual void reset(); //call this when overwriting
 
-    virtual void setNotes(const std::vector<WPNote> &_notes);
+    virtual void setNotes(const std::vector<WPMultinote> &_notes);
     //setNotes will be called before calling all modify* functions, telling the notes for the modifier
     //call WPModifier::setNotes when overwriting, or getNotes won't work
-    std::vector<WPNote> &getNotes(); //why can't be inline?
+    std::vector<WPMultinote> &getNotes(); //why can't be inline?
+    virtual void setNote(const WPNote &_note); //similar to setNotes, but for isSingleNote() == true
+    WPNote &getNote();
 
     virtual bool isGlobal(); //true if the modifier applies to all parts
     virtual bool isSingleNote();
@@ -42,7 +45,8 @@ public:
 
 private:
     double wpmodifier_time, wpmodifier_prevtime;
-    std::vector<WPNote> wpmodifier_notes;
+    std::vector<WPMultinote> wpmodifier_notes;
+    WPNote wpmodifier_note;
 
 };
 

@@ -37,6 +37,7 @@ public:
     //explicit WPDLLManager(QString &name);
     ~WPDLLManager();
     bool openDLL(QString &name);
+    bool openDLL(std::string &name);
     bool openDLL(const char *str);
     void *getFuncAddr(QString &name) const;
     void *getFuncAddr(const char *str) const;

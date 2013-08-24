@@ -9,13 +9,14 @@ class WPDLLModifier : public WPModifier
 public:
     WPDLLModifier();
     ~WPDLLModifier();
-    bool loadDLL(QString name);
+    bool loadDLL(std::string name);
 
     void reset();
 
     void setNotes(const std::vector<WPNote> &_notes);
     //setNotes will be called before calling all modify* functions, telling the notes for the modifier
     //call WPModifier::setNotes when overwriting, or getNotes won't work
+    void setNote(const WPNote &_note); //similar to setNotes, but for isSingleNote() == true
 
     bool isGlobal(); //true if the modifier applies to all parts
     bool isSingleNote();

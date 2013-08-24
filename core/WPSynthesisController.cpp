@@ -70,6 +70,7 @@ void WPSynthesisController::stopPlaying()
 {
     if (audiooutput->state() != QAudio::StoppedState)
         audiooutput->stop();
+    emit playingStopped();
 }
 
 void WPSynthesisController::oneSynthesizerFinished()

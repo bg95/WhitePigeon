@@ -15,6 +15,13 @@ bool WPDLLManager::openDLL(QString &name)
     const char *str = ba.constData();
     return openDLL(str);
 }
+bool WPDLLManager::openDLL(std::string &name)
+{
+    char str[name.size() + 1];
+    memcpy(str, name.data(), name.size());
+    str[name.size()] = 0;
+    return openDLL(str);
+}
 bool WPDLLManager::openDLL(const char *str)
 {
     if (handle)

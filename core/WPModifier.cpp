@@ -33,14 +33,24 @@ void WPModifier::reset()
     wpmodifier_prevtime = 0;
 }
 
-void WPModifier::setNotes(const std::vector<WPNote> &_notes)
+void WPModifier::setNotes(const std::vector<WPMultinote> &_notes)
 {
     wpmodifier_notes = _notes;
 }
 
-std::vector<WPNote> &WPModifier::getNotes()
+std::vector<WPMultinote> &WPModifier::getNotes()
 {
     return wpmodifier_notes;
+}
+
+void WPModifier::setNote(const WPNote &_note)
+{
+    wpmodifier_note = _note;
+}
+
+WPNote &WPModifier::getNote()
+{
+    return wpmodifier_note;
 }
 
 void WPModifier::set(std::string para)
