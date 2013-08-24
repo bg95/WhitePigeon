@@ -4,7 +4,7 @@ WPPart::WPPart (WPScore *M)
 {
 	Master = M;
 	IsToBePlayed = 1;
-	Volumn = 1.0;
+	Volume = 1.0;
 	PlayingPosition = WPPosition (Fraction (0, 1));
 	VerMap.clear();
 	MasterVer = Master->getCurrentVersion();
@@ -24,7 +24,7 @@ WPPart::WPPart (WPScore *M, const std::string &S)
 {
 	Master = M;
 	IsToBePlayed = 1;
-	Volumn = 1.0;
+	Volume = 1.0;
 	PlayingPosition = WPPosition (Fraction (0, 1));
 	VerMap.clear();
 	MasterVer = Master->getCurrentVersion();
@@ -180,7 +180,7 @@ bool WPPart::isToBePlayed()
 
 double WPPart::getVolume()
 {
-	return isToBePlayed() ? Volumn : 0.0;
+	return isToBePlayed() ? Volume : 0.0;
 }
 
 int WPPart::displayOrder()

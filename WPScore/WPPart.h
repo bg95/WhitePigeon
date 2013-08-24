@@ -40,7 +40,7 @@ class WPPart
 	private:
 		WPScore *Master;
 		int MasterVer, MyVer;
-		double Volumn;
+		double Volume;
 		bool IsToBePlayed;
 		WPPosition PlayingPosition;
 		std::map <int, int> VerMap;
