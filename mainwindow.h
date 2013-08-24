@@ -3,9 +3,12 @@
 
 #include <QMainWindow>
 
-class QAction;
-class QMenu;
+/* Class declearation */
+class QLabel;
 class OscilloscopeWindow;
+class QRecentFilesMenu;
+class QMdiArea;
+class QMdiSubWindow;
 
 class MainWindow : public QMainWindow
 {
@@ -13,23 +16,37 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow();
+    ~MainWindow();
 
 private slots:
+    /* Action functions */
+    void newFile();
     void showOscilloscope();
+    void updateStatusBar(QMdiSubWindow* window);
 
 private:
     void createActions();
     void createMenus();
     void createToolBar();
     void createStatusBar();
-    void drawMusic();
 
+    /* Action list */
+    QAction *newAction;
     QAction *oscilloscopeAction;
 
+    /* Menu list */
+    QMenu *fileMenu;
+    QRecentFilesMenu *recentFilesMenu;
     QMenu *toolsMenu;
+
+    /* ToolBar list */
+    QToolBar *fileToolBar;
     QToolBar *toolBar;
 
+    /* Private widget list */
+    QMdiArea *mdiArea;
     OscilloscopeWindow *oscilloscopeWindow;
+    int countNumber;
 };
 
 #endif
