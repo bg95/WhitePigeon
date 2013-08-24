@@ -1,6 +1,7 @@
 #include <QtWidgets>
 
 #include "QRecentFilesMenu.h"
+#include "core/WPSynthesisController.h"
 #include "OscilloscopeWindow.h"
 #include "WPWindow.h"
 
@@ -9,6 +10,7 @@
 MainWindow::MainWindow()
 {
     /* Private widget settings */
+    controller = new WPSynthesisController(this);
     oscilloscopeWindow = 0;
     countNumber = 0;
 
@@ -18,6 +20,8 @@ MainWindow::MainWindow()
     mdiArea->setActivationOrder(QMdiArea::CreationOrder);
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this, SLOT(updateStatusBar(QMdiSubWindow*)));
+    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
+            this, SLOT(updateActionsNeedingSubWindow()));
 
     /* MainWindow settings */
     setWindowTitle(tr("WhitePigeon"));
@@ -48,13 +52,52 @@ void MainWindow::createActions()
             this, SLOT(newFile()));
 
     openAction = new QAction(this);
-    openAction->setText(tr("&Open"));
+    openAction->setText(tr("&Open..."));
     // openAction->setIcon(QIcon(":/images/open.jpg"));
     openAction->setShortcut(QKeySequence::Open);
-    openAction->setStatusTip(tr("Open a file"));
-    openAction->setToolTip(tr("Open a file"));
+    openAction->setStatusTip(tr("Open an existing file"));
+    openAction->setToolTip(tr("Open an existing file"));
     connect(openAction, SIGNAL(triggered()),
             this, SLOT(loadFile()));
+
+    saveAction = new QAction(this);
+    saveAction->setText(tr("&Save"));
+    // saveAction->setIcon(QIcon(":/images/save.jpg"));
+    saveAction->setShortcut(QKeySequence::Save);
+    saveAction->setStatusTip(tr("Save the file to disk"));
+    saveAction->setToolTip(tr("Save the file"));
+    saveAction->setEnabled(false);
+    connect(saveAction, SIGNAL(triggered()),
+            this, SLOT(saveFile()));
+
+    saveAsAction = new QAction(this);
+    saveAsAction->setText(tr("Save &As..."));
+    // saveAsAction->setIcon(QIcon(":/images/saveas.jpg"));
+    saveAsAction->setShortcut(QKeySequence::SaveAs);
+    saveAsAction->setStatusTip(tr("Save the file under a new name"));
+    saveAsAction->setToolTip(tr("Save the file under a new name"));
+    saveAsAction->setEnabled(false);
+    connect(saveAsAction, SIGNAL(triggered()),
+            this, SLOT(saveAsFile()));
+
+    playAction = new QAction(this);
+    playAction->setText(tr("Play"));
+    // playAction->setIcon(QIcon(":/images/play.jpg"));
+    // playAction->setShortcut();
+    playAction->setStatusTip(tr("Play the score"));
+    playAction->setToolTip(tr("Play the score"));
+    playAction->setEnabled(false);
+    connect(playAction, SIGNAL(triggered()),
+            this, SLOT(play()));
+
+    stopAction = new QAction(this);
+    stopAction->setText(tr("Stop"));
+    // stopAction->setIcon(QIcon(":/images/stop.jpg"));
+    // stopAction->setShortcut();
+    stopAction->setStatusTip(tr("Stop playing"));
+    stopAction->setToolTip(tr("Stop playing"));
+    connect(stopAction, SIGNAL(triggered()),
+            this, SLOT(stopAll()));
 
     oscilloscopeAction = new QAction(this);
     oscilloscopeAction->setText(tr("&Oscilloscope"));
@@ -80,6 +123,13 @@ void MainWindow::createMenus()
             this, SLOT(loadFile(const QString &)));
 
     fileMenu->addMenu(recentFilesMenu);
+    fileMenu->addSeparator();
+    fileMenu->addAction(saveAction);
+    fileMenu->addAction(saveAsAction);
+
+    musicMenu = menuBar()->addMenu(tr("&Music"));
+    musicMenu->addAction(playAction);
+    musicMenu->addAction(stopAction);
 
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
     toolsMenu->addAction(oscilloscopeAction);
@@ -91,14 +141,21 @@ void MainWindow::createToolBar()
     fileToolBar = new QToolBar;
     fileToolBar->addAction(newAction);
     fileToolBar->addAction(openAction);
-    fileToolBar->setToolTip(tr("&File"));
+    fileToolBar->addAction(saveAction);
+    fileToolBar->setToolTip(tr("File"));
+
+    musicToolBar = new QToolBar;
+    musicToolBar->addAction(playAction);
+    musicToolBar->addAction(stopAction);
+    musicToolBar->setToolTip(tr("Music"));
 
     toolBar = new QToolBar;
     toolBar->addAction(oscilloscopeAction);
-    toolBar->setToolTip(tr("&Tools"));
+    toolBar->setToolTip(tr("Tools"));
 
     /* add the toolbars to the MainWindow */
     addToolBar(fileToolBar);
+    addToolBar(musicToolBar);
     addToolBar(toolBar);
 }
 
@@ -148,6 +205,71 @@ void MainWindow::loadFile(const QString& file)
             statusBar()->showMessage(tr("Loading canceled"), 2000);
         }
     }
+}
+
+bool MainWindow::saveFile()
+{
+    WPWindow *window = dynamic_cast<WPWindow *>(mdiArea->activeSubWindow());
+    if (window->isSaved())
+    {
+        if (window->saveFile())
+        {
+            statusBar()->showMessage(tr("File saved"), 2000);
+            return true;
+        }
+        else
+        {
+            statusBar()->showMessage(tr("Saving failed"), 2000);
+            return false;
+        }
+    }
+    else
+    {
+        return saveAsFile();
+    }
+}
+
+bool MainWindow::saveAsFile()
+{
+    WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
+    QString file = QFileDialog::getSaveFileName(this, tr("Save as"));
+    if (file.isEmpty())
+    {
+        return false;
+    }
+    else
+    {
+        if (window->saveFile(file))
+        {
+            statusBar()->showMessage(tr("File saved"), 2000);
+            return true;
+        }
+        else
+        {
+            statusBar()->showMessage(tr("Saving failed"), 2000);
+            return false;
+        }
+    }
+}
+
+void MainWindow::play()
+{
+    WPWindow *window = dynamic_cast<WPWindow *>(mdiArea->activeSubWindow());
+    window->play_with(controller);
+}
+
+void MainWindow::stopAll()
+{
+    // controller->stopAll();
+}
+
+void MainWindow::updateActionsNeedingSubWindow()
+{
+    bool hasActiveWindow = (mdiArea->activeSubWindow() != NULL);
+
+    saveAction->setEnabled(hasActiveWindow);
+    saveAsAction->setEnabled(hasActiveWindow);
+    playAction->setEnabled(hasActiveWindow);
 }
 
 void MainWindow::showOscilloscope()

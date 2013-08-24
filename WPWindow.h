@@ -7,16 +7,22 @@
 
 typedef QGraphicsScene WPGraphicsScene; // class WPGraphicsScene;
 typedef QGraphicsView WPGraphicsView;   // class WPGraphicsView;
+class WPSynthesisController;
 
 class WPWindow : public QMdiSubWindow
 {
 public:
     WPWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
-    bool loadFile(const QString &file);
+    bool isSaved() const;
     QString currentFilePath() const;
+    bool loadFile(const QString &file);
+    bool saveFile();
+    bool saveFile(const QString &file);
+    void play_with(WPSynthesisController *controller);
 
 private:
+    bool saved;
     QString filePath;
     WPGraphicsView *view;
     WPGraphicsScene *scene;
