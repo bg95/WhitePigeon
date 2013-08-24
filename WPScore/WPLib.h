@@ -8,6 +8,19 @@
 #include <cstdio>
 #include <cmath>
 
+template <class T> T checkmax(T &a, T b);
+template <class T> T checkmin(T &a, T b);
+
+template <class T> T checkmax(T &a, T b)
+{
+	return (a > b) ? a : a = b;
+}
+
+template <class T> T checkmin(T &a, T b)
+{
+	return (a < b) ? a : a = b;
+}
+
 class Fraction
 {
 	public:
@@ -27,5 +40,10 @@ class Fraction
 		double toDouble() const;
 		int X, Y;
 };
+
+Fraction stringToFraction(const std::string &);
+std::string intToString(const int &);
+std::string fractionToString(const Fraction &);
+int ran();
 
 #endif

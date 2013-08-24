@@ -38,6 +38,11 @@ bool WPPosition::operator >= (const WPPosition &F) const
 	return Value >= F.Value;
 }
 
+bool WPPosition::operator == (const WPPosition &F) const
+{
+	return Value == F.Value;
+}
+
 WPPosition WPPosition::operator = (const Fraction &F)
 {
 	Value = F;
@@ -50,7 +55,7 @@ WPPosition WPPosition::operator + (const Fraction &F) const
 	return Result;
 }
 
-Fraction Fraction::operator += (const Fraction &F)
+WPPosition WPPosition::operator += (const Fraction &F)
 {
 	*this = *this + F;
 	return *this;

@@ -3,36 +3,92 @@
 WPSynthesizer::WPSynthesizer(QObject *parent) :
     QObject(parent)
 {
+    newthread = new QTimer;
+    connect(newthread, SIGNAL(timeout()), this, SLOT(synthesizePart()));
+    newthread->setSingleShot(true);
+    newthread->setInterval(1);
 }
 
-WPSynthesizer::WPSynthesizer(TimbreType type, QString timbrename, QObject *parent) :
+WPSynthesizer::WPSynthesizer(WPTimbre *_timbre, QObject *parent) :
     QObject(parent)
 {
-    loadTimbre(type, timbrename);
+    newthread = new QTimer;
+    connect(newthread, SIGNAL(timeout()), this, SLOT(synthesizePart()));
+    newthread->setSingleShot(true);
+    newthread->setInterval(1);
+    loadTimbre(_timbre);
 }
 
-void WPSynthesizer::loadTimbre(TimbreType type, QString timbrename)
+WPSynthesizer::~WPSynthesizer()
 {
-    if (type == Internal)
-    {
-        if (timbrename == "Tuning Fork")
-            waveFunction = waveTuningFork;
-    }
+    delete newthread;
+}
+
+void WPSynthesizer::loadTimbre(const WPTimbre *_timbre)
+{
+    timbre = _timbre;
+}
+
+void WPSynthesizer::setOutputDevice(QIODevice &_output)
+{
+    output = &_output;
 }
 
 WPWave *WPSynthesizer::synthesize(WPNote &note)
 {
-    //return waveFunction(note.getFrequency(), note.getTimeSpan());
+    quint32 n = note.getTimeSpan() * WPTimbre::ControlRate, i;
+    double *amp = new double[n];
+    double *freq = new double[n];
+    for (i = 0; i < n; i++)
+        amp[i] = 0.5;
+    for (i = 0; i < n; i++)
+        freq[i] = note.getFrequency();
+    return timbre->synthesize(note.getTimeSpan(), amp, freq); //take care of overflow
 }
 
-void WPSynthesizer::setBufferSize(quint32 size)
+void WPSynthesizer::startSynthesis(WPPart &_part)
 {
-    buffersize = size;
+    part = &_part;
+    qDebug("startSynthesis");
+    //newthread->singleShot(1, this, SLOT(synthesizePart()));
+    //newthread->start(); //this does not recieve the timeout() signal and run synthesizePart()
+    synthesizePart();
 }
 
-quint32 WPSynthesizer::getBufferSize() const
+void WPSynthesizer::synthesizePart()
 {
-    return buffersize;
+    std::pair<WPMultinote, std::pair<std::vector<WPProperty>, std::vector<WPProperty> > > fragment;
+    WPWave *swave = new WPWave;
+    qDebug("%d", fragment.first.getLength().X);
+    fflush(stdout);
+    fflush(stderr);
+    while (fragment = part->nextFragment(), !(fragment.first.getLength() == Fraction(-1, 1)))
+    {
+        std::vector<WPNote> notes = fragment.first.getNotes();
+        std::vector<WPNote>::iterator iter;
+        swave->clear();
+        for (iter = notes.begin(); iter != notes.end(); iter++)
+        {
+            WPWave *twave;
+            twave = synthesize(*iter);
+            swave->mixWith(1.0, *twave, 1.0);
+            delete twave;
+        }
+        if (-1 == output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType)))
+        {
+            QChar *ch;
+            for (ch = output->errorString().begin(); ch != output->errorString().end(); ch++)
+            {
+                printf("%c", ch->toLatin1());
+            }
+            printf("\n");
+            fflush(stdout);
+        }
+    }
+    //swave->setFormat(WPWave::defaultAudioFormat());
+    //swave->play();
+    delete swave;
+    synthesisFinished();
 }
 
 //static
@@ -45,7 +101,7 @@ WPWave::WaveDataType WPSynthesizer::truncateWaveData(double x)
         x = -1.0;
     return WPWave::WaveDataType(x * 32767);
 }
-
+/*
 WPWave *WPSynthesizer::waveTuningFork(double frequency, double duration)
 {
     QVector<WPWave::WaveDataType> tmpdata;
@@ -61,3 +117,4 @@ WPWave *WPSynthesizer::waveTuningFork(double frequency, double duration)
 
     return new WPWave(tmpdata, format);
 }
+*/

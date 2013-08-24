@@ -1,4 +1,5 @@
 #include "WPOscilloscope.h"
+#include "WPPipe.h"
 
 WPOscilloscope::WPOscilloscope(QWidget *parent) :
     QGLWidget(parent)
@@ -29,7 +30,8 @@ void WPOscilloscope::start(quint32 _period, quint32 _length)
 
 void WPOscilloscope::refresh()
 {
-    QByteArray bytearray(inputdevice->readAll().rightJustified(length * sizeof(WPWave::WaveDataType), 0, true));
+    QByteArray input = inputdevice->readAll();
+    QByteArray bytearray(input.rightJustified(length * sizeof(WPWave::WaveDataType), 0, true));
     WPWave::WaveDataType *begin = (WPWave::WaveDataType *)bytearray.constData();
     QVector<WPWave::WaveDataType> data;
     for (quint32 i = 0; i < length; i++)

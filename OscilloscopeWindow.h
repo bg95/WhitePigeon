@@ -1,11 +1,13 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef OSCILLOSCOPEWINDOW_H
+#define OSCILLOSCOPEWINDOW_H
 
 #include <QMainWindow>
 #include <QGLWidget>
 #include <QAudioInput>
 #include "core/WPWave.h"
 #include "core/WPOscilloscope.h"
+#include "core/WPPipe.h"
+#include "WPScore/WPScore.h"
 #include "myglwidget.h"
 
 namespace Ui {
@@ -29,10 +31,14 @@ private:
     WPOscilloscope oscilloscope;
     WPWave wave;
     QAudioInput *audioinput;
+    WPPipe *pipe;
+    WPScore *score;
 
 protected:
+    void showEvent(QShowEvent *);
     void resizeEvent(QResizeEvent *);
+    void hideEvent(QHideEvent *);
 
 };
 
-#endif // MAINWINDOW_H
+#endif // OSCILLOSCOPEWINDOW_H

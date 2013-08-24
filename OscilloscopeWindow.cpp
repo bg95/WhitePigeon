@@ -1,11 +1,14 @@
 #include "OscilloscopeWindow.h"
-#include "ui_mainwindow.h"
+//#include "ui_mainwindow.h"
 #include "WPScore/WPNote.h"
 #include "core/WPSynthesizer.h"
+#include "core/WPTuningFork.h"
+#include "core/WPPipe.h"
+#include "core/WPSynthesisController.h"
 
 OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::OscilloscopeWindow),/*
+    /*ui(new Ui::OscilloscopeWindow),
     glwidget(this),
     glwidgetR(this),
     glwidgetI(this),
@@ -13,32 +16,67 @@ OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     oscilloscope(this)
 {
     //ui->setupUi(this);
-    setGeometry(100, 50, 1000, 600);/*
-    //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
-    //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
-    WPNote note(0, Fraction(10, 1));
-    WPSynthesizer synthesizer(WPSynthesizer::Internal, "Tuning Fork");
-    qWarning("synthesizer constructed");
-    WPWave *pwave = synthesizer.synthesize(note);
-    qWarning("synthesis finished");
-    wave.copy(*pwave);
-    WPNote note2(4, Fraction(10, 1));
-    pwave = synthesizer.synthesize(note2);
-    wave.mixWith(0.3, *pwave, 0.3);
-    WPNote note3(7, Fraction(10, 1));
-    pwave = synthesizer.synthesize(note3);
-    wave.mixWith(0.6, *pwave, 0.3);*/
-    //waveDecodeFinished();
-
-    audioinput = new QAudioInput(WPWave::defaultAudioFormat());
-    oscilloscope.setInputDevice(*audioinput->start());
-    oscilloscope.start(100, 4096);
+    setGeometry(100, 50, 1000, 600);
+    pipe = new WPPipe();
 }
 
 OscilloscopeWindow::~OscilloscopeWindow()
 {
-    delete ui;
+    //delete ui;
     delete audioinput;
+    delete pipe;
+}
+
+void OscilloscopeWindow::showEvent(QShowEvent *)
+{
+    //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
+    //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
+
+    WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 1)), note3(7, Fraction(1, 1));
+    WPNote note4(-5, Fraction(1, 1)), note5(-1, Fraction(1, 1)), note6(4, Fraction(1, 1));
+/*
+    WPWave *twave = synthesizer.synthesize(note1);
+    //twave->play();
+    wave.clear();
+    wave.setFormat(WPWave::defaultAudioFormat());
+    wave.mixWith(0.5, *twave, 0.5);
+    delete twave;
+    qDebug("synthesis finished");
+    wave.play();
+*/
+    score = new WPScore;
+    qDebug("part num = %d\n", score->getPartList().size());
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note2));
+    score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note3));
+    score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
+    /*
+    score->getPartList()[1].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note4));
+    score->getPartList()[1].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note5));
+    score->getPartList()[1].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note6));
+    score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
+    */
+
+    WPSynthesisController controller;
+    controller.synthesizeAndPlay(*score);
+/*
+    WPSynthesizer synthesizer;
+    WPTuningFork tuningfork;
+    synthesizer.loadTimbre(&tuningfork);
+    qDebug("synthesizer constructed");
+    pipe->open(QIODevice::ReadWrite);
+
+    synthesizer.setOutputDevice(*pipe);
+    synthesizer.startSynthesis(score->getPartList()[0]);
+    static QAudioOutput *audiooutput = new QAudioOutput(WPWave::defaultAudioFormat());
+    audiooutput->start(pipe);
+*/
+
+    audioinput = new QAudioInput(WPWave::defaultAudioFormat());
+    audioinput->setVolume(0.1);
+    oscilloscope.setInputDevice(*audioinput->start());
+    //oscilloscope.setInputDevice(*pipe);
+    oscilloscope.start(100, 4096);
 }
 
 void OscilloscopeWindow::resizeEvent(QResizeEvent *)
@@ -48,6 +86,12 @@ void OscilloscopeWindow::resizeEvent(QResizeEvent *)
     glwidgetI.setGeometry(0, height() / 5 * 2 + 1, width(), height() / 5 - 1);
     glwidgetSTFT.setGeometry(0, height() / 5 * 3 + 1, width(), height() / 5 * 2 - 1);*/
     oscilloscope.setGeometry(0, 0, width(), height());
+}
+
+void OscilloscopeWindow::hideEvent(QHideEvent *)
+{
+    //wave.stop();
+    delete score;
 }
 
 void OscilloscopeWindow::waveDecodeFinished()
@@ -96,6 +140,5 @@ void OscilloscopeWindow::waveDecodeFinished()
         }
     printf("points: %d", glwidgetSTFT.getNumPoints());
     glwidgetSTFT.repaint();
-*/
-    wave.play();
+    wave.play();*/
 }
