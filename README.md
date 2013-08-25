@@ -4,8 +4,4 @@ Hello everyone!
 This is a music software!
 Glad to see you again!
 This line is for testing.
-<<<<<<< HEAD
 LeiZhixian
-=======
-Pt-Cr
->>>>>>> master
