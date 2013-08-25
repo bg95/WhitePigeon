@@ -35,7 +35,17 @@ SOURCES += main.cpp\
     core/WPMixer.cpp \
     WPScore/WPPersistentTree.cpp \
 #    WPScore/WPAllocator.cpp
-    core/WPSynthesisController.cpp
+    core/WPSynthesisController.cpp \
+    musictextitem.cpp \
+    musicscene.cpp \
+    musicarcitem.cpp \
+    getmusicinfodialog.cpp \
+    musicbracketitem.cpp \
+    musicdotitem.cpp \
+    musiclineitem.cpp \
+    musicbaritem.cpp \
+    musicrowitem.cpp \
+    musicwholeitem.cpp
 
 HEADERS  +=\
             myglwidget.h \
@@ -60,4 +70,14 @@ HEADERS  +=\
     core/WPMixer.h \
     WPScore/WPPersistentTree.h \
     WPScore/WPAllocator.h \
-    core/WPSynthesisController.h
+    core/WPSynthesisController.h \
+    musictextitem.h \
+    musicscene.h \
+    musicarcitem.h \
+    getmusicinfodialog.h \
+    musicbracketitem.h \
+    musicdotitem.h \
+    musiclineitem.h \
+    musicbaritem.h \
+    musicrowitem.h \
+    musicwholeitem.h
