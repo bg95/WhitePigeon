@@ -8,6 +8,7 @@
 typedef QGraphicsScene WPGraphicsScene; // class WPGraphicsScene;
 typedef QGraphicsView WPGraphicsView;   // class WPGraphicsView;
 class WPSynthesisController;
+class WPScore;
 
 class WPWindow : public QMdiSubWindow
 {
@@ -21,9 +22,19 @@ public:
     bool saveFile(const QString &file);
     void play_with(WPSynthesisController *controller);
 
+protected:
+    void closeEvent(QCloseEvent *closeEvent);
+
+private slots:
+    void onScoreModified();
+
 private:
+    bool okToContinue();
+
     bool saved;
     QString filePath;
+    WPScore *score;
+    int lastVersion;
     WPGraphicsView *view;
     WPGraphicsScene *scene;
 };

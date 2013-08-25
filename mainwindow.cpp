@@ -33,6 +33,8 @@ MainWindow::MainWindow()
     createActions();
     createToolBar();
     createMenus();
+
+    readSettings();
 }
 
 MainWindow::~MainWindow()
@@ -80,6 +82,35 @@ void MainWindow::createActions()
     connect(saveAsAction, SIGNAL(triggered()),
             this, SLOT(saveAsFile()));
 
+    closeAction = new QAction(this);
+    closeAction->setText(tr("Close"));
+    // closeAction->setIcon(QIcon(":/images/close.jpg"));
+    closeAction->setShortcut(QKeySequence::Close);
+    closeAction->setStatusTip(tr("Close the file"));
+    closeAction->setToolTip(tr("Close the file"));
+    closeAction->setEnabled(false);
+    connect(closeAction, SIGNAL(triggered()),
+            this, SLOT(closeFile()));
+
+    closeAllAction = new QAction(this);
+    closeAllAction->setText(tr("Close All"));
+    // closeAllAction->setIcon(QIcon(":/images/closeall.jpg"));
+    // closeAllAction->setShortcut();
+    closeAllAction->setStatusTip(tr("Close all files"));
+    closeAllAction->setToolTip(tr("Close all files"));
+    closeAllAction->setEnabled(false);
+    connect(closeAllAction, SIGNAL(triggered()),
+            this, SLOT(closeAllFiles()));
+
+    exitAction = new QAction(this);
+    exitAction->setText(tr("E&xit"));
+    // exitAction->setIcon(QIcon(":/images/exit.jpg"));
+    exitAction->setShortcut(QKeySequence::Quit);
+    exitAction->setStatusTip(tr("Exit the application"));
+    exitAction->setToolTip(tr("Exit the application"));
+    connect(exitAction, SIGNAL(triggered()),
+            this, SLOT(close()));
+
     playAction = new QAction(this);
     playAction->setText(tr("Play"));
     // playAction->setIcon(QIcon(":/images/play.jpg"));
@@ -126,6 +157,11 @@ void MainWindow::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction(saveAction);
     fileMenu->addAction(saveAsAction);
+    fileMenu->addSeparator();
+    fileMenu->addAction(closeAction);
+    fileMenu->addAction(closeAllAction);
+    fileMenu->addSeparator();
+    fileMenu->addAction(exitAction);
 
     musicMenu = menuBar()->addMenu(tr("&Music"));
     musicMenu->addAction(playAction);
@@ -142,6 +178,9 @@ void MainWindow::createToolBar()
     fileToolBar->addAction(newAction);
     fileToolBar->addAction(openAction);
     fileToolBar->addAction(saveAction);
+    fileToolBar->addSeparator();
+    fileToolBar->addAction(closeAction);
+    fileToolBar->addAction(closeAllAction);
     fileToolBar->setToolTip(tr("File"));
 
     musicToolBar = new QToolBar;
@@ -159,6 +198,44 @@ void MainWindow::createToolBar()
     addToolBar(toolBar);
 }
 
+void MainWindow::readSettings()
+{
+    QSettings settings("THU3000", "WhitePigeon");
+
+    settings.beginGroup("MainWindow");
+    resize(settings.value("size").toSize());
+    move(settings.value("pos").toPoint());
+    settings.endGroup();
+
+    settings.beginGroup("RecentFiles");
+    recentFilesMenu->restoreState(settings.value("files").toByteArray());
+    settings.endGroup();
+}
+
+void MainWindow::writeSettings()
+{
+    QSettings settings("THU3000", "WhitePigeon");
+
+    settings.beginGroup("MainWindow");
+    settings.setValue("size", size());
+    settings.setValue("pos", pos());
+    settings.endGroup();
+
+    settings.beginGroup("RecentFiles");
+    settings.setValue("files", recentFilesMenu->saveState());
+    settings.endGroup();
+}
+
+
+/* protected events */
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    closeAllFiles();
+    writeSettings();
+    event->accept();
+}
+
 
 /* private slots */
 
@@ -166,7 +243,7 @@ void MainWindow::newFile()
 {
     ++countNumber;
     WPWindow *window = createNewChild();
-    window->setWindowTitle(tr("untitled %1").arg(countNumber));
+    window->setWindowTitle(tr("untitled %1[*]").arg(countNumber));
     window->show();
 }
 
@@ -242,6 +319,7 @@ bool MainWindow::saveAsFile()
         if (window->saveFile(file))
         {
             statusBar()->showMessage(tr("File saved"), 2000);
+            recentFilesMenu->addRecentFile(file);
             return true;
         }
         else
@@ -250,6 +328,18 @@ bool MainWindow::saveAsFile()
             return false;
         }
     }
+}
+
+void MainWindow::closeFile()
+{
+    QMdiSubWindow *window = mdiArea->activeSubWindow();
+    window->close();
+}
+
+void MainWindow::closeAllFiles()
+{
+    foreach (QMdiSubWindow *window, mdiArea->subWindowList())
+        window->close();
 }
 
 void MainWindow::play()
@@ -270,6 +360,8 @@ void MainWindow::updateActionsNeedingSubWindow()
     saveAction->setEnabled(hasActiveWindow);
     saveAsAction->setEnabled(hasActiveWindow);
     playAction->setEnabled(hasActiveWindow);
+    closeAction->setEnabled(hasActiveWindow);
+    closeAllAction->setEnabled(hasActiveWindow);
 }
 
 void MainWindow::showOscilloscope()
@@ -285,7 +377,8 @@ void MainWindow::updateStatusBar(QMdiSubWindow* window)
 {
     if (window)
     {
-        statusBar()->showMessage(window->windowTitle());
+        QString s = window->windowTitle();
+        statusBar()->showMessage(s.left(s.size() - 3));
     }
 }
 

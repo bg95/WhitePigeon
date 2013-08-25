@@ -37,7 +37,8 @@ SOURCES += main.cpp\
 #    WPScore/WPAllocator.cpp
     core/WPSynthesisController.cpp \
     QRecentFilesMenu.cpp \
-    WPWindow.cpp
+    WPWindow.cpp \
+    addressbar.cpp
 
 HEADERS  +=\
             myglwidget.h \
@@ -64,6 +65,10 @@ HEADERS  +=\
     WPScore/WPAllocator.h \
     core/WPSynthesisController.h \
     QRecentFilesMenu.h \
-    WPWindow.h
+    WPWindow.h \
+    addressbar.h
 
 TRANSLATIONS += Chinese.ts
+
+RESOURCES += \
+    whitepigeon.qrc

@@ -4,7 +4,6 @@
 #include <QMainWindow>
 
 /* Class declearation */
-class QLabel;
 class OscilloscopeWindow;
 class QRecentFilesMenu;
 class QMdiArea;
@@ -20,6 +19,9 @@ public:
     MainWindow();
     ~MainWindow();
 
+protected:
+    void closeEvent(QCloseEvent *);
+
 private slots:
     /* Action functions */
     void newFile();
@@ -27,6 +29,8 @@ private slots:
     void loadFile(const QString &file);
     bool saveFile();
     bool saveAsFile();
+    void closeFile();
+    void closeAllFiles();
     void play();
     void stopAll();
     void updateActionsNeedingSubWindow();
@@ -38,6 +42,8 @@ private:
     void createMenus();
     void createToolBar();
     void createStatusBar();
+    void readSettings();
+    void writeSettings();
 
     WPWindow *createNewChild();
     WPWindow *findChild(const QString &file);
@@ -47,6 +53,9 @@ private:
     QAction *openAction;
     QAction *saveAction;
     QAction *saveAsAction;
+    QAction *closeAction;
+    QAction *closeAllAction;
+    QAction *exitAction;
     QAction *playAction;
     QAction *stopAction;
     QAction *oscilloscopeAction;
