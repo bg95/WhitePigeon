@@ -45,6 +45,10 @@ private slots:
     void synthesizePart();
 
 private:
+    int processTuningFreqAmp(int nnote, double time, double &freq, double &amp);
+    void processFreqAmpMultiple(double time, std::vector<double> &freq, std::vector<double> &amp);
+    int processNote(double time, double &notelength);
+    std::map<WPProperty, WPPropertyAndModifiers> propmap;
     const WPTimbre *timbre;
     QIODevice *output;
     WPPart *part;

@@ -24,7 +24,7 @@ public:
     virtual bool isGlobal(); //true if the modifier applies to all parts
     virtual bool isSingleNote();
     //true if the modifier applies to single notes, or application between notes does not interrelate
-    //if true, setNotes() will always pass a single note, isGlobal must be false
+    //if true, setNote() will always pass a single note, isGlobal must be false
 
     virtual bool isTuning(); //if true, isFreqModifier must be true
     virtual bool isTimbreModifier();
