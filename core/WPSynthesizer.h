@@ -13,6 +13,7 @@
 #include "../WPScore/WPNote.h"
 #include "../WPScore/WPPart.h"
 #include "WPDLLManager/WPDLLModifier.h"
+#include "WPDLLManager/WPDLLTimbreManager.h"
 
 class WPSynthesizer : public QThread
 {
@@ -49,9 +50,10 @@ private:
     int processTuningFreqAmp(double time, std::vector<double> &freq, std::vector<double> &amp);
     //void processFreqAmpMultiple(double time, std::vector<double> &freq, std::vector<double> &amp);
     int processNote(double time, double &notelength);
-    void processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo);
+    int processTimbre(double time, std::string &timbrename);
+    void processTempo(double time, double &tempo);
+    void processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo, std::string &timbre);
     std::map<WPProperty, WPPropertyAndModifiers> propmap;
-    const WPTimbre *timbre;
     QIODevice *output;
     WPPart *part;
     bool slowingdown;

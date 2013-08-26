@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     core/WPModifier.cpp \
     core/WPStaccatissimo.cpp \
     WPDLLManager/WPDLLModifier.cpp \
-    core/WPPropertyAndModifiers.cpp
+    core/WPPropertyAndModifiers.cpp \
+    WPDLLManager/WPDLLTimbreManager.cpp
 
 HEADERS  +=\
             myglwidget.h \
@@ -76,4 +77,5 @@ HEADERS  +=\
     core/WPModifier.h \
     core/WPStaccatissimo.h \
     WPDLLManager/WPDLLModifier.h \
-    core/WPPropertyAndModifiers.h
+    core/WPPropertyAndModifiers.h \
+    WPDLLManager/WPDLLTimbreManager.h

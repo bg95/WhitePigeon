@@ -26,7 +26,7 @@ private:
     WPDLLManager manager;
     std::vector<WPModifier *> modifiers;
     WPModifier *samplemodifier;
-    std::string name, para, fname;\
+    std::string name, para, fname;
 
 };
 
