@@ -10,6 +10,7 @@ class QMdiArea;
 class QMdiSubWindow;
 class WPWindow;
 class WPSynthesisController;
+class AddressBar;
 
 class MainWindow : public QMainWindow
 {
@@ -41,7 +42,7 @@ private:
     void createActions();
     void createMenus();
     void createToolBar();
-    void createStatusBar();
+    void createAddressBar();
     void readSettings();
     void writeSettings();
 
@@ -58,12 +59,14 @@ private:
     QAction *exitAction;
     QAction *playAction;
     QAction *stopAction;
+    QAction *addressViewAction;
     QAction *oscilloscopeAction;
 
     /* Menu list */
     QMenu *fileMenu;
     QRecentFilesMenu *recentFilesMenu;
     QMenu *musicMenu;
+    QMenu *viewMenu;
     QMenu *toolsMenu;
 
     /* ToolBar list */
@@ -72,6 +75,8 @@ private:
     QToolBar *toolBar;
 
     /* Private widget list */
+    AddressBar *addressBar;
+    QDockWidget *addressDock;
     WPSynthesisController *controller;
     QMdiArea *mdiArea;
     OscilloscopeWindow *oscilloscopeWindow;

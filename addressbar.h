@@ -3,9 +3,11 @@
 
 #include <QWidget>
 
+class QLabel;
 class QLineEdit;
 class QPushButton;
 class QHBoxLayout;
+class QMdiSubWindow;
 
 class AddressBar : public QWidget
 {
@@ -19,8 +21,10 @@ signals:
 
 public slots:
     void goToSite();
+    void showPath(QMdiSubWindow *__window);
 
 private:
+    QLabel *label;
     QLineEdit *addressEdit;
     QPushButton *goButton;
     QHBoxLayout *layout;

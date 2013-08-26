@@ -4,6 +4,7 @@
 #include "core/WPSynthesisController.h"
 #include "OscilloscopeWindow.h"
 #include "WPWindow.h"
+#include "addressbar.h"
 
 #include "mainwindow.h"
 
@@ -17,6 +18,7 @@ MainWindow::MainWindow()
     mdiArea = new QMdiArea;
     mdiArea->setParent(this);
     mdiArea->setViewMode(QMdiArea::TabbedView);
+    mdiArea->setTabsMovable(true);
     mdiArea->setActivationOrder(QMdiArea::CreationOrder);
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this, SLOT(updateStatusBar(QMdiSubWindow*)));
@@ -31,8 +33,10 @@ MainWindow::MainWindow()
 
     /* UI settings */
     createActions();
-    createToolBar();
     createMenus();
+    createToolBar();
+    createAddressBar();
+    statusBar();
 
     readSettings();
 }
@@ -130,6 +134,13 @@ void MainWindow::createActions()
     connect(stopAction, SIGNAL(triggered()),
             this, SLOT(stopAll()));
 
+    addressViewAction = new QAction(this);
+    addressViewAction->setText(tr("Address bar"));
+    addressViewAction->setCheckable(true);
+    addressViewAction->setChecked(true);
+    addressViewAction->setStatusTip(tr("Show address bar or not"));
+    addressViewAction->setToolTip(tr("Show address bar or not"));
+
     oscilloscopeAction = new QAction(this);
     oscilloscopeAction->setText(tr("&Oscilloscope"));
     // oscilloscopeAction->setIcon(QIcon(":/images/oscilloscope.jpg"));
@@ -167,6 +178,9 @@ void MainWindow::createMenus()
     musicMenu->addAction(playAction);
     musicMenu->addAction(stopAction);
 
+    viewMenu = menuBar()->addMenu(tr("&View"));
+    viewMenu->addAction(addressViewAction);
+
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
     toolsMenu->addAction(oscilloscopeAction);
 }
@@ -198,6 +212,25 @@ void MainWindow::createToolBar()
     addToolBar(toolBar);
 }
 
+void MainWindow::createAddressBar()
+{
+    addressBar = new AddressBar(this);
+    connect(addressBar, SIGNAL(go(QString)),
+            this, SLOT(loadFile(QString)));
+    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
+            addressBar, SLOT(showPath(QMdiSubWindow*)));
+
+    addressDock = new QDockWidget(this);
+    addressDock->setAllowedAreas(Qt::TopDockWidgetArea);
+    addressDock->setWidget(addressBar);
+    addressDock->setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
+    connect(addressViewAction, SIGNAL(triggered(bool)),
+            addressDock, SLOT(setVisible(bool)));
+    connect(addressDock, SIGNAL(visibilityChanged(bool)),
+            addressViewAction, SLOT(setChecked(bool)));
+    addDockWidget(Qt::TopDockWidgetArea, addressDock);
+}
+
 void MainWindow::readSettings()
 {
     QSettings settings("THU3000", "WhitePigeon");
@@ -209,6 +242,11 @@ void MainWindow::readSettings()
 
     settings.beginGroup("RecentFiles");
     recentFilesMenu->restoreState(settings.value("files").toByteArray());
+    settings.endGroup();
+
+    settings.beginGroup("AddressBar");
+    addressViewAction->setChecked(settings.value("visible").toBool());
+    addressDock->setVisible(settings.value("visible").toBool());
     settings.endGroup();
 }
 
@@ -223,6 +261,10 @@ void MainWindow::writeSettings()
 
     settings.beginGroup("RecentFiles");
     settings.setValue("files", recentFilesMenu->saveState());
+    settings.endGroup();
+
+    settings.beginGroup("AddressBar");
+    settings.setValue("visible", addressDock->isVisible());
     settings.endGroup();
 }
 
