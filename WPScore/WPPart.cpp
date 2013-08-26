@@ -208,6 +208,12 @@ std::vector<WPProperty> WPPart::getAllProperties()
 	return Properties[MyVer].traverse();
 }
 
+std::vector<WPProperty> WPPart::filterPropertiesByPrefix(const std::string &S)
+{
+	synchronizeWithMaster();
+	return filterPrefix(Properties[MyVer].traverse(), S);
+}
+
 std::vector<WPMultinote> WPPart::getNotesByInterval(WPInterval &I)
 {
 	synchronizeWithMaster();
