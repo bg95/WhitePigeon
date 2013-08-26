@@ -79,91 +79,69 @@ void WPSynthesizer::run()
 void WPSynthesizer::synthesizePart()
 {
     std::pair<WPMultinote, std::pair<std::vector<WPProperty>, std::vector<WPProperty> > > fragment;
-    std::vector<WPModifier *> cmodi;
-    std::vector<WPProperty> cprop;
-    std::set<WPPropertyAndModifiers> cpropset;
     WPWave *swave = new WPWave;
-    //fflush(stdout);
-    //fflush(stderr);
-    cmodi.clear();
+
+    double time0, time1;
+    std::vector<std::vector<double> > freq, amp;
+    std::vector<double> tempo, time, vtime;
+    double dur;
+    int samplecnt;
+
+    samplecnt = 0;
+    freq.clear();
+    amp.clear();
+    tempo.clear();
+    time.clear();
+    time0 = 0.0;
+    time1 = TimeStep;
     propmap.clear();
+    samplecnt = 0;
+
+    freq.push_back(std::vector<double>());
+    amp.push_back(std::vector<double>());
+    tempo.push_back(0.0);
+    time.push_back(time0);
+    processAll(time0, freq[samplecnt], amp[samplecnt], notelength, tempo[samplecnt]);
+    samplecnt++;
+
     while (fragment = part->nextFragment(), !(fragment.first.getLength() == Fraction(-1, 1)))
     {
         std::vector<WPNote> notes = fragment.first.getNotes();
-        std::vector<WPNote>::iterator noteiter;
         std::vector<WPProperty> sprop = fragment.second.first, eprop = fragment.second.second;
-        std::vector<WPProperty>::iterator propiter;
-        std::map<WPProperty, WPPropertyAndModifiers>::iterator propmapiter;
 
-        std::vector<std::vector<double> > freq, amp;
-        std::vector<double> tempo, time;
-        std::vector<double> freq0, freq1;
-        std::vector<double> amp0, amp1;
-        double tempo0, tempo1;
-        int tuned, notemodicnt;
         double notelength;
         //scan time
-        double time0, time1, timespan;
-        timespan = notes[0].getLength().toDouble();
-        for (time0 = 0.0, time1 = 1 / TimeStep;
-             time0 < timespan;
-             time0 = time1, time1 = std::min(time1 + 1.0 / WPTimbre::ControlRate, timespan))
+        double timeend;
+        timeend = notes[0].getLength().toDouble() + time0;
+        for (;
+             time0 < timeend;
+             time0 = time1, time1 = std::min(time1 + TimeStep, timeend))
         {
-            //process properties
-            //delete ended
-            for (propiter = eprop.begin(); propiter != eprop.end(); propiter++)
-                if (/*already ended*/)
-                {
-                    //cpropsetiter = cpropset.find(WPPropertyAndModifiers(*propiter));
-                    //cpropset.erase(cporpsetiter);
-                    propmap.erase(*propiter);
-                }
-            //insert starting
-            for (propiter = sprop.begin(); propiter != sprop.end(); propiter++)
-                if (/*already begun*/)
-                {
-                    WPPropertyAndModifiers *pam = new WPPropertyAndModifiers;
-                    if (pam->setProperty(*propiter))
-                    {
-                        propmap.insert(*propiter, *pam);
-                        if (pam->sampleModifier()->isSingleNote() &&
-                                (pam->sampleModifier()->isFreqModifier() ||
-                                 pam->sampleModifier()->isAmpModifier()))
-                            pam->setNumModifiers(notes.size());
-                    }
-                    else
-                    {
-                        qWarning() << "No plug-in \"" << pam.getName() << "\"!";
-                    }
-                    delete pam;
-                }
-            //Tuning Properties
-            //Freq
-            //Amp
-            tuned = 0;
-            for (i = 0; i < notes.size(); i++)
-                tuned = processTuningFreqAmp(i, time1, freq1[i], amp1[i]);
-            if (tuned == 0)
-                qWarning("No Tuning!");
-            if (tuned >= 2)
-                qWarning("Multiple Tuning!");
-            processFreqAmpMultiple(time, freq1, amp1);
-            //Note
-            notemodicnt = processNote(time, notelength);
-            if (notemodicnt == 0)
-                qWarning("No note modifier!");
-            if (notemodicnt >= 2)
-                qWarning("Multiple note modifier!");
-            //Tempo
-            processTempo(time, tempo1);
-            swave->clear();
-            //Timbre
-            if (output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType)) == -1)
+            processProperties(time0, time1, sprop, eprop);
+
+            freq.push_back(std::vector<double>());
+            amp.push_back(std::vector<double>());
+            tempo.push_back(0.0);
+            time.push_back(time1);
+            processAll(time1, freq[samplecnt], amp[samplecnt], notelength, tempo[samplecnt]);
+            samplecnt++;
+
+            if (notelength >= 0)
             {
-                qCritical() << errorString();
+                //Timbre
+                //calculate vtime and dur
+                //for ...
+                {
+                    swave->clear();
+                    if (output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType)) == -1)
+                    {
+                        qCritical() << errorString();
+                    }
+                    QThread::usleep(100); //remember to remove
+                }
             }
-            QThread::usleep(10000); //remember to remove
         }
+        time1 = time0 + TimeStep;
     }
     //swave->setFormat(WPWave::defaultAudioFormat());
     //swave->play();
@@ -174,48 +152,67 @@ void WPSynthesizer::synthesizePart()
 
 //private
 
-int WPSynthesizer::processTuningFreqAmp(int nnote, double time, double &freq, double &amp)
+void WPSynthesizer::processProperties(double time0, double time1, const std::vector<WPProperty> &sprop, const std::vector<WPProperty> &eprop)
+{
+    std::vector<WPProperty>::iterator propiter;
+    //process properties
+    //delete ended
+    for (propiter = eprop.begin(); propiter != eprop.end(); propiter++)
+        if (/*already ended*/)
+        {
+            //cpropsetiter = cpropset.find(WPPropertyAndModifiers(*propiter));
+            //cpropset.erase(cporpsetiter);
+            propmap.erase(*propiter);
+        }
+    //insert starting
+    for (propiter = sprop.begin(); propiter != sprop.end(); propiter++)
+        if (/*already begun*/)
+        {
+            WPPropertyAndModifiers *pam = new WPPropertyAndModifiers;
+            if (pam->setProperty(*propiter))
+            {
+                propmap.insert(*propiter, *pam);
+                /*
+                if (pam->sampleModifier()->isSingleNote() &&
+                        (pam->sampleModifier()->isFreqModifier() ||
+                         pam->sampleModifier()->isAmpModifier()))
+                    pam->setNumModifiers(notes.size());
+                */
+                pam->sampleModifier()->setNotes(part->getNotesByInterval((*propiter).getInterval()));
+                pam->sampleModifier()->reset((*propiter).getInterval().begin().getValue().toDouble());
+                //pam->sampleModifier()->set();
+            }
+            else
+            {
+                qWarning() << "No plug-in \"" << pam.getName() << "\"!";
+            }
+            delete pam;
+        }
+}
+
+
+int WPSynthesizer::processTuningFreqAmp(double time, std::vector<double> &freq, std::vector<double> &amp)
 {
     std::map<WPProperty, WPPropertyAndModifiers>::iterator propmapiter;
     int tuned = 0;
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmap++)
-        if ((*propmapiter).second.sampleModifier()->isTuning() &&
-            (*propmapiter).second.sampleModifier()->isSingleNote())
+        if ((*propmapiter).second.sampleModifier()->isTuning())
         {
-            freq = (*propmapiter).second.modifiers[nnote]->modifyFreq(time);
+            freq = (*propmapiter).second.sampleModifier()->modifyFreq(time);
             tuned++;
         }
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmap++)
         if ((*propmapiter).second.sampleModifier()->isFreqModifier() &&
-            (*propmapiter).second.sampleModifier()->isSingleNote() &&
             !(*propmapiter).second.sampleModifier()->isTuning())
-        {
-            freq = (*propmapiter).second.modifiers[nnote]->modifyFreq(time, freq);
-        }
-    for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmap++)
-        if ((*propmapiter).second.sampleModifier()->isAmpModifier() &&
-            (*propmapiter).second.sampleModifier()->isSingleNote())
-        {
-            amp = (*propmapiter).second.modifiers[nnote]->modifyAmp(time, amp);
-        }
-    return tuned;
-}
-
-void WPSynthesizer::processFreqAmpMultiple(double time, std::vector<double> &freq, std::vector<double> &amp)
-{
-    std::map<WPProperty, WPPropertyAndModifiers>::iterator propmapiter;
-    for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmap++)
-        if ((*propmapiter).second.sampleModifier()->isFreqModifier() &&
-            !(*propmapiter).second.sampleModifier()->isSingleNote())
         {
             freq = (*propmapiter).second.sampleModifier()->modifyFreq(time, freq);
         }
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmap++)
-        if ((*propmapiter).second.sampleModifier()->isAmpModifier() &&
-            !(*propmapiter).second.sampleModifier()->isSingleNote())
+        if ((*propmapiter).second.sampleModifier()->isAmpModifier())
         {
             amp = (*propmapiter).second.sampleModifier()->modifyAmp(time, amp);
         }
+    return tuned;
 }
 
 int WPSynthesizer::processNote(double time, double &notelength)
@@ -225,17 +222,7 @@ int WPSynthesizer::processNote(double time, double &notelength)
     int notemodicnt = 0;
     notelength = -1.0;
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmap++)
-        if ((*propmapiter).second.sampleModifier()->isNoteModifier() &&
-            (*propmapiter).second.sampleModifier()->isSingleNote())
-        {
-            tmp = (*propmapiter).second.sampleModifier()->modifyNote(time);
-            if (tmp > 0)
-                notelength = tmp;
-            notemodicnt++;
-        }
-    for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmap++)
-        if ((*propmapiter).second.sampleModifier()->isNoteModifier() &&
-            !(*propmapiter).second.sampleModifier()->isSingleNote())
+        if ((*propmapiter).second.sampleModifier()->isNoteModifier())
         {
             tmp = (*propmapiter).second.sampleModifier()->modifyNote(time);
             if (tmp > 0)
@@ -243,6 +230,39 @@ int WPSynthesizer::processNote(double time, double &notelength)
             notemodicnt++;
         }
     return notemodicnt;
+}
+
+void WPSynthesizer::processTempo(double time, double &tempo)
+{
+    std::map<WPProperty, WPPropertyAndModifiers>::iterator propmapiter;
+    for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmap++)
+        if ((*propmapiter).second.sampleModifier()->isTempoModifier())
+        {
+            tempo = (*propmapiter).second.sampleModifier()->modifyTempo(time, tempo);
+        }
+}
+
+void WPSynthesizer::processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo)
+{
+    std::map<WPProperty, WPPropertyAndModifiers>::iterator propmapiter;
+    for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmap++)
+        (*propiter).second.sampleModifier()->setTime(time);
+    //Tuning
+    //Freq
+    //Amp
+    tuned = processTuningFreqAmp(time, freq, amp);
+    if (tuned == 0)
+        qWarning("No Tuning!");
+    if (tuned >= 2)
+        qWarning("Multiple Tuning!");
+    //Note
+    notemodicnt = processNote(time, notelength);
+    if (notemodicnt == 0)
+        qWarning("No note modifier!");
+    if (notemodicnt >= 2)
+        qWarning("Multiple note modifier!");
+    //Tempo
+    processTempo(time, tempo);
 }
 
 //static

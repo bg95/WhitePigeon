@@ -29,8 +29,15 @@ inline bool WPModifier::timePassed(double t)
 
 void WPModifier::reset()
 {
-    wpmodifier_time = 0;
-    wpmodifier_prevtime = 0;
+    wpmodifier_time = 0.0;
+    wpmodifier_prevtime = 0.0;
+}
+
+void WPModifier::reset(double t)
+{
+    wpmodifier_time = t;
+    wpmodifier_prevtime = t;
+    //wpmodifier_deltatime = 0.0;
 }
 
 void WPModifier::setNotes(const std::vector<WPMultinote> &_notes)

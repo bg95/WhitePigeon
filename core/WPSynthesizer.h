@@ -45,9 +45,11 @@ private slots:
     void synthesizePart();
 
 private:
-    int processTuningFreqAmp(int nnote, double time, double &freq, double &amp);
-    void processFreqAmpMultiple(double time, std::vector<double> &freq, std::vector<double> &amp);
+    void processProperties(double time0, double time1, const std::vector<WPProperty> sprop, const std::vector<WPProperty> eprop);
+    int processTuningFreqAmp(double time, std::vector<double> &freq, std::vector<double> &amp);
+    //void processFreqAmpMultiple(double time, std::vector<double> &freq, std::vector<double> &amp);
     int processNote(double time, double &notelength);
+    void processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo);
     std::map<WPProperty, WPPropertyAndModifiers> propmap;
     const WPTimbre *timbre;
     QIODevice *output;
