@@ -37,6 +37,7 @@ MainWindow::MainWindow()
     createToolBar();
     createAddressBar();
     statusBar();
+    createContextMenu();
 
     readSettings();
 }
@@ -134,10 +135,27 @@ void MainWindow::createActions()
     connect(stopAction, SIGNAL(triggered()),
             this, SLOT(stopAll()));
 
+    fileToolViewAction = new QAction(this);
+    fileToolViewAction->setText(tr("File Tool Bar"));
+    fileToolViewAction->setCheckable(true);
+    fileToolViewAction->setStatusTip(tr("Show file tool bar or not"));
+    fileToolViewAction->setToolTip(tr("Show file tool bar or not"));
+
+    musicToolViewAction = new QAction(this);
+    musicToolViewAction->setText(tr("Music Tool Bar"));
+    musicToolViewAction->setCheckable(true);
+    musicToolViewAction->setStatusTip(tr("Show music tool bar or not"));
+    musicToolViewAction->setToolTip(tr("Show music tool bar or not"));
+
+    toolToolViewAction = new QAction(this);
+    toolToolViewAction->setText(tr("Tool Tool Bar"));
+    toolToolViewAction->setCheckable(true);
+    toolToolViewAction->setStatusTip(tr("Show tool tool bar or not"));
+    toolToolViewAction->setToolTip(tr("Show tool tool bar or not"));
+
     addressViewAction = new QAction(this);
-    addressViewAction->setText(tr("Address bar"));
+    addressViewAction->setText(tr("Address Bar"));
     addressViewAction->setCheckable(true);
-    addressViewAction->setChecked(true);
     addressViewAction->setStatusTip(tr("Show address bar or not"));
     addressViewAction->setToolTip(tr("Show address bar or not"));
 
@@ -160,7 +178,6 @@ void MainWindow::createMenus()
 
     recentFilesMenu = new QRecentFilesMenu(fileMenu);
     recentFilesMenu->setTitle(tr("&Recent Files"));
-    recentFilesMenu->setStatusTip(tr("Recent opening files"));
     connect(recentFilesMenu, SIGNAL(recentFileTriggered(const QString &)),
             this, SLOT(loadFile(const QString &)));
 
@@ -181,6 +198,14 @@ void MainWindow::createMenus()
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(addressViewAction);
 
+    toolsViewMenu = new QMenu(viewMenu);
+    toolsViewMenu->setTitle(tr("Tool Bar"));
+    toolsViewMenu->addAction(fileToolViewAction);
+    toolsViewMenu->addAction(musicToolViewAction);
+    toolsViewMenu->addAction(toolToolViewAction);
+
+    viewMenu->addMenu(toolsViewMenu);
+
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
     toolsMenu->addAction(oscilloscopeAction);
 }
@@ -196,20 +221,26 @@ void MainWindow::createToolBar()
     fileToolBar->addAction(closeAction);
     fileToolBar->addAction(closeAllAction);
     fileToolBar->setToolTip(tr("File"));
+    connect(fileToolViewAction, SIGNAL(triggered(bool)),
+            fileToolBar, SLOT(setVisible(bool)));
 
     musicToolBar = new QToolBar;
     musicToolBar->addAction(playAction);
     musicToolBar->addAction(stopAction);
     musicToolBar->setToolTip(tr("Music"));
+    connect(musicToolViewAction, SIGNAL(triggered(bool)),
+            musicToolBar, SLOT(setVisible(bool)));
 
-    toolBar = new QToolBar;
-    toolBar->addAction(oscilloscopeAction);
-    toolBar->setToolTip(tr("Tools"));
+    toolToolBar = new QToolBar;
+    toolToolBar->addAction(oscilloscopeAction);
+    toolToolBar->setToolTip(tr("Tools"));
+    connect(toolToolViewAction, SIGNAL(triggered(bool)),
+            toolToolBar, SLOT(setVisible(bool)));
 
     /* add the toolbars to the MainWindow */
     addToolBar(fileToolBar);
     addToolBar(musicToolBar);
-    addToolBar(toolBar);
+    addToolBar(toolToolBar);
 }
 
 void MainWindow::createAddressBar()
@@ -226,9 +257,15 @@ void MainWindow::createAddressBar()
     addressDock->setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
     connect(addressViewAction, SIGNAL(triggered(bool)),
             addressDock, SLOT(setVisible(bool)));
-    connect(addressDock, SIGNAL(visibilityChanged(bool)),
-            addressViewAction, SLOT(setChecked(bool)));
     addDockWidget(Qt::TopDockWidgetArea, addressDock);
+}
+
+void MainWindow::createContextMenu()
+{
+    addAction(fileToolViewAction);
+    addAction(musicToolViewAction);
+    addAction(toolToolViewAction);
+    addAction(addressViewAction);
 }
 
 void MainWindow::readSettings()
@@ -242,6 +279,15 @@ void MainWindow::readSettings()
 
     settings.beginGroup("RecentFiles");
     recentFilesMenu->restoreState(settings.value("files").toByteArray());
+    settings.endGroup();
+
+    settings.beginGroup("ToolBar");
+    fileToolViewAction->setChecked(settings.value("file").toBool());
+    fileToolBar->setVisible(settings.value("file").toBool());
+    musicToolViewAction->setChecked(settings.value("music").toBool());
+    musicToolBar->setVisible(settings.value("music").toBool());
+    toolToolViewAction->setChecked(settings.value("tool").toBool());
+    toolToolBar->setVisible(settings.value("tool").toBool());
     settings.endGroup();
 
     settings.beginGroup("AddressBar");
@@ -261,6 +307,12 @@ void MainWindow::writeSettings()
 
     settings.beginGroup("RecentFiles");
     settings.setValue("files", recentFilesMenu->saveState());
+    settings.endGroup();
+
+    settings.beginGroup("ToolBar");
+    settings.setValue("file", fileToolBar->isVisible());
+    settings.setValue("music", musicToolBar->isVisible());
+    settings.setValue("tool", toolToolBar->isVisible());
     settings.endGroup();
 
     settings.beginGroup("AddressBar");

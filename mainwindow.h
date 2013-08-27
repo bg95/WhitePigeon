@@ -43,6 +43,7 @@ private:
     void createMenus();
     void createToolBar();
     void createAddressBar();
+    void createContextMenu();
     void readSettings();
     void writeSettings();
 
@@ -59,6 +60,9 @@ private:
     QAction *exitAction;
     QAction *playAction;
     QAction *stopAction;
+    QAction *fileToolViewAction;
+    QAction *musicToolViewAction;
+    QAction *toolToolViewAction;
     QAction *addressViewAction;
     QAction *oscilloscopeAction;
 
@@ -67,12 +71,13 @@ private:
     QRecentFilesMenu *recentFilesMenu;
     QMenu *musicMenu;
     QMenu *viewMenu;
+    QMenu *toolsViewMenu;
     QMenu *toolsMenu;
 
     /* ToolBar list */
     QToolBar *fileToolBar;
     QToolBar *musicToolBar;
-    QToolBar *toolBar;
+    QToolBar *toolToolBar;
 
     /* Private widget list */
     AddressBar *addressBar;

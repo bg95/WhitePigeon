@@ -21,6 +21,7 @@ signals:
 
 public slots:
     void goToSite();
+    void checkPath();
     void showPath(QMdiSubWindow *__window);
 
 private:

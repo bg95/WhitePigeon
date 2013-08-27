@@ -14,6 +14,7 @@ AddressBar::AddressBar(QWidget *parent)
     goButton = new QPushButton;
     goButton->setParent(parent);
     goButton->setText("Go");
+    goButton->setEnabled(false);
 
     layout = new QHBoxLayout;
     layout->addWidget(label);
@@ -24,12 +25,18 @@ AddressBar::AddressBar(QWidget *parent)
 
     connect(goButton, SIGNAL(clicked()), this, SLOT(goToSite()));
     connect(addressEdit, SIGNAL(returnPressed()), this, SLOT(goToSite()));
+    connect(addressEdit, SIGNAL(textChanged(QString)), this, SLOT(checkPath()));
 }
 
 void AddressBar::goToSite()
 {
     QString address = addressEdit->text();
     emit go(address);
+}
+
+void AddressBar::checkPath()
+{
+    goButton->setEnabled(QFileInfo(addressEdit->text()).isFile());
 }
 
 void AddressBar::showPath(QMdiSubWindow *__window)
