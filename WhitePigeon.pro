@@ -34,9 +34,9 @@ SOURCES += main.cpp\
     core/WPPipe.cpp \
     core/WPMixer.cpp \
     WPScore/WPPersistentTree.cpp \
-    WPScore/WPAllocator.cpp
+    WPScore/WPAllocator.cpp \
     core/WPSynthesisController.cpp \
-    core/WPTuningFork.cpp
+    core/WPTuningFork.cpp \
     QRecentFilesMenu.cpp \
     WPWindow.cpp
 
