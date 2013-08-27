@@ -45,17 +45,31 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     wave.play();
 */
     score = new WPScore;
-    qDebug("part num = %d\n", score->getPartList().size());
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note2));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note3));
-    score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
-    /*
+	score->lockForWrite();
+	score->newPart("whitepig");
+	score->unlock();
+	score->lockForRead();
+	qDebug("part num = %d\n", score->getPartList().size());
+	score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
+	score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note2));
+	score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note3));
+	score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
+	score->unlock();
+	score->lockForWrite();
+	score->newPart("white");
+	score->unlock();
+	score->lockForRead();
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note4));
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note5));
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note6));
     score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
-    */
+	score->unlock();
+
+	score->lockForWrite();
+	score->save("pig.wps");
+	score->close();
+	score->load("pig.wps");
+	score->unlock();
 
     WPSynthesisController controller;
     controller.synthesizeAndPlay(*score);
