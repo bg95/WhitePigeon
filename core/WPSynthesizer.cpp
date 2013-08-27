@@ -159,6 +159,7 @@ void WPSynthesizer::synthesizePart()
                     for (j = 0; j < notes.size(); j++)
                     {
                         twave = timbre[j]->synthesize(dur, vtime[i - 1][j], vtime[i][j], amp[i - 1][j], amp[i][j], freq[i - 1][j], freq[i][j]);
+                        swave->mixWith(1.0, twave, 1.0);
                     }
                     if (output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType)) == -1)
                     {
