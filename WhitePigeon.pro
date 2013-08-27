@@ -34,8 +34,6 @@ SOURCES += main.cpp\
     core/WPPipe.cpp \
     core/WPMixer.cpp \
     WPScore/WPPersistentTree.cpp \
-#    WPScore/WPAllocator.cpp
-    core/WPSynthesisController.cpp \
     musictextitem.cpp \
     musicscene.cpp \
     musicarcitem.cpp \
@@ -45,7 +43,10 @@ SOURCES += main.cpp\
     musiclineitem.cpp \
     musicbaritem.cpp \
     musicrowitem.cpp \
-    musicwholeitem.cpp
+    musicwholeitem.cpp \
+    core/WPSynthesisController.cpp \
+    QRecentFilesMenu.cpp \
+    WPWindow.cpp
 
 HEADERS  +=\
             myglwidget.h \
@@ -80,4 +81,8 @@ HEADERS  +=\
     musiclineitem.h \
     musicbaritem.h \
     musicrowitem.h \
-    musicwholeitem.h
+    musicwholeitem.h \
+    QRecentFilesMenu.h \
+    WPWindow.h
+
+TRANSLATIONS += Chinese.ts

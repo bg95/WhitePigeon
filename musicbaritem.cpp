@@ -3,14 +3,23 @@
 #include "musiclineitem.h"
 #include <QtWidgets>
 
+/*
 musicBarItem::musicBarItem(QList<musicTextItem *> tune) 
     : numbers(tune), clapLength(1), textWidth(50)
 {
 	fillText();
     arrangeLines();
 }
+*/
 
-musicBarItem::reset(QList<musicTextItem *> tune)
+musicBarItem::musicBarItem(QVector<musicTextItem *> tune)
+    : numbers(tune), clapLength(1), textWidth(50), Pos(QPointF(0, 0))
+{
+    fillText();
+    arrangeLines();
+}
+
+void musicBarItem::reset(QVector<musicTextItem *> tune)
 {
     numbers = tune;
     fillText();
@@ -72,11 +81,12 @@ musicBarItem::reset(QList<musicTextItem *> tune)
     }
     */
 }
-
+/*
 void musicBarItem::paint(QPainter *painter,
                          const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 }
+*/
 
 QRectF musicBarItem::boundingRect() const
 {
@@ -134,17 +144,25 @@ void musicBarItem::setClap(const qreal length)
 {
     clapLength = length;
     arrangeLines();
-    update();
+    //update();
 }
 
 void musicBarItem::removeLines()
 {
-    foreach(QSet<musicLineItem *> line, lines)
+    foreach(musicLineItem * line, lines)
     {
         delete line;
     }
     lines.clear();
 }
+
+/*
+QPainterPath musicBarItem::shape() const
+{
+    QPainterPath painterpath;
+    return painterpath;
+}
+*/
 
 void musicBarItem::arrangeLines()
 {
@@ -157,7 +175,7 @@ void musicBarItem::arrangeLines()
             item->pushLines(newline, i);
         }
     }
-    QList<qreal> partialsum(numbers.count() + 1);
+    QVector<qreal> partialsum(numbers.count() + 1);
     partialsum[0] = 0;
     qreal sum = 0;
     for (int i = 1; i < numbers.count() + 1; ++i)
@@ -270,7 +288,7 @@ void musicBarItem::arrangeText(int begin, int end)
 		for (int i = begin; i < end; ++i) 
 		{
 			int distance = middle - i;
-			QPointf oripos = numbers[i]->pos();
+            QPointF oripos = numbers[i]->pos();
             numbers[i]->setPos(oripos.x() + distance * 4, oripos.y());
 		}
 	}
@@ -280,30 +298,62 @@ void musicBarItem::arrangeText(int begin, int end)
 		for (int i = begin; i < end; ++i)
 		{
 			int distance = middle - i;
-			QPointf oripos = numbers[i]->pos();
+            QPointF oripos = numbers[i]->pos();
             numbers[i]->setPos(oripos.x() + distance * 4 - 2, oripos.y());
 		}
 	}
-	update();
+    //update();
 }
 		
 void musicBarItem::fillText() 
 {
-	QPointF oriposx = pos().x();
-	QPointF oriposy = pos().y();
+    qreal oriposx = pos().x();
+    qreal oriposy = pos().y();
 	int count = numbers.count();
 	for (int i = 0; i < count; ++i) 
 	{
-        numbers[i]->setPos(oriposx - count * textWidth / 2 + i * width, oriposy);
+        numbers[i]->setPos(oriposx - count * textWidth / 2 + i * textWidth, oriposy);
 	}
 }
 
-void setWidth(qreal width)
+void musicBarItem::setWidth(qreal width)
 {
 	textWidth = width;
 }
 
+/*
+QVariant musicBarItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemPositionHasChanged)
+    {
+        fillText();
+        arrangeLines();
+    }
+    return QGraphicsItem::itemChange(change, value);
+}
+*/
 
+QPointF musicBarItem::pos()
+{
+    return Pos;
+}
+
+void musicBarItem::setPos(qreal x, qreal y)
+{
+    Pos = QPointF(x, y);
+    fillText();
+    arrangeLines();
+
+}
+
+musicBarItem::~musicBarItem()
+{
+    foreach (musicLineItem *thisline, lines)
+    {
+        delete thisline;
+    }
+    lines.clear();
+}
 
 
 

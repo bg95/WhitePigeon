@@ -2,7 +2,7 @@
 #include "musicrowitem.h"
 
 musicWholeItem::musicWholeItem()
-    : rowHeight(250) , pageWidth(1200)
+    : rowHeight(250) , pageWidth(1200), Pos(QPointF(0, 0))
 {
 }
 
@@ -10,7 +10,7 @@ void musicWholeItem::addRow(musicRowItem *row)
 {
     lines.append(row);
     arrangeRow();
-    update();
+    //update();
 }
 
 QRectF musicWholeItem::boundingRect() const
@@ -19,6 +19,7 @@ QRectF musicWholeItem::boundingRect() const
     return QRectF(-pageWidth / 2, -height / 2, pageWidth, height);
 }
 
+/*
 void musicWholeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 
@@ -29,17 +30,18 @@ QPainterPath musicWholeItem::shape() const
     QPainterPath painterpath;
     return painterpath;
 }
+*/
 
 void musicWholeItem::setRowHeight(qreal height)
 {
     rowHeight = height;
-    update();
+    //update();
 }
 
 void musicWholeItem::setPageWidth(qreal width)
 {
     pageWidth = width;
-    update();
+    //update();
 }
 
 void musicWholeItem::arrangeRow()
@@ -55,3 +57,26 @@ musicWholeItem::~musicWholeItem()
 {
 
 }
+
+void musicWholeItem::setPos(qreal x, qreal y)
+{
+    Pos = QPointF(x, y);
+    arrangeRow();
+}
+
+QPointF musicWholeItem::pos()
+{
+    return Pos;
+}
+
+
+
+
+
+
+
+
+
+
+
+

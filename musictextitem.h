@@ -40,6 +40,8 @@ public:
     //int lines();
     //int upperDots();
     //void addUpperDot(musicDotItem *upperDot);
+    QSet <musicDotItem *> upperDots;
+    QSet <musicDotItem *> lowerDots;
 
 protected:
     //void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
@@ -49,11 +51,11 @@ private:
     QChar musicHeight;
     QFont numberFont;
     QColor numberColor;
-    qreal interval;
+    qreal Interval;
     bool dotted;
-    QSet <musicDotItem *> upperDots;
-    QSet <musicDotItem *> lowerDots;
-    QVector <musicLineItem *> lines;
+    //QSet <musicDotItem *> upperDots;
+    //QSet <musicDotItem *> lowerDots;
+    QVector <musicLineItem *> Lines;
     //int numberLines;
     qreal calculate(int x);
     //QSet <musicLineItem *> lines;

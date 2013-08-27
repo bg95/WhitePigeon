@@ -34,3 +34,8 @@ void WPInterval::shiftRight(const Fraction &L)
 	Begin += L;
 	End += L;
 }
+
+bool WPInterval::operator == (const WPInterval &I) const
+{
+	return Begin == I.Begin && End == I.End;
+}

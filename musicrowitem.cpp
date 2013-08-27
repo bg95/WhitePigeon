@@ -4,7 +4,7 @@
 
 musicRowItem::musicRowItem(int row, int collumn)
     : rowNumber(row), collumnNumber(collumn), rowWidth(50),
-      collumnWidth(250), bars(row * collum), bracket(new musicBracketItem(row)),
+      collumnWidth(250), bars(row * collumn), bracket(new musicBracketItem(row)), Pos(QPointF(0, 0))
 {
     drawBar();
     arrangeBar();
@@ -14,13 +14,13 @@ musicRowItem::musicRowItem(int row, int collumn)
 void musicRowItem::setBarDistance(qreal distance)
 {
     collumnWidth = distance;
-    update();
+    //update();
 }
 
 void musicRowItem::setRowDistance(qreal distance)
 {
     rowWidth = distance;
-    update();
+    //update();
 }
 
 QRectF musicRowItem::boundingRect() const
@@ -30,15 +30,19 @@ QRectF musicRowItem::boundingRect() const
     return QRectF(-width / 2, -height / 2, width, height);
 }
 
+/*
 void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 }
 
-QPainterPath shape() const
+
+QPainterPath musicRowItem::shape() const
 {
     QPainterPath painterpath;
     return painterpath;
 }
+*/
+
 
 void musicRowItem::drawBar()
 {
@@ -50,6 +54,7 @@ void musicRowItem::drawBar()
         }
     }
 }
+
 
 void musicRowItem::arrangeBar()
 {
@@ -65,6 +70,7 @@ void musicRowItem::arrangeBar()
     }
 }
 
+
 void musicRowItem::insertMusic(musicBarItem *barItem, int row, int collumn)
 {
     if (row <= rowNumber && collumn <= collumnNumber)
@@ -73,6 +79,7 @@ void musicRowItem::insertMusic(musicBarItem *barItem, int row, int collumn)
     }
     arrangeMusic();
 }
+
 
 void musicRowItem::arrangeMusic()
 {
@@ -87,6 +94,7 @@ void musicRowItem::arrangeMusic()
     }
 }
 
+
 musicRowItem::~musicRowItem()
 {
     foreach (musicLineItem *thisbar, bars)
@@ -97,8 +105,29 @@ musicRowItem::~musicRowItem()
 }
 
 
+/*
+QVariant musicRowItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemPositionHasChanged)
+    {
+        arrangeBar();
+        arrangeMusic();
+    }
+    return QGraphicsItem::itemChange(change, value);
+}
+*/
 
+void musicRowItem::setPos(qreal x, qreal y)
+{
+    Pos = QPointF(x, y);
+    arrangeBar();
+    arrangeMusic();
+}
 
+QPointF musicRowItem::pos()
+{
+    return Pos;
+}
 
 
 

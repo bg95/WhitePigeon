@@ -4,9 +4,10 @@
 
 #include <QtWidgets>
 
+
 musicTextItem::musicTextItem(const QChar &number)
     : musicHeight(number), numberFont("Times", 20, QFont::Bold),
-      numberColor(Qt::black), interval(4), dotted(false), numberLines(0)
+      numberColor(Qt::black), Interval(4), dotted(false)
 {
     //setFlag(QGraphicsItem::ItemIsSelectable)
 }
@@ -161,18 +162,18 @@ void musicTextItem::removeLine(musicLineItem *line)
 
 void musicTextItem::arrangeDots()
 {
-    numberLines = lines.count();
-    qreal inter = - interval / 2;
+    int numberLines = Lines.count();
+    qreal inter = - Interval / 2;
     foreach (musicDotItem *thisDot, upperDots)
     {
         thisDot->setPos(pos().x(), pos().y() - boundingRect().height() / 2 - inter);
-        inter += interval;
+        inter += Interval;
     }
-    inter = interval * (2 * numberLines - 1) / 2;
+    inter = Interval * (2 * numberLines - 1) / 2;
     foreach (musicDotItem *thisDot, lowerDots)
     {
         thisDot->setPos(pos().x(), pos().y() + boundingRect().height() / 2 + inter);
-        inter += interval;
+        inter += Interval;
     }
 }
 
@@ -212,14 +213,14 @@ musicTextItem::~musicTextItem()
 
 void musicTextItem::setInterval(const qreal inter)
 {
-    interval = inter;
+    Interval = inter;
     arrangeDots();
 }
 
 void musicTextItem::setLines(const int line)
 {
     //numberLines = line;
-    lines.resize(line);
+    Lines.resize(line);
     arrangeDots();
 }
 
@@ -234,12 +235,13 @@ QVariant musicTextItem::itemChange(GraphicsItemChange change, const QVariant &va
 
 int musicTextItem::lines()
 {
-    return lines.count();
+    return Lines.count();
 }
 
 qreal musicTextItem::length()
 {
-    if (musicHeight == QChar('-'));
+    int numberLines = Lines.count();
+    if (musicHeight == QChar('-'))
     {
         return 1;
     }
@@ -268,17 +270,17 @@ qreal musicTextItem::calculate(int x)
 
 qreal musicTextItem::interval()
 {
-    return interval;
+    return Interval;
 }
 
 void musicTextItem::pushLines(musicLineItem *line, int level)
 {
-    lines[level] = line;
+    Lines[level] = line;
 }
 
-musicTextItem *thisLine(int level)
+musicLineItem *musicTextItem::thisLine(int level)
 {
-    return lines[level];
+    return Lines[level];
 }
 
 

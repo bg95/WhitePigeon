@@ -18,6 +18,7 @@ class WPInterval
 		WPPosition end() const;
 		void lengthen(const Fraction &);
 		void shiftRight(const Fraction &);
+		bool operator == (const WPInterval &I) const;
 	private:
 		WPPosition Begin, End;
 };

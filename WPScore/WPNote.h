@@ -11,7 +11,7 @@
 class WPNote
 {
 	public:
-        static const int Rest;
+		static const int Rest;
 		WPNote();
 		WPNote(const int &, const Fraction &);
 		~WPNote();
