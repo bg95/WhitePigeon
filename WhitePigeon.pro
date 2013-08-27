@@ -37,7 +37,7 @@ SOURCES += main.cpp\
     WPScore/WPPersistentTree.cpp \
     WPScore/WPAllocator.cpp \
     core/WPSynthesisController.cpp \
-#    core/WPTuningFork.cpp \
+    core/WPTuningFork.cpp \
     WPDLLManager/WPDLLManager.cpp \
     WPDLLManager/WPDLLTimbre.cpp \
     WPDLLManager/WPCallbackManager.cpp \
@@ -46,6 +46,8 @@ SOURCES += main.cpp\
     WPDLLManager/WPDLLModifier.cpp \
     core/WPPropertyAndModifiers.cpp \
     WPDLLManager/WPDLLTimbreManager.cpp
+    QRecentFilesMenu.cpp \
+    WPWindow.cpp
 
 HEADERS  +=\
             myglwidget.h \
@@ -64,7 +66,7 @@ HEADERS  +=\
     OscilloscopeWindow.h \
     mainwindow.h \
     core/WPTimbre.h \
-#    core/WPTuningFork.h \
+    core/WPTuningFork.h \
     core/WPVarTimbre.h \
     core/WPPipe.h \
     core/WPMixer.h \
@@ -79,3 +81,7 @@ HEADERS  +=\
     WPDLLManager/WPDLLModifier.h \
     core/WPPropertyAndModifiers.h \
     WPDLLManager/WPDLLTimbreManager.h
+    QRecentFilesMenu.h \
+    WPWindow.h
+
+TRANSLATIONS += Chinese.ts

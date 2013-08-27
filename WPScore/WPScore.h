@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <QByteArray>
+#include <QReadWriteLock>
 
 class WPScore;
 
@@ -16,7 +17,7 @@ class WPScore;
 #include "WPProperty.h"
 #include "WPPart.h"
 
-class WPScore
+class WPScore: public QReadWriteLock
 {
 	public:
 		WPScore();
@@ -24,10 +25,6 @@ class WPScore
 		void save(const std::string &);
 		void load(const std::string &);
 		void close();
-		//~ void insertNote(const WPPosition &, const WPNote &);
-		//~ void deleteNote(const WPPosition &, const WPNote &);
-		//~ WPProperty insertProperty(const WPInterval &, const WPProperty &);
-		//~ void deleteProperty(const WPProperty &);
 		WPPart *newPart();
 		WPPart *newPart(std::string);
 		void deletePart(WPPart *);
@@ -38,6 +35,7 @@ class WPScore
 		void insertProperty(const WPProperty &); // remember to call newVersion() first!
 		bool deleteProperty(const WPProperty &); // remember to call newVersion() first!
 		std::vector <WPProperty> getAllProperties();
+		std::vector <WPProperty> filterPropertiesByPrefix(const std::string &);
 		int getCurrentVersion() const;
 		int newVersion();
 		void switchVersion(const int &);

@@ -4,6 +4,7 @@ WPPart::WPPart (WPScore *M)
 {
 	Master = M;
 	IsToBePlayed = 1;
+	Volume = 1.0;
 	PlayingPosition = WPPosition (Fraction (0, 1));
 	VerMap.clear();
 	MasterVer = Master->getCurrentVersion();
@@ -23,6 +24,7 @@ WPPart::WPPart (WPScore *M, const std::string &S)
 {
 	Master = M;
 	IsToBePlayed = 1;
+	Volume = 1.0;
 	PlayingPosition = WPPosition (Fraction (0, 1));
 	VerMap.clear();
 	MasterVer = Master->getCurrentVersion();
@@ -106,7 +108,25 @@ void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)
 	synchronizeWithMaster();
 	implementVersion();
 	Notes[MyVer].insert(P, N);
-	// Need to change properties;
+	std::vector <WPProperty> V = Properties[MyVer].traverse();
+	for (std::vector <WPProperty> :: iterator it = V.begin(); it != V.end(); ++ it)
+	{
+		if (it->getInterval().begin() < P && P < it->getInterval().end())
+		{
+			Properties[MyVer].remove(*it);
+			it->lengthen(N.getLength());
+			Properties[MyVer].insert(*it);
+		}
+		else
+		{
+			if (P <= it->getInterval().begin())
+			{
+				Properties[MyVer].remove(*it);
+				it->shiftRight(N.getLength());
+				Properties[MyVer].insert(*it);
+			}
+		}
+	}
 }
 
 void WPPart::deleteMultinote(const WPInterval &I)
@@ -158,6 +178,11 @@ bool WPPart::isToBePlayed()
 	return IsToBePlayed;
 }
 
+double WPPart::getVolume()
+{
+	return isToBePlayed() ? Volume : 0.0;
+}
+
 int WPPart::displayOrder()
 {
 	synchronizeWithMaster();
@@ -181,6 +206,12 @@ std::vector<WPProperty> WPPart::getAllProperties()
 {
 	synchronizeWithMaster();
 	return Properties[MyVer].traverse();
+}
+
+std::vector<WPProperty> WPPart::filterPropertiesByPrefix(const std::string &S)
+{
+	synchronizeWithMaster();
+	return filterPrefix(Properties[MyVer].traverse(), S);
 }
 
 std::vector<WPMultinote> WPPart::getNotesByInterval(WPInterval &I)

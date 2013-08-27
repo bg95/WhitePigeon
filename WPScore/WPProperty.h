@@ -18,10 +18,13 @@ class WPProperty
 		std::string getArg() const;
 		void lengthen(const Fraction &);
 		void shiftRight(const Fraction &);
+		bool operator < (const WPProperty &) const;
 	private:
 		WPInterval Interval;
 		std::string Arg;
 };
+
+std::vector <WPProperty> filterPrefix(const std::vector <WPProperty> &, const std::string &);
 
 #endif
 
