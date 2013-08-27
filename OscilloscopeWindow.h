@@ -7,6 +7,7 @@
 #include "core/WPWave.h"
 #include "core/WPOscilloscope.h"
 #include "core/WPPipe.h"
+#include "core/WPSynthesisController.h"
 #include "WPScore/WPScore.h"
 #include "myglwidget.h"
 
@@ -33,6 +34,8 @@ private:
     QAudioInput *audioinput;
     WPPipe *pipe;
     WPScore *score;
+    WPSynthesisController *controller;
+    QFile *file;
 
 protected:
     void showEvent(QShowEvent *);

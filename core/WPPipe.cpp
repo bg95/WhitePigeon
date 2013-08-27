@@ -30,6 +30,11 @@ WPPipe::~WPPipe()
 
 bool WPPipe::open(OpenMode mode)
 {
+    if (mode == ReadOnly)
+    {
+        closeInput();
+        return QIODevice::open(mode); //?
+    }
     if (mode != ReadWrite)
         return false;
     clear();
@@ -49,7 +54,10 @@ qint64 WPPipe::readData(char *data, qint64 maxlen)
     char *data0 = data;
     std::deque<QByteArray *>::iterator iter;
     if (maxlen > quesize)
+    {
+        qWarning("pipe %X reading too much, %d available", (quint64)this, quesize);
         maxlen = quesize;
+    }
     for (iter = que.begin(); iter != que.end(); iter++)
     {
         if (maxlen < (*iter)->size() - readpos)
@@ -72,9 +80,10 @@ qint64 WPPipe::readData(char *data, qint64 maxlen)
         close();
     }
     checkDef();
+    maxlen = data - data0;
 
     lock.unlock();
-    return data - data0;
+    return maxlen;
 }
 
 qint64 WPPipe::writeData(const char *data, qint64 maxlen)
@@ -122,6 +131,7 @@ bool WPPipe::isClosing() const
 void WPPipe::closeInput()
 {
     lock.lock();
+    qDebug("pipe %X close input", (quint64)this);
     isclosing = true;
     lock.unlock();
 }
@@ -129,10 +139,10 @@ void WPPipe::closeInput()
 inline void WPPipe::checkDef() const
 {
     if (!isclosing && quesize <= def)
-        deficientInput();
+        emit deficientInput();
 }
 inline void WPPipe::checkSuf() const
 {
     if (suf != -1 && quesize > suf)
-        sufficientInput();
+        emit sufficientInput();
 }

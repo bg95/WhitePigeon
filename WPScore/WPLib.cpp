@@ -8,7 +8,13 @@ Fraction::~Fraction()
 {
 }
 
-Fraction::Fraction(int A, int B)
+Fraction::Fraction(const int &I)
+{
+	X = I;
+	Y = 1;
+}
+
+Fraction::Fraction(const int &A, const int &B)
 {
 	X = A;
 	Y = B;
@@ -74,6 +80,44 @@ Fraction Fraction::operator -= (const Fraction &F)
 {
 	*this = *this - F;
 	return *this;
+}
+
+Fraction Fraction::operator * (const Fraction &F) const
+{
+	Fraction Result(F.X / std::__gcd(F.X, Y) * X / std::__gcd(X, F.Y), Y / std::__gcd(F.X, Y) * F.Y / std::__gcd(X, F.Y));
+	int d = std::__gcd(Result.X, Result.Y);
+	Result.X /= d;
+	Result.Y /= d;
+	return Result;
+}
+
+Fraction Fraction::operator *= (const Fraction &F)
+{
+	*this = *this * F;
+	return *this;
+}
+
+Fraction Fraction::operator / (const Fraction &F) const
+{
+	return *this * F.inverse();
+}
+
+Fraction Fraction::operator /=(const Fraction &F)
+{
+	*this = *this / F;
+	return *this;
+}
+
+Fraction Fraction::inverse() const
+{
+	int A = X;
+	int B = Y;
+	if (B < 0)
+	{
+		A = - A;
+		B = - B;
+	}
+	return Fraction (B, A);
 }
 
 double Fraction::toDouble() const

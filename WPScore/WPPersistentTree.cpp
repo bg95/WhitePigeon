@@ -217,6 +217,48 @@ std::vector <WPMultinote> WPMultinotePersistentTree::traverse()
 	return Result;
 }
 
+WPPosition WPMultinotePersistentTree::getLeftEnding(const WPPosition &P)
+{
+	Fraction Result = Fraction (0, 1);
+	for (WPMultinotePersistentTreeNode *T = Root; T; T = T->Right)
+	{
+		if (T->Left)
+		{
+			if (Result + T->Left->Sum > P.getValue())
+			{
+				T = T->Left;
+				continue;
+			}
+			Result += T->Left->Sum;
+		}
+		if (Result + T->Element.getLength() > P.getValue())
+			break;
+		Result += T->Element.getLength();
+	}
+	return Result;
+}
+
+WPPosition WPMultinotePersistentTree::getRightEnding(const WPPosition &P)
+{
+	Fraction Result = Fraction (0, 1);
+	for (WPMultinotePersistentTreeNode *T = Root; T; T = T->Right)
+	{
+		if (T->Left)
+		{
+			if (Result + T->Left->Sum >= P.getValue())
+			{
+				T = T->Left;
+				continue;
+			}
+			Result += T->Left->Sum;
+		}
+		Result += T->Element.getLength();
+		if (Result >= P.getValue())
+			break;
+	}
+	return Result;
+}
+
 
 /// Property
 

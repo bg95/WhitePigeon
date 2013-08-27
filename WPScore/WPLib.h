@@ -25,7 +25,8 @@ class Fraction
 {
 	public:
 		Fraction();
-		Fraction(int, int);
+		Fraction(const int &);
+		Fraction(const int &, const int &);
 		~Fraction();
 		bool operator == (const Fraction &) const;
 		bool operator < (const Fraction &) const;
@@ -37,6 +38,11 @@ class Fraction
 		Fraction operator += (const Fraction &);
 		Fraction operator - (const Fraction &) const;
 		Fraction operator -= (const Fraction &);
+		Fraction operator * (const Fraction &) const;
+		Fraction operator *= (const Fraction &);
+		Fraction operator / (const Fraction &) const;
+		Fraction operator /= (const Fraction &);
+		Fraction inverse() const;
 		double toDouble() const;
 		int X, Y;
 };
