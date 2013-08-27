@@ -1,5 +1,7 @@
 #include "WPNote.h"
 
+const int WPNote::Rest = - 999999;
+
 WPNote::WPNote ()
 {
 }

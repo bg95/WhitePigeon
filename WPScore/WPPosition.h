@@ -19,6 +19,7 @@ class WPPosition
 		bool operator <= (const WPPosition &) const;
 		bool operator > (const WPPosition &) const;
 		bool operator >= (const WPPosition &) const;
+		bool operator == (const WPPosition &) const;
 		WPPosition operator = (const Fraction &);
 		WPPosition operator + (const Fraction &) const;
 		WPPosition operator += (const Fraction &);
