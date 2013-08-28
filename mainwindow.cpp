@@ -10,6 +10,7 @@
 //#include "musicbracketitem.h"
 //#include "musicdotitem.h"
 //#include "musiclineitem.h"
+#include "musicscene.h"
 #include "WPWindow.h"
 
 #include "mainwindow.h"
@@ -31,16 +32,50 @@ MainWindow::MainWindow()
     setWindowTitle(tr("WhitePigeon"));
     // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
     setContextMenuPolicy(Qt::ActionsContextMenu);
-    setCentralWidget(mdiArea);
+    //setCentralWidget(mdiArea);
 
     /* UI settings */
     createActions();
     createToolBar();
     createMenus();
+    //createAWPScore();
+    readTestFile();
     //createStatusBar();
     //drawMusic();
     readSettings();
 }
+
+void MainWindow::createAWPScore()
+{
+    WPScore AWPScore;
+
+    WPPart *p = AWPScore.newPart("vocal");
+    WPMultinote multi1(WPNote (7, Fraction (1, 2)));
+    WPMultinote multi2(WPNote (8, Fraction (1, 2)));
+    WPMultinote multi3(WPNote (7, Fraction (3, 1)));
+    p->insertMultinote(WPPosition (Fraction (0, 1)), multi1);
+    p->insertMultinote(WPPosition (Fraction (1, 2)), multi2);
+    p->insertMultinote(WPPosition (Fraction (1, 1)), multi3);
+    p = AWPScore.newPart("vocal2");
+    p->insertMultinote(WPPosition (Fraction (0, 1)), multi1);
+    p->insertMultinote(WPPosition (Fraction (1, 2)), multi2);
+    p->insertMultinote(WPPosition (Fraction (1, 1)), multi3);
+    AWPScore.save("test.wps");
+    AWPScore.close();
+
+
+}
+
+void MainWindow::readTestFile()
+{
+    musicScene *AMusicScene = new musicScene;
+    AMusicScene->getAddress("test.wps");
+    AMusicScene->display();
+    QGraphicsView *view = new QGraphicsView(AMusicScene);
+    setCentralWidget(view);
+
+}
+
 
 MainWindow::~MainWindow()
 {
@@ -71,7 +106,7 @@ void MainWindow::createActions()
     newAction->setStatusTip("create a new music");
     newAction->setToolTip("create a new music");
     newAction->setShortcut(QKeySequence::New);
-    connect(newAction, SIGNAL(triggered()), this, SLOT(getMusicInformation()));
+    //connect(newAction, SIGNAL(triggered()), this, SLOT(getMusicInformation()));
 }
 
 void MainWindow::createMenus()

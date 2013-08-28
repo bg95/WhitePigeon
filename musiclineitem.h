@@ -6,16 +6,26 @@
 
 class musicTextItem;
 
-class musicLineItem : public QGraphicsLineItem
+class musicLineItem : public QGraphicsItem
 {
 
 public:
-    musicLineItem();
+	enum position
+	{
+        verticle,
+        horizontal
+    };
+    musicLineItem(qreal length, position pos);
     ~musicLineItem();
+	QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setColor(const QColor &color);
     //trackNodes();
 
 private:
+	qreal Length;
+	position Pos;
+	QColor lineColor;
     //musicTextItem *leftparent;
     //musicTextItem *rightparent;
 };

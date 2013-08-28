@@ -42,13 +42,14 @@ public:
     //void addUpperDot(musicDotItem *upperDot);
     QSet <musicDotItem *> upperDots;
     QSet <musicDotItem *> lowerDots;
+    QChar musicHeight;
 
 protected:
     //void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
     //void focusOutEvent(QFocusEvent *event);
 
 private:
-    QChar musicHeight;
+    //QChar musicHeight;
     QFont numberFont;
     QColor numberColor;
     qreal Interval;

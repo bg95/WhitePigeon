@@ -56,6 +56,8 @@ QRectF musicTextItem::boundingRect() const
     return QRectF(-rect.width() / 2, -rect.height() / 2,
                  rect.width(), rect.height());
     //return (1, 1, 1, 1);
+
+    //return QRectF(-15, -15, 30, 30);
 }
 
 void musicTextItem::paint(QPainter *painter,
@@ -63,9 +65,15 @@ void musicTextItem::paint(QPainter *painter,
 {
     painter->setFont(numberFont);
     painter->setPen(numberColor);
-    QRectF rect = boundingRect();
+    qreal length = boundingRect().width();
+    qreal height = boundingRect().height();
+    QRectF rect = QRectF(-length / 2, (-height - 10) / 2, length, height + 10);
+    //QRectF(-length / 2, -100, length, 200);//QRectF(-15, -15, 30, 30);
+    //qDebug() << rect << " " << musicHeight;
+    //QRectF rect(-length / 2, -height / 2 - 5, length, height + 10);
     if (dotted)
     {
+        qDebug() << musicHeight << "was dotted";
         rect = QRectF(-rect.width() / 2, -rect.height() / 2,
                       2 * rect.width() / 3, rect.height());
         painter->drawText(rect, musicHeight);
@@ -74,7 +82,7 @@ void musicTextItem::paint(QPainter *painter,
         painter->setPen(pen);
         painter->drawPoint(3 * rect.width() / 4, rect.height() / 4);
     }
-    painter->drawText(rect, musicHeight);
+    painter->drawText(rect, Qt::AlignCenter, musicHeight);
 }
 
 void musicTextItem::addUpperDot(const int number)

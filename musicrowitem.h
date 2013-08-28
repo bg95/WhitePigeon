@@ -27,12 +27,14 @@ public:
     musicBracketItem *bracket;
     QPointF pos();
     void setPos(qreal x, qreal y);
+    void setBarHeight(qreal height);
 
 private:
     int rowNumber;
     int collumnNumber;
     qreal collumnWidth;
     qreal rowWidth;
+    qreal barHeight;
     //QVector<musicLineItem *> bars;
     //musicBracketItem *bracket;
     QVector<musicBarItem *> musics;

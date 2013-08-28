@@ -22,6 +22,8 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow();
+    void createAWPScore();
+    void readTestFile();
     ~MainWindow();
 
 protected:

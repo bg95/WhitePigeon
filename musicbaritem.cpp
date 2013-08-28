@@ -23,63 +23,7 @@ void musicBarItem::reset(QVector<musicTextItem *> tune)
 {
     numbers = tune;
     fillText();
-    arrangeLines();
 
-    /*
-    removeLines();
-    QList<int> partialsum(numbers.count());
-
-    for (int i = 0; i < numbers.count(); ++i)
-    {
-
-    }
-
-    QQueue <musicTextItem *> continueline;
-    qreal currentlength = 0;
-    foreach (musicTextItem *number, numbers)
-    {
-        int numline = number->lines();
-        if (numline == 0)
-        {
-            for (int i = 0; i < )
-            continueline.clear();
-            currentlength = 0;
-        }
-        else
-        {
-            if (number->length() >= 1)
-            {
-                continueline.clear();
-                currentlength = 0;
-                for (int i = 0; i < numline; ++i)
-                {
-                    drawline(number, number, i);
-                }
-            }
-            else
-            {
-                continueline.enqueue(number);
-                currentlength += number->length();
-                if (currentlength > 1.0)
-                {
-                    for (int i = 0; i < continueline.count(); ++i)
-                    {
-                        musicTextItem *bede = continueline.dequeue();
-                        currentlength -= bede->length();
-                        if (currentlength < 1)
-                        {
-                            break;
-                        }
-                    }
-                }
-                else if (currentlength == 1)
-                {
-
-                }
-            }
-        }
-    }
-    */
 }
 /*
 void musicBarItem::paint(QPainter *painter,
@@ -104,37 +48,19 @@ QRectF musicBarItem::boundingRect() const
     return QRectF(-width / 2, -height / 2, width, height);
 }
 
-/*
-void musicBarItem::setWidth(const qreal width)
-{
-    barWidth = width;
-    update();
-}
 
-void musicBarItem::setHeight(const qreal height)
-{
-    barHeight = height;
-    update();
-}
-
-
-
-void musicBarItem::addText(musicTextItem *number)
-{
-    numbers.push_back(number);
-}
-*/
 
 musicLineItem *musicBarItem::drawLine(musicTextItem *left, musicTextItem *right, int level)
 {
     //for (int i = 0; i < level; ++i)
     //{
-    musicLineItem *thisline = new musicLineItem;
+    //musicLineItem *thisline = new musicLineItem;
     qreal floor = left->pos().y() + left->boundingRect().height() / 2;
     qreal x1 = left->pos().x() - left->boundingRect().width() / 2;
     qreal x2 = right->pos().x() + right->boundingRect().width() / 2;
     qreal interval = left->interval();
-    thisline->setLine(x1, floor + level * interval, x2, floor + level * interval);
+    musicLineItem *thisline = new musicLineItem(x2 - x1, musicLineItem::horizontal);
+    thisline->setPos((x1 + x2) / 2, floor + level * interval);
     lines.insert(thisline);
     return thisline;
     //}
@@ -166,6 +92,7 @@ QPainterPath musicBarItem::shape() const
 
 void musicBarItem::arrangeLines()
 {
+    //qDebug() << "haha";
     removeLines();
     foreach (musicTextItem *item, numbers) {
         for (int i = 0; i < item->lines(); ++i)
@@ -184,15 +111,15 @@ void musicBarItem::arrangeLines()
         partialsum[i] = sum;
         //sum += numbers[i]->length();
     }
+    //qDebug() << partialsum;
     qreal length = clapLength;
+    int cnt = 1;
     for (qreal i = 1; i <= 4; ++i)
     {
         int prepos = -1;
         bool found = false;
-        int cnt = 0;
         for (qreal j = 0; j <= sum; j += length)
         {
-        	cnt++;
 			int k = 0;
             for (k = k; k < partialsum.count(); ++k)
             {
@@ -200,9 +127,11 @@ void musicBarItem::arrangeLines()
                 {
                     if (found)
                     {
+                        qDebug() << "prepos: " << prepos << "now: " << k;
                         int l;
                         for (l = prepos; l < k; ++l)
                         {
+                            qDebug() << "l:" << l << "k:" << k << "cnt" << cnt;
                             if (numbers[l]->lines() < cnt)
                             {
                                 break;
@@ -210,6 +139,7 @@ void musicBarItem::arrangeLines()
                         }
                         if (l == k)
                         {
+                            qDebug() << "haha";
                             //musicLineItem *newline =
                                     //drawLine(numbers[prepos], numbers[k-1], i);
                             for (int m = 1; m <= i; ++m)
@@ -240,11 +170,8 @@ void musicBarItem::arrangeLines()
                             */
                         }
                     }
-                    else
-                    {
-                        found = true;
-                        prepos = k;
-                    }
+                    prepos = k;
+                    found = true;
                     break;
                 }
                 else if (partialsum[k] > j)
@@ -270,6 +197,7 @@ void musicBarItem::arrangeLines()
             */
         }
         length /= 2;
+        cnt++;
     }
 }
 
@@ -289,7 +217,7 @@ void musicBarItem::arrangeText(int begin, int end)
 		{
 			int distance = middle - i;
             QPointF oripos = numbers[i]->pos();
-            numbers[i]->setPos(oripos.x() + distance * 4, oripos.y());
+            numbers[i]->setPos(oripos.x() + distance * 8, oripos.y());
 		}
 	}
 	else 
@@ -299,7 +227,7 @@ void musicBarItem::arrangeText(int begin, int end)
 		{
 			int distance = middle - i;
             QPointF oripos = numbers[i]->pos();
-            numbers[i]->setPos(oripos.x() + distance * 4 - 2, oripos.y());
+            numbers[i]->setPos(oripos.x() + distance * 8 - 4, oripos.y());
 		}
 	}
     //update();
@@ -309,10 +237,13 @@ void musicBarItem::fillText()
 {
     qreal oriposx = pos().x();
     qreal oriposy = pos().y();
+    //qDebug() << oriposx;
+    //qDebug() << oriposy;
 	int count = numbers.count();
+    //qDebug() << count;
 	for (int i = 0; i < count; ++i) 
 	{
-        numbers[i]->setPos(oriposx - count * textWidth / 2 + i * textWidth, oriposy);
+        numbers[i]->setPos(oriposx - count * textWidth / 2 + textWidth / 2+ i * textWidth, oriposy);
 	}
 }
 

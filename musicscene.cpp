@@ -1,6 +1,7 @@
 #include "musicscene.h"
 #include "musictextitem.h"
 #include "musicbaritem.h"
+#include "musicbracketitem.h"
 #include "WPScore/WPScore.h"
 #include "musicrowitem.h"
 #include "musicwholeitem.h"
@@ -87,41 +88,64 @@ void musicScene::display()
             thisText->setLines(lines);
         }
     }
+    qDebug() << numbers[0].count();
+    for (int i = 0; i < 5; ++i)
+    {
+        qDebug() << numbers[0][i]->musicHeight;
+    }
     bars.resize(partNumber);
     for (int i = 0; i < partNumber; ++i)
     {
         musicBarItem *thisbar = new musicBarItem(numbers[i]);
         bars[i].push_back(thisbar);
     }
-    int barsNumber = bars.count();
+
+    int barsNumber = bars[0].count();
+
     rowNumber = barsNumber / 4 + (barsNumber % 4 != 0);
     rows.resize(rowNumber);
+
     for (int i = 0; i < rowNumber; ++i)
     {
+        //qDebug() << "Hi";
         rows[i] = new musicRowItem(partNumber, 4);
+        //qDebug() << partNumber;
+        //qDebug() << "Hie";
     }
+
     for (int i = 0; i < partNumber; ++i)
     {
         for (int j = 0; j < barsNumber; ++j)
         {
+            //qDebug("%d %d %d\n", rows.size(), i, j);
             rows[j / 4]->insertMusic(bars[i][j], i + 1, j % 4 + 1);
         }
     }
+
     widget = new musicWholeItem;
     widget->setPos(sceneRect().width() / 2, sceneRect().height() / 2);
     for (int i = 0; i < rowNumber; ++i)
     {
         widget->addRow(rows[i]);
     }
+    //qDebug() << widget->pos().x() << " " << widget->pos().y();
     //addItem(widget);
+    //qDebug() << rowNumber;
+    //numbers[0][0]->setPos(900, 5000);
     for (int i = 0; i < rowNumber; ++i)
     {
+        //qDebug() << rows[i]->pos().x() << " " << rows[i]->pos().y();
+        //qDebug() << (rows[i]->bracket)->pos();
+        //qDebug() << (rows[i]->bracket)->boundingRect();
         //addItem(rows[i]);
+        //qDebug() << rows[i]->bars.count();
+        qDebug() << rows[i]->pos();
         foreach (musicLineItem *thisline, rows[i]->bars)
         {
+            //qDebug() << thisline->pos();
             addItem((QGraphicsItem *)(thisline));
         }
-        addItem((QGraphicsItem *)rows[i]->bracket);
+        addItem((QGraphicsItem *)(rows[i]->bracket));
     }
     for (int i = 0; i < partNumber; ++i)
     {

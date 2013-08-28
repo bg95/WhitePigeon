@@ -15,7 +15,7 @@ void musicWholeItem::addRow(musicRowItem *row)
 
 QRectF musicWholeItem::boundingRect() const
 {
-    qreal height = rowHeight * lines.count() + 400;
+    qreal height = rowHeight * lines.count();
     return QRectF(-pageWidth / 2, -height / 2, pageWidth, height);
 }
 
@@ -46,10 +46,10 @@ void musicWholeItem::setPageWidth(qreal width)
 
 void musicWholeItem::arrangeRow()
 {
-    qreal xfloor = pos().y() - boundingRect().height() / 2 + 200;
+    qreal xfloor = pos().y() - boundingRect().height() / 2;
     for (int i = 0; i < lines.count(); ++i)
     {
-        lines[i]->setPos(pos().x(), xfloor + i * rowHeight);
+        lines[i]->setPos(pos().x(), xfloor + i * rowHeight + rowHeight / 2);
     }
 }
 
