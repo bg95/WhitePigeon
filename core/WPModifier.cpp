@@ -32,17 +32,18 @@ void WPModifier::reset()
     wpmodifier_time = 0.0;
     wpmodifier_prevtime = 0.0;
 }
-
+/*
 void WPModifier::reset(double t)
 {
     wpmodifier_time = t;
     wpmodifier_prevtime = t;
     //wpmodifier_deltatime = 0.0;
 }
-
-void WPModifier::setNotes(const std::vector<WPMultinote> &_notes)
+*/
+void WPModifier::setNotes(const std::vector<WPMultinote> &notes, Fraction offset)
 {
-    wpmodifier_notes = _notes;
+    wpmodifier_notes = notes;
+    wpmodifier_notesoffset = offset;
 }
 
 std::vector<WPMultinote> &WPModifier::getNotes()
@@ -50,6 +51,12 @@ std::vector<WPMultinote> &WPModifier::getNotes()
     return wpmodifier_notes;
 }
 
+Fraction WPModifier::getNotesOffset()
+{
+    return wpmodifier_notesoffset;
+}
+
+/*
 void WPModifier::setNote(const WPNote &_note)
 {
     wpmodifier_note = _note;
@@ -59,7 +66,7 @@ WPNote &WPModifier::getNote()
 {
     return wpmodifier_note;
 }
-
+*/
 void WPModifier::set(std::string para)
 {
 }

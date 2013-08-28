@@ -200,8 +200,9 @@ void WPSynthesizer::processProperties(double time0, double time1, std::vector<WP
             if (pam->setProperty(*propiter))
             {
                 WPInterval propinterval = (*propiter).getInterval();
-                pam->sampleModifier()->setNotes(part->getNotesByInterval(propinterval));
-                pam->sampleModifier()->reset((*propiter).getInterval().begin().getValue().toDouble());
+                WPInterval propexinterval = part->getExtendedInterval(propinterval);
+                pam->sampleModifier()->setNotes(part->getNotesByInterval(propinterval), propinterval.begin() - propexinterval.begin());
+                pam->sampleModifier()->reset();
                 //propmap.insert(*propiter, *pam);
                 propmap[*propiter] = *pam;
                 //pam->sampleModifier()->set();

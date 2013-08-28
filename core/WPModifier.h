@@ -8,19 +8,22 @@ class WPModifier
 {
 public:
     WPModifier();
-    void setTime(double t); //this will be called before each call of modify* function, telling the current time (in beats)
+    virtual void setTime(double t);
+    //this will be called before each call of modify* function, telling the current time (in beats)
+    //call this when overwriting
     inline double getTime() const;
     inline double getPrevTime() const;
     bool timePassed(double t);
     virtual void reset(); //call this when overwriting
-    virtual void reset(double t); //call this when overwriting
+    //virtual void reset(double t); //call this when overwriting
 
-    virtual void setNotes(const std::vector<WPMultinote> &_notes);
+    virtual void setNotes(const std::vector<WPMultinote> &notes, Fraction offset);
     //setNotes will be called before calling all modify* functions, telling the notes for the modifier
     //call WPModifier::setNotes when overwriting, or getNotes won't work
     std::vector<WPMultinote> &getNotes(); //why can't be inline?
     //virtual void setNote(const WPNote &_note); //similar to setNotes, but for isSingleNote() == true
     //WPNote &getNote();
+    Fraction getNotesOffset();
 
     virtual bool isGlobal(); //true if the modifier applies to all parts
     //virtual bool isSingleNote();
@@ -47,6 +50,7 @@ public:
 private:
     double wpmodifier_time, wpmodifier_prevtime;
     std::vector<WPMultinote> wpmodifier_notes;
+    Fraction wpmodifier_notesoffset;
     //WPNote wpmodifier_note;
 
 };

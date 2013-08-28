@@ -1,9 +1,9 @@
 #ifndef WPTUNINGFORK_H
 #define WPTUNINGFORK_H
 
-#include "WPTimbre.h"
-#include "WPSynthesizer.h"
-#include "../WPDLLManager/WPCallbackManager.h"
+#include "core/WPTimbre.h"
+#include "core/WPSynthesizer.h"
+#include "WPDLLManager/WPCallbackManager.h"
 
 class WPTuningFork : public WPTimbre
 {
