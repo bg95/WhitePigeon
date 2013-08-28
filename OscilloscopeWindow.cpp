@@ -32,8 +32,8 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
 
-    WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 8)), note3(7, Fraction(1, 8));
-    WPNote note4(-5, Fraction(1, 1)), note5(-1, Fraction(1, 6)), note6(2, Fraction(1, 6));
+	WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 16)), note3(7, Fraction(1, 16));
+	WPNote note4(-5, Fraction(1, 1)), note5(-1, Fraction(1, 16)), note6(2, Fraction(1, 16));
     WPNote longnote(0, Fraction(10, 1));
 /*
     WPWave *twave = synthesizer.synthesize(note1);
@@ -45,30 +45,35 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     qDebug("synthesis finished");
     wave.play();
 */
-    score = new WPScore;
-
-    score->newPart();
-    score->newPart();
-    qDebug("part num = %lu\n", score->getPartList().size());
-    //score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
-    //score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(longnote));
-
-    for (int i = 0; i < 10; i++)
-    {
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(700, 1)), WPMultinote(note2));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(800, 1)), WPMultinote(note3));
-    }
-    score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
-    /*score->save("score.wps");*/
-    //score->load("score.wps");
-/*
+	score = new WPScore;
+	score->lockForWrite();
+	score->newPart("whitepig");
+	score->unlock();
+	score->lockForRead();
+	qDebug("part num = %d\n", score->getPartList().size());
+	score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
+	score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note2));
+	score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note3));
+	score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
+	score->unlock();
+	score->lockForWrite();
+	score->newPart("white");
+	score->unlock();
+	score->lockForRead();
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note4));
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(200, 1)), WPMultinote(note5));
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(500, 2)), WPMultinote(note6));
     score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
-*/
-    //file = new QFile("wave.out");
-    //file->open(QIODevice::WriteOnly);
+	score->unlock();
+
+	score->lockForWrite();
+	score->save("pig.wps");
+	score->close();
+	score->load("pig.wps");
+	score->unlock();
+
+    file = new QFile("wave.out");
+    file->open(QIODevice::WriteOnly);
     controller = new WPSynthesisController;
     //connect(controller, SIGNAL(synthesisFinished()), this, SLOT(waveDecodeFinished()));
     //controller->synthesizeAndOutput(*score, file);

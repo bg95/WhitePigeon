@@ -196,6 +196,22 @@ void WPPart::setOrder(const int &K)
 	Orders[MyVer] = K;
 }
 
+WPInterval WPPart::getExtendedInterval(const WPInterval &I)
+{
+	synchronizeWithMaster();
+	WPPosition S = Notes[MyVer].getLeftEnding(I.begin());
+	WPPosition T = Notes[MyVer].getRightEnding(I.end());
+	return WPInterval (S, T);
+}
+
+WPInterval WPPart::getReducedInterval(const WPInterval &I)
+{
+	synchronizeWithMaster();
+	WPPosition S = Notes[MyVer].getRightEnding(I.begin());
+	WPPosition T = Notes[MyVer].getLeftEnding(I.end());
+	return WPInterval (S, T);
+}
+
 std::vector <WPMultinote> WPPart::getAllNotes()
 {
 	synchronizeWithMaster();
