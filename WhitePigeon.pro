@@ -37,19 +37,19 @@ SOURCES += main.cpp\
     WPScore/WPPersistentTree.cpp \
     WPScore/WPAllocator.cpp \
     core/WPSynthesisController.cpp \
-    core/WPTuningFork.cpp \
+#    core/WPTuningFork.cpp \
     WPDLLManager/WPDLLManager.cpp \
     WPDLLManager/WPDLLTimbre.cpp \
     WPDLLManager/WPCallbackManager.cpp \
     core/WPModifier.cpp \
-    core/WPStaccatissimo.cpp \
+#    core/WPStaccatissimo.cpp \
     WPDLLManager/WPDLLModifier.cpp \
     core/WPPropertyAndModifiers.cpp \
-    WPDLLManager/WPDLLTimbreManager.cpp
+    WPDLLManager/WPDLLTimbreManager.cpp \
     QRecentFilesMenu.cpp \
     WPWindow.cpp
 
-HEADERS  +=\
+HEADERS  += \
             myglwidget.h \
     WPScore/WPSPosition.h \
     WPScore/WPScore.h \
@@ -66,7 +66,7 @@ HEADERS  +=\
     OscilloscopeWindow.h \
     mainwindow.h \
     core/WPTimbre.h \
-    core/WPTuningFork.h \
+#    core/WPTuningFork.h \
     core/WPVarTimbre.h \
     core/WPPipe.h \
     core/WPMixer.h \
@@ -77,10 +77,10 @@ HEADERS  +=\
     WPDLLManager/WPDLLTimbre.h \
     WPDLLManager/WPCallbackManager.h \
     core/WPModifier.h \
-    core/WPStaccatissimo.h \
+#    core/WPStaccatissimo.h \
     WPDLLManager/WPDLLModifier.h \
     core/WPPropertyAndModifiers.h \
-    WPDLLManager/WPDLLTimbreManager.h
+    WPDLLManager/WPDLLTimbreManager.h \
     QRecentFilesMenu.h \
     WPWindow.h
 

@@ -22,7 +22,7 @@ WPTuningFork::~WPTuningFork()
 	fflush(stdout);
 }
 
-void reset()
+void WPTuningFork::reset()
 {
 	time = 0;
 	phi = 0;
@@ -52,7 +52,7 @@ WPWave *WPTuningFork::synthesize(double dur, double *amp, double *freq) const
 
     return WPWave_newWPWave(tmpdata, WPWave_defaultAudioFormat());
 }
-WPWave *WPTuningFork::synthesize(double dur, double time0, double time1, double amp0, double amp1, double freq0, double freq1) const
+WPWave *WPTuningFork::synthesize(double dur, double time0, double time1, double amp0, double amp1, double freq0, double freq1)
 {
     QVector<WPWave::WaveDataType> tmpdata;
     QAudioFormat (*WPWave_defaultAudioFormat)() = (QAudioFormat (*)())callback(WPCallbackManager::WPWave_defaultAudioFormat);

@@ -38,7 +38,7 @@ void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *outpu
     for (i = 0; i < partnum; i++)
     {
         synthesizer[i].setOutputDevice(*mixer->getInputChannel(i));
-        synthesizer[i].loadTimbre(dlltimbre);
+        //synthesizer[i].loadTimbre(dlltimbre);
         //synthesizer[i].loadTimbre(tuningfork); //load tuningfork for test
         synthesizer[i].setPart(score.getPartList()[i]);
         connect(&synthesizer[i], SIGNAL(synthesisFinished()), this, SLOT(oneSynthesizerFinished()));

@@ -41,8 +41,8 @@ public:
     virtual std::string modifyTimbre();
     virtual double modifyTempo(double time, double tempo);
     virtual double modifyNote(double time); //if a note starts at (near) time, returns the length, otherwise returns a negative
-    virtual double modifyFreq(double time, double freq = 0.0);
-    virtual double modifyAmp(double time, double amp);
+    virtual std::vector<double> modifyFreq(double time, std::vector<double> freq);
+    virtual std::vector<double> modifyAmp(double time, std::vector<double> amp);
 
 private:
     double wpmodifier_time, wpmodifier_prevtime;

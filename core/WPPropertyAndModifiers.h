@@ -1,8 +1,8 @@
 #ifndef WPPROPERTYANDMODIFIERS_H
 #define WPPROPERTYANDMODIFIERS_H
 
-#include "WPScore/WPProperty.h"
 #include "WPDLLManager/WPDLLManager.h"
+#include "WPScore/WPProperty.h"
 #include "WPModifier.h"
 
 class WPPropertyAndModifiers

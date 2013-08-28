@@ -119,12 +119,12 @@ double WPModifier::modifyNote(double time)
     return timePassed(0.0) ? wpmodifier_notes[0].getLength().toDouble() : -1.0;
 }
 
-double WPModifier::modifyFreq(double time, double freq)
+std::vector<double> WPModifier::modifyFreq(double time, std::vector<double> freq)
 {
     return freq;
 }
 
-double WPModifier::modifyAmp(double time, double amp)
+std::vector<double> WPModifier::modifyAmp(double time, std::vector<double> amp)
 {
     return amp;
 }
