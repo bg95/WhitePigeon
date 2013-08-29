@@ -29,6 +29,7 @@ class WPPart
 		void setToBeMuted();
 		void setToBePlayed();
 		bool isToBePlayed();
+		double getVolume();
 		int displayOrder(); // -1 means deleted.
 		void setOrder(const int &);
 		std::vector <WPMultinote> getAllNotes();
@@ -39,6 +40,7 @@ class WPPart
 	private:
 		WPScore *Master;
 		int MasterVer, MyVer;
+		double Volume;
 		bool IsToBePlayed;
 		WPPosition PlayingPosition;
 		std::map <int, int> VerMap;
