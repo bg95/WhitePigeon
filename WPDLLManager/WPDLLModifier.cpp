@@ -42,16 +42,16 @@ void WPDLLModifier::reset()
     modifier->reset();
 }
 
-void WPDLLModifier::setNotes(const std::vector<WPNote> &_notes)
+void WPDLLModifier::setNotes(const std::vector<WPMultinote> &_notes, Fraction offset)
 {
-    modifier->setNotes(_notes);
+    modifier->setNotes(_notes, offset);
 }
-
+/*
 void WPDLLModifier::setNote(const WPNote &_note)
 {
     modifier->setNote(_note);
 }
-
+*/
 void WPDLLModifier::set(std::string para)
 {
     modifier->set(para);
@@ -61,12 +61,12 @@ bool WPDLLModifier::isGlobal()
 {
     return modifier->isGlobal();
 }
-
+/*
 bool WPDLLModifier::isSingleNote()
 {
     return modifier->isSingleNote();
 }
-
+*/
 bool WPDLLModifier::isTuning()
 {
     return modifier->isTuning();
@@ -112,12 +112,12 @@ double WPDLLModifier::modifyNote(double time)
     return modifier->modifyNote(time);
 }
 
-double WPDLLModifier::modifyFreq(double time, double freq)
+std::vector<double> WPDLLModifier::modifyFreq(double time, std::vector<double> freq)
 {
     return modifier->modifyFreq(time, freq);
 }
 
-double WPDLLModifier::modifyAmp(double time, double amp)
+std::vector<double> WPDLLModifier::modifyAmp(double time, std::vector<double> amp)
 {
     return modifier->modifyAmp(time, amp);
 }

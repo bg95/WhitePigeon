@@ -75,12 +75,12 @@ bool WPModifier::isGlobal()
 {
     return false;
 }
-
+/*
 bool WPModifier::isSingleNote()
 {
     return true;
 }
-
+*/
 bool WPModifier::isTuning()
 {
     return false;

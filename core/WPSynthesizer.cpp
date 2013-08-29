@@ -97,7 +97,6 @@ void WPSynthesizer::synthesizePart()
     time0 = 0.0;
     time1 = TimeStep;
     propmap.clear();
-    samplecnt = 0;
 /*
     freq.push_back(std::vector<double>(notes.size(), 0.0));
     amp.push_back(std::vector<double>(notes.size(), 1.0));
@@ -106,7 +105,10 @@ void WPSynthesizer::synthesizePart()
     processAllModifiers(time0, freq[samplecnt], amp[samplecnt], notelength, tempo[samplecnt], timbrename);
     samplecnt++;
 */
-    while (fragment = part->nextFragment(), !(fragment.first.getLength() == Fraction(-1, 1)))
+    //part->lockForRead();
+    fragment = part->nextFragment();
+    //part->unlock();
+    while (!(fragment.first.getLength() == Fraction(-1, 1)))
     {
         std::vector<WPNote> notes = fragment.first.getNotes();
         std::vector<WPProperty> sprop = fragment.second.first, eprop = fragment.second.second;
@@ -168,10 +170,22 @@ void WPSynthesizer::synthesizePart()
                     }
                     QThread::usleep(100); //remember to remove
                 }
+                
+                samplecnt = 0;
+                freq.clear();
+                amp.clear();
+                tempo.clear();
+                time.clear();
             }
         }
         time1 = time0 + TimeStep;
-    }
+
+        //part->lockForRead();
+        fragment = part->nextFragment();
+        //part->unlock();
+
+    }//while
+
     //swave->setFormat(WPWave::defaultAudioFormat());
     //swave->play();
     delete swave;
@@ -200,8 +214,12 @@ void WPSynthesizer::processProperties(double time0, double time1, std::vector<WP
             if (pam->setProperty(*propiter))
             {
                 WPInterval propinterval = (*propiter).getInterval();
+
+                //part->lockForRead();
                 WPInterval propexinterval = part->getExtendedInterval(propinterval);
-                pam->sampleModifier()->setNotes(part->getNotesByInterval(propinterval), propinterval.begin() - propexinterval.begin());
+                pam->sampleModifier()->setNotes(part->getNotesByInterval(propinterval), propinterval.begin().getValue() - propexinterval.begin().getValue());
+                //part->unlock();
+
                 pam->sampleModifier()->reset();
                 //propmap.insert(*propiter, *pam);
                 propmap[*propiter] = *pam;

@@ -9,6 +9,7 @@ class WPDLLTimbreManager
 {
 public:
     WPDLLTimbreManager();
+    ~WPDLLTimbreManager();
     bool setTimbre(std::string timbrenamepara);
     WPTimbre *newTimbre();
     void clearTimbres();

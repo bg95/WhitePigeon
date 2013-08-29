@@ -1,3 +1,4 @@
+#include "WPCallbackManager.h"
 #include "WPDLLManager.h"
 
 WPDLLManager::WPDLLManager()

@@ -8,7 +8,6 @@
 #include "WPSynthesizer.h"
 #include "WPPipe.h"
 #include "WPMixer.h"
-#include "WPTuningFork.h"
 #include "../WPScore/WPScore.h"
 #include "../WPDLLManager/WPDLLTimbre.h"
 

@@ -9,9 +9,9 @@ WPDLLTimbreManager::~WPDLLTimbreManager()
     clearTimbres();
 }
 
-void WPDLLTimbreManager::setTimbre(std::string timbrenamepara)
+bool WPDLLTimbreManager::setTimbre(std::string timbrenamepara)
 {
-    std::istringstream iss(timbrenamepara.getArg());
+    std::istringstream iss(timbrenamepara);
     char c;
     name.clear();
     para.clear();
@@ -31,17 +31,17 @@ void WPDLLTimbreManager::setTimbre(std::string timbrenamepara)
         qWarning("No setCallback !");
         return false;
     }
-    WPTimbre *sample = manager.newObject();
+    WPTimbre *sample = (WPTimbre *)manager.newObject();
     if (!sample)
         return false;
-    sample.set(para);
+    sample->set(para);
     manager.deleteObject(sample);
     return true;
 }
 
 WPTimbre *WPDLLTimbreManager::newTimbre()
 {
-    WPTimbre *t = manager.newObject();
+    WPTimbre *t = (WPTimbre *)manager.newObject();
     t->set(para);
     timbres.push_back(t);
     return t;

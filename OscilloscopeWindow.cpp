@@ -2,7 +2,7 @@
 //#include "ui_mainwindow.h"
 #include "WPScore/WPNote.h"
 #include "core/WPSynthesizer.h"
-#include "core/WPTuningFork.h"
+//#include "core/WPTuningFork.h"
 #include "core/WPPipe.h"
 
 OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :

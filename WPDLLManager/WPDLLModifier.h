@@ -13,7 +13,7 @@ public:
 
     void reset();
 
-    void setNotes(const std::vector<WPNote> &_notes);
+    void setNotes(const std::vector<WPMultinote> &_notes, Fraction offset);
     //setNotes will be called before calling all modify* functions, telling the notes for the modifier
     //call WPModifier::setNotes when overwriting, or getNotes won't work
     void setNote(const WPNote &_note); //similar to setNotes, but for isSingleNote() == true
@@ -37,8 +37,8 @@ public:
     std::string modifyTimbre();
     double modifyTempo(double time, double tempo);
     double modifyNote(double time); //if a note starts at (near) time, returns the length, otherwise returns a negative
-    double modifyFreq(double time, double freq = 0.0);
-    double modifyAmp(double time, double amp);
+    std::vector<double> modifyFreq(double time, std::vector<double> freq);
+    std::vector<double> modifyAmp(double time, std::vector<double> amp);
 
 
 private:

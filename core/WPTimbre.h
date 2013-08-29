@@ -27,8 +27,10 @@ public:
     {}
     virtual void reset() //called before synthesis of a note
     {}
+    virtual void set(std::string para)
+    {}
     virtual WPWave *synthesize(double dur, double time0, double time1, double amp0, double amp1, double freq0, double freq1) = 0;
-    virtual WPWave *synthesize(double dur, double *amp, double *freq) const = 0;
+    //virtual WPWave *synthesize(double dur, double *amp, double *freq) const = 0;
 };
 
 //#include "WPTuningFork.h"

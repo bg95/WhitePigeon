@@ -2,7 +2,6 @@
 #define WPDLLMANAGER_H
 
 #include <QString>
-#include "WPCallbackManager.h"
 
 #ifdef Q_OS_WIN
     #include <windows.h>

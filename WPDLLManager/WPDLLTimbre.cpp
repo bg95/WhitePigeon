@@ -43,16 +43,27 @@ bool WPDLLTimbre::loadDLL(QString name)
     return true;
 }
 
+void WPDLLTimbre::set(std::string para)
+{
+    timbre->set(para);
+}
+
+void WPDLLTimbre::reset()
+{
+    timbre->reset();
+}
+
 WPWave *WPDLLTimbre::synthesize(double dur, double time0, double time1, double amp0, double amp1, double freq0, double freq1)
 {
     if (!timbre)
         return 0;
     return timbre->synthesize(dur, time0, time1, amp0, amp1, freq0, freq1);
 }
-
+/*
 WPWave *WPDLLTimbre::synthesize(double dur, double *amp, double *freq) const
 {
     if (!timbre)
         return 0;
     return timbre->synthesize(dur, amp, freq);
 }
+*/
