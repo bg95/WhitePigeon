@@ -462,7 +462,7 @@ void MainWindow::showOscilloscope()
 {
     if (!oscilloscopeWindow)
     {
-        oscilloscopeWindow = new OscilloscopeWindow(this);
+        // oscilloscopeWindow = new OscilloscopeWindow(this);
     }
     oscilloscopeWindow->show();
 }

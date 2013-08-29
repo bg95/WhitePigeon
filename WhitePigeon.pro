@@ -17,7 +17,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        myglwidget.cpp \
     WPScore/WPScore.cpp \
     WPScore/WPProperty.cpp \
     WPScore/WPPosition.cpp \
@@ -26,10 +25,8 @@ SOURCES += main.cpp\
     WPScore/WPMultinote.cpp \
     WPScore/WPLib.cpp \
     WPScore/WPInterval.cpp \
-    core/WPOscilloscope.cpp \
     core/WPSynthesizer.cpp \
     core/WPWave.cpp \
-    OscilloscopeWindow.cpp \
     mainwindow.cpp \
     core/WPPipe.cpp \
     core/WPMixer.cpp \
@@ -38,10 +35,19 @@ SOURCES += main.cpp\
     core/WPSynthesisController.cpp \
     QRecentFilesMenu.cpp \
     WPWindow.cpp \
-    addressbar.cpp
+    addressbar.cpp \
+    musicwholeitem.cpp \
+    musictextitem.cpp \
+    musicscene.cpp \
+    musicrowitem.cpp \
+    musiclineitem.cpp \
+    musicdotitem.cpp \
+    musicbracketitem.cpp \
+    musicbaritem.cpp \
+    musicarcitem.cpp \
+    getmusicinfodialog.cpp
 
 HEADERS  +=\
-            myglwidget.h \
     WPScore/WPSPosition.h \
     WPScore/WPScore.h \
     WPScore/WPProperty.h \
@@ -51,10 +57,8 @@ HEADERS  +=\
     WPScore/WPMultinote.h \
     WPScore/WPLib.h \
     WPScore/WPInterval.h \
-    core/WPOscilloscope.h \
     core/WPSynthesizer.h \
     core/WPWave.h \
-    OscilloscopeWindow.h \
     mainwindow.h \
     core/WPTimbre.h \
     core/WPTuningFork.h \
@@ -66,7 +70,17 @@ HEADERS  +=\
     core/WPSynthesisController.h \
     QRecentFilesMenu.h \
     WPWindow.h \
-    addressbar.h
+    addressbar.h \
+    musicwholeitem.h \
+    musictextitem.h \
+    musicscene.h \
+    musicrowitem.h \
+    musiclineitem.h \
+    musicdotitem.h \
+    musicbracketitem.h \
+    musicbaritem.h \
+    musicarcitem.h \
+    getmusicinfodialog.h
 
 TRANSLATIONS += Chinese.ts
 

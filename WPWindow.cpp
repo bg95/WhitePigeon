@@ -1,7 +1,7 @@
 #include <QtWidgets>
 
-#include <QGraphicsScene>   // #include "WPGraphicsScene.h"
-#include <QGraphicsView>    // #include "WPGraphicsView.h"
+#include "musicscene.h"
+#include <QGraphicsView>    // #include "musicview.h"
 #include "WPScore/WPScore.h"
 #include "core/WPSynthesisController.h"
 
@@ -12,17 +12,15 @@ WPWindow::WPWindow(QWidget *parent, Qt::WindowFlags flags)
 {
     saved = false;
     filePath = QString();
-    score = new WPScore();
+    score = new WPScore;
     lastVersion = score->getCurrentVersion();
 
-    scene = new WPGraphicsScene;
-    scene->setParent(this);
-    // scene->drawMusic(score);
+    scene = new musicScene(this);
+    // scene->setScore(score);
     // connect(scene, SIGNAL(scoreModified()),
     //         this, SLOT(onScoreModified()));
 
-    view = new WPGraphicsView;
-    view->setParent(this);
+    view = new musicView(this);
     view->setScene(scene);
 
     setWidget(view);
@@ -44,7 +42,7 @@ bool WPWindow::loadFile(const QString &file)
     saved = true;
     filePath = QFileInfo(file).canonicalFilePath();
     // score->load(filePath.toStdString());
-    // scene->drawMusic(score);
+    // scene->setScore(score);
     // lastVersion = score->getCurrentVersion();
     setWindowModified(false);
     setWindowTitle(QFileInfo(file).fileName() + "[*]");

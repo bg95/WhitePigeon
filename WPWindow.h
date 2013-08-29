@@ -2,11 +2,10 @@
 #define WPWINDOW_H
 
 #include <QMdiSubWindow>
-#include <QGraphicsScene>   // Deleted
 #include <QGraphicsView>    // Deleted
 
-typedef QGraphicsScene WPGraphicsScene; // class WPGraphicsScene;
-typedef QGraphicsView WPGraphicsView;   // class WPGraphicsView;
+class musicScene;
+typedef QGraphicsView musicView;   // class musicView;
 class WPSynthesisController;
 class WPScore;
 
@@ -35,8 +34,8 @@ private:
     QString filePath;
     WPScore *score;
     int lastVersion;
-    WPGraphicsView *view;
-    WPGraphicsScene *scene;
+    musicView *view;
+    musicScene *scene;
 };
 
 #endif // WPWINDOW_H
