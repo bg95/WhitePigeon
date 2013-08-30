@@ -236,6 +236,21 @@ std::vector<WPMultinote> WPPart::getNotesByInterval(WPInterval &I)
 	return Notes[MyVer].query(I).traverse();
 }
 
+void WPPart::lockForRead()
+{
+	Master->lockForRead();
+}
+
+void WPPart::lockForWrite()
+{
+	Master->lockForWrite();
+}
+
+void WPPart::unlock()
+{
+	Master->unlock();
+}
+
 //~ void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)
 //~ {
 	//~ std::vector <WPMultinote> New;
