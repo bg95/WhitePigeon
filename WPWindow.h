@@ -13,6 +13,8 @@ class QWebView;
 
 class WPWindow : public QMdiSubWindow
 {
+    Q_OBJECT
+
 public:
     WPWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
@@ -33,6 +35,7 @@ protected:
 
 private slots:
     void onScoreModified();
+    void changeFilePathInWebMode(QUrl url);
 
 private:
     bool okToContinue();

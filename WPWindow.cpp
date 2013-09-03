@@ -25,7 +25,11 @@ WPWindow::WPWindow(QWidget *parent, Qt::WindowFlags flags)
     view = new musicView(this);
     view->setScene(scene);
 
-    webView = new QWebView;
+    webView = new QWebView(this);
+    connect(webView, SIGNAL(titleChanged(QString)),
+            this, SLOT(setWindowTitle(QString)));
+    connect(webView, SIGNAL(urlChanged(QUrl)),
+            this, SLOT(changeFilePathInWebMode(QUrl)));
 
     setWidget(view);
     setAttribute(Qt::WA_DeleteOnClose);
@@ -70,7 +74,6 @@ bool WPWindow::loadFile(const QString &file)
         filePath = url.path();
         webView->load(url);
         setWidget(webView);
-        webView->show();
         return true;
     }
 }
@@ -119,6 +122,11 @@ void WPWindow::closeEvent(QCloseEvent *closeEvent)
 void WPWindow::onScoreModified()
 {
     setWindowModified(lastVersion != score->getCurrentVersion());
+}
+
+void WPWindow::changeFilePathInWebMode(QUrl url)
+{
+    filePath = url.path();
 }
 
 bool WPWindow::okToContinue()

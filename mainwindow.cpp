@@ -368,7 +368,8 @@ void MainWindow::loadFile()
 void MainWindow::loadFile(const QString& file)
 {
     QUrl url(file);
-    if (url.isLocalFile())
+    QFileInfo fileInfo(file);
+    if (fileInfo.isFile())
     {
         WPWindow *window = findChild(file);
         if (window)
@@ -397,11 +398,20 @@ void MainWindow::loadFile(const QString& file)
     {
         if (url.isValid())
         {
-            WPWindow *window = createNewChild();
-            window->setMode(WPWindow::Web);
-            window->loadFile(file);
-            window->show();
-            mdiArea->setActiveSubWindow(window);
+            if (file.indexOf("http://") == 0)
+            {
+                WPWindow *window = createNewChild();
+                window->setMode(WPWindow::Web);
+                window->loadFile(file);
+                window->show();
+                mdiArea->setActiveSubWindow(window);
+            }
+            else
+            {
+                QMessageBox::warning(this, tr("White Pigeon"),
+                        tr("Url must begin with \"http://\""),
+                        QMessageBox::Ok);
+            }
         }
         else
         {
