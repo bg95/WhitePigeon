@@ -39,6 +39,7 @@ signals:
 private slots:
     void onScoreModified();
 	void changeFilePathInWebMode(const QUrl &url);
+	void loadingFailure(const bool &);
 
 private:
     bool okToContinue();

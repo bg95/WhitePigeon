@@ -75,6 +75,7 @@ bool WPWindow::loadFile(const QString &file)
 		connect(webView, SIGNAL(loadProgress(int)), parent()->parent()->parent()->parent(), SLOT(showLoadingProgress(int))); // Is it correct? I do not know.
 		connect(webView, SIGNAL(statusBarMessage(QString)), parent()->parent()->parent()->parent(), SLOT(showStatusBarMessage(QString))); // Is it correct? I do not know.
 		connect(webView, SIGNAL(linkClicked(QUrl)), parent()->parent()->parent()->parent(), SLOT(openAWebPage(QUrl))); // Is it correct? I do not know.
+		connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(loadingFailure(bool))); // Is it correct? I do not know.
 
         webView->load(url);
 		webView->page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
@@ -140,6 +141,12 @@ void WPWindow::changeFilePathInWebMode(const QUrl &url)
 {
 	filePath = url.url();
 	emit pathModified();
+}
+
+void WPWindow::loadingFailure(const bool &Flag)
+{
+	if (!Flag)
+		setWindowTitle("Problem loading page");
 }
 
 bool WPWindow::okToContinue()
