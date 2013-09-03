@@ -44,3 +44,12 @@ bool WPProperty::operator < (const WPProperty &P) const
 		return 1;
 	return 0;
 }
+
+std::vector <WPProperty> filterPrefix(const std::vector <WPProperty> &VP, const std::string &Pfx)
+{
+	std::vector <WPProperty> Result;
+	for (std::vector <WPProperty> :: const_iterator it = VP.begin(); it != VP.end(); ++ it)
+		if (it->getArg().find(Pfx) == 0)
+			Result.push_back(*it);
+	return Result;
+}

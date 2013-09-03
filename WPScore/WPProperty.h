@@ -24,5 +24,7 @@ class WPProperty
 		std::string Arg;
 };
 
+std::vector <WPProperty> filterPrefix(const std::vector <WPProperty> &, const std::string &);
+
 #endif
 

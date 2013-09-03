@@ -80,7 +80,6 @@ void WPScore::load(const std::string &FileName)
 		AnalysisScore0a(Rest);
 	if (V == "Score File Format 0b")
 	{
-		fprintf(stderr, "restore size = %u\n", Rest.size());
 		QByteArray BA = QByteArray::fromRawData(Rest.c_str(), Rest.size());
 		BA = qUncompress(BA);
 		Rest = BA.data();
@@ -116,36 +115,6 @@ WPPart *WPScore::newPart(std::string S)
 	return &PartList[PartList.size() - 1];
 }
 
-//~ void WPScore::insertNote(const WPPosition &P, const WPNote &N)
-//~ {
-	//~ NoteList.push_back(std::make_pair(P, N));
-	//~ for (int k = (int) NoteList.size() - 1; k > 0; -- k)
-		//~ if (NoteList[k].first.getValue() < NoteList[k - 1].first.getValue())
-			//~ std::swap(NoteList[k], NoteList[k - 1]);
-//~ }
-//~ 
-//~ void WPScore::deleteNote(const WPPosition &P, const WPNote &N)
-//~ {
-//~ }
-//~ 
-//~ WPProperty WPScore::insertProperty(const WPInterval &I, const WPProperty &P)
-//~ {
-	//~ return P;
-//~ }
-//~ 
-//~ void WPScore::deleteProperty(const WPProperty &)
-//~ {
-//~ }
-//~ 
-//~ void WPScore::insertPart(const WPPart &P)
-//~ {
-	//~ PartList.push_back(P);
-//~ }
-//~ 
-//~ void WPScore::deletePart(const WPPart &)
-//~ {
-//~ }
-//~ 
 std::vector <WPPart> &WPScore::getPartList()
 {
 	return PartList;
@@ -191,6 +160,11 @@ bool WPScore::deleteProperty(const WPProperty &P)
 std::vector<WPProperty> WPScore::getAllProperties()
 {
 	return Properties[CurVer].traverse();
+}
+
+std::vector<WPProperty> WPScore::filterPropertiesByPrefix(const std::string &S)
+{
+	return filterPrefix(Properties[CurVer].traverse(), S);
 }
 
 int WPScore::getCurrentVersion() const

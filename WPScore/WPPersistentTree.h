@@ -54,6 +54,8 @@ class WPMultinotePersistentTree
 		std::pair <Fraction, WPMultinote> query(const WPPosition &);
 		WPMultinotePersistentTree query(const WPInterval &);
 		std::vector <WPMultinote> traverse();
+		WPPosition getLeftEnding(const WPPosition &);
+		WPPosition getRightEnding(const WPPosition &);
 	private:
 		WPMultinotePersistentTreeNode *Root;
 		WPAllocator <WPMultinotePersistentTreeNode> *Alloc;
