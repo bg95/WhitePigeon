@@ -1,0 +1,33 @@
+#ifndef WPPROPERTYANDMODIFIERS_H
+#define WPPROPERTYANDMODIFIERS_H
+
+#include "WPScore/WPProperty.h"
+#include "WPDLLManager/WPDLLManager.h"
+#include "WPModifier.h"
+
+class WPPropertyAndModifiers
+{
+public:
+    WPPropertyAndModifiers();
+    explicit WPPropertyAndModifiers(WPProperty &_prop);
+    ~WPPropertyAndModifiers();
+    bool setProperty(WPProperty &_prop);
+    void setNumModifiers(int n);
+    WPModifier *sampleModifier();
+    std::string getName();
+    bool operator <(WPPropertyAndModifiers &b)
+    {
+        return prop < b.prop;
+    }
+
+private:
+    void clearModifiers();
+    WPProperty prop;
+    WPDLLManager manager;
+    std::vector<WPModifier *> modifiers;
+    WPModifier *samplemodifier;
+    std::string name, para, fname;\
+
+};
+
+#endif // WPPROPERTYANDMODIFIERS_H
