@@ -49,8 +49,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 	score->lockForWrite();
 	score->newPart("whitepig");
 	score->unlock();
-	score->lockForRead();
-	qDebug("part num = %d\n", score->getPartList().size());
+    score->lockForRead();
 	score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
 	score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note2));
 	score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note3));
@@ -74,10 +73,11 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 
     file = new QFile("wave.out");
     file->open(QIODevice::WriteOnly);
+    qDebug("part num = %d\n", score->getPartList().size());
     controller = new WPSynthesisController;
     //connect(controller, SIGNAL(synthesisFinished()), this, SLOT(waveDecodeFinished()));
     //controller->synthesizeAndOutput(*score, file);
-    controller->synthesizeAndPlay(*score);
+    //controller->synthesizeAndPlay(*score);
     //this->
 /*
     WPSynthesizer synthesizer;
@@ -124,6 +124,7 @@ void OscilloscopeWindow::waveDecodeFinished()
     file->open(QIODevice::ReadOnly);
     QAudioOutput *audiooutput = new QAudioOutput(WPWave::defaultAudioFormat());
     audiooutput->start(file);*/
+    //qDebug("decode finished");
     /*
     qWarning("Gabor");
     wave.Gabor(256, 512);

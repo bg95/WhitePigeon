@@ -8,11 +8,12 @@ class WPModifier
 {
 public:
     WPModifier();
+    virtual ~WPModifier();
     virtual void setTime(double t);
     //this will be called before each call of modify* function, telling the current time (in beats)
     //call this when overwriting
-    inline double getTime() const;
-    inline double getPrevTime() const;
+    double getTime() const;
+    double getPrevTime() const;
     bool timePassed(double t);
     virtual void reset(); //call this when overwriting
     //virtual void reset(double t); //call this when overwriting

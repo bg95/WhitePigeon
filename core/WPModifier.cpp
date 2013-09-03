@@ -2,8 +2,11 @@
 
 WPModifier::WPModifier()
 {
-    wpmodifier_time = 0;
-    wpmodifier_prevtime = 0;
+    reset();
+}
+
+WPModifier::~WPModifier()
+{
 }
 
 void WPModifier::setTime(double t)
@@ -12,12 +15,12 @@ void WPModifier::setTime(double t)
     wpmodifier_time = t;
 }
 
-inline double WPModifier::getTime() const
+double WPModifier::getTime() const
 {
     return wpmodifier_time;
 }
 
-inline double WPModifier::getPrevTime() const
+double WPModifier::getPrevTime() const
 {
     return wpmodifier_prevtime;
 }

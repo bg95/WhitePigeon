@@ -12,8 +12,11 @@
 #include "WPPropertyAndModifiers.h"
 #include "../WPScore/WPNote.h"
 #include "../WPScore/WPPart.h"
+class WPSynthesizer;
 #include "WPDLLManager/WPDLLModifier.h"
 #include "WPDLLManager/WPDLLTimbreManager.h"
+#include "plugins/WP12EqualTuning.h"
+#include "plugins/WPDefaultNoteModifier.h"
 
 class WPSynthesizer : public QThread
 {
@@ -58,6 +61,8 @@ private:
     QIODevice *output;
     WPPart *part;
     bool slowingdown;
+    WP12EqualTuning defaulttuning;
+    WPDefaultNoteModifier defaultnotemodifier;
 
 };
 

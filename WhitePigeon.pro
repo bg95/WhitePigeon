@@ -47,7 +47,9 @@ SOURCES += main.cpp\
     core/WPPropertyAndModifiers.cpp \
     WPDLLManager/WPDLLTimbreManager.cpp \
     QRecentFilesMenu.cpp \
-    WPWindow.cpp
+    WPWindow.cpp \
+    plugins/WPDefaultNoteModifier.cpp \
+    plugins/WP12EqualTuning.cpp
 
 HEADERS  += \
             myglwidget.h \
@@ -82,6 +84,8 @@ HEADERS  += \
     core/WPPropertyAndModifiers.h \
     WPDLLManager/WPDLLTimbreManager.h \
     QRecentFilesMenu.h \
-    WPWindow.h
+    WPWindow.h \
+    plugins/WPDefaultNoteModifier.h \
+    plugins/WP12EqualTuning.h
 
 TRANSLATIONS += Chinese.ts

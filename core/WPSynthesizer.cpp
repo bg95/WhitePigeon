@@ -97,6 +97,11 @@ void WPSynthesizer::synthesizePart()
     time0 = 0.0;
     time1 = TimeStep;
     propmap.clear();
+
+    defaultnotemodifier.setNotes(part->getAllNotes(), Fraction(0, 1));
+    defaultnotemodifier.reset();
+    defaulttuning.setNotes(part->getAllNotes(), Fraction(0, 1));
+    defaulttuning.reset();
 /*
     freq.push_back(std::vector<double>(notes.size(), 0.0));
     amp.push_back(std::vector<double>(notes.size(), 1.0));
@@ -245,6 +250,11 @@ int WPSynthesizer::processTuningFreqAmp(double time, std::vector<double> &freq, 
             freq = (*propmapiter).second.sampleModifier()->modifyFreq(time, freq);
             tuned++;
         }
+    if (tuned == 0)
+    {
+        tuned++;
+        freq = defaulttuning.modifyFreq(time, freq);
+    }
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
         if ((*propmapiter).second.sampleModifier()->isFreqModifier() &&
             !(*propmapiter).second.sampleModifier()->isTuning())
@@ -273,6 +283,11 @@ int WPSynthesizer::processNote(double time, double &notelength)
                 notelength = tmp;
             notemodicnt++;
         }
+    if (notemodicnt == 0)
+    {
+        notemodicnt++;
+        return defaultnotemodifier.modifyNote(time);
+    }
     return notemodicnt;
 }
 
@@ -306,10 +321,11 @@ void WPSynthesizer::processAllModifiers(double time, std::vector<double> &freq, 
 {
     std::map<WPProperty, WPPropertyAndModifiers>::iterator propmapiter;
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
-        (*propmapiter).second.sampleModifier()->setTime(time);
+        (*propmapiter).second.sampleModifier()->setTime(time - (*propmapiter).first.getInterval().begin().getValue().toDouble());
     //Tuning
     //Freq
     //Amp
+    defaulttuning.setTime(time);
     int tuned = processTuningFreqAmp(time, freq, amp);
     if (tuned == 0)
     {
@@ -319,6 +335,7 @@ void WPSynthesizer::processAllModifiers(double time, std::vector<double> &freq, 
     if (tuned >= 2)
         qWarning("Multiple Tuning!");
     //Note
+    defaultnotemodifier.setTime(time);
     int notemodicnt = processNote(time, notelength);
     if (notemodicnt == 0)
     {

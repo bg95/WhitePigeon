@@ -1,9 +1,6 @@
 #ifndef WPCALLBACKMANAGER_H
 #define WPCALLBACKMANAGER_H
 
-#include "core/WPWave.h"
-#include "core/WPSynthesizer.h"
-
 class WPCallbackManager
 {
 public:

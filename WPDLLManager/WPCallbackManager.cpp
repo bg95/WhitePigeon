@@ -1,3 +1,5 @@
+#include "core/WPWave.h"
+#include "core/WPSynthesizer.h"
 #include "WPCallbackManager.h"
 
 void *WPCallbackManager::CallbackFuncList[] =
