@@ -19,6 +19,7 @@ MainWindow::MainWindow()
     mdiArea->setViewMode(QMdiArea::TabbedView);
     mdiArea->setTabsMovable(true);
     mdiArea->setActivationOrder(QMdiArea::CreationOrder);
+	mdiArea->setTabsClosable(true);
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this, SLOT(updateActionsNeedingSubWindow()));
 
@@ -260,6 +261,7 @@ void MainWindow::createAddressBar()
 
     mainLayout = new QVBoxLayout;
     mainLayout->setSpacing(0);
+	mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addLayout(addressLayout);
     mainLayout->addWidget(mdiArea);
 
