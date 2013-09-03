@@ -33,6 +33,9 @@ public:
 protected:
     void closeEvent(QCloseEvent *closeEvent);
 
+signals:
+    void pathModified();
+
 private slots:
     void onScoreModified();
     void changeFilePathInWebMode(QUrl url);

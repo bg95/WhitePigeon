@@ -20,8 +20,6 @@ MainWindow::MainWindow()
     mdiArea->setTabsMovable(true);
     mdiArea->setActivationOrder(QMdiArea::CreationOrder);
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
-            this, SLOT(updateStatusBar(QMdiSubWindow*)));
-    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this, SLOT(updateActionsNeedingSubWindow()));
 
     /* MainWindow settings */
@@ -246,7 +244,7 @@ void MainWindow::createAddressBar()
     connect(addressEdit, SIGNAL(returnPressed()),
             this, SLOT(goToSite()));
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
-            this, SLOT(showPath()));
+            this, SLOT(updateAddressBar()));
 
     goButton = new QPushButton(this);
     goButton->setText("Go");
@@ -428,15 +426,6 @@ void MainWindow::goToSite()
     loadFile(addressEdit->text());
 }
 
-void MainWindow::showPath()
-{
-    WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
-    if (window)
-    {
-        addressEdit->setText(window->currentFilePath());
-    }
-}
-
 void MainWindow::setAddressVisible(bool visible)
 {
     addressEdit->setVisible(visible);
@@ -512,13 +501,28 @@ void MainWindow::stopAll()
     // controller->stopAll();
 }
 
+void MainWindow::updateAddressBar()
+{
+    WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
+    if (window)
+    {
+        addressEdit->setText(window->currentFilePath());
+    }
+    else
+    {
+        addressEdit->setText(tr(""));
+    }
+}
+
 void MainWindow::updateActionsNeedingSubWindow()
 {
-    bool hasActiveWindow = (mdiArea->activeSubWindow() != NULL);
+    WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
+    bool hasActiveWindow = (window != NULL);
+    bool isWindowFileMode = (window != NULL && window->getMode() == WPWindow::File);
 
-    saveAction->setEnabled(hasActiveWindow);
-    saveAsAction->setEnabled(hasActiveWindow);
-    playAction->setEnabled(hasActiveWindow);
+    saveAction->setEnabled(isWindowFileMode);
+    saveAsAction->setEnabled(isWindowFileMode);
+    playAction->setEnabled(isWindowFileMode);
     closeAction->setEnabled(hasActiveWindow);
     closeAllAction->setEnabled(hasActiveWindow);
 }
@@ -532,21 +536,14 @@ void MainWindow::showOscilloscope()
     oscilloscopeWindow->show();
 }
 
-void MainWindow::updateStatusBar(QMdiSubWindow* window)
-{
-    if (window)
-    {
-        QString s = window->windowTitle();
-        statusBar()->showMessage(s.left(s.size() - 3));
-    }
-}
-
 
 /* private functions */
 
 WPWindow* MainWindow::createNewChild()
 {
     WPWindow *window = new WPWindow;
+    connect(window, SIGNAL(pathModified()),
+            this, SLOT(updateAddressBar()));
     mdiArea->addSubWindow(window);
     return window;
 }

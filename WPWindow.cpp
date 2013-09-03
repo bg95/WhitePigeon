@@ -80,6 +80,10 @@ bool WPWindow::loadFile(const QString &file)
 
 bool WPWindow::saveFile()
 {
+    if (mode == Web)
+    {
+        return true;
+    }
     if (!saved)
     {
         return false;
@@ -92,7 +96,10 @@ bool WPWindow::saveFile()
 
 bool WPWindow::saveFile(const QString &file)
 {
-
+    if (mode == Web)
+    {
+        return true;
+    }
     saved = true;
     filePath = QFileInfo(file).canonicalFilePath();
     // score->save(filePath.toStdString());
@@ -127,11 +134,12 @@ void WPWindow::onScoreModified()
 void WPWindow::changeFilePathInWebMode(QUrl url)
 {
     filePath = url.path();
+    emit pathModified();
 }
 
 bool WPWindow::okToContinue()
 {
-    if (isWindowModified())
+    if (isWindowModified() && mode == File)
     {
         int r = QMessageBox::warning(this, tr("WhitePigeon"),
                         tr("The document has been modified.\n"

@@ -32,7 +32,6 @@ private slots:
     void loadFile();
     void loadFile(const QString &file);
     void goToSite();
-    void showPath();
     void setAddressVisible(bool visible);
     bool saveFile();
     bool saveAsFile();
@@ -41,8 +40,8 @@ private slots:
     void play();
     void stopAll();
     void updateActionsNeedingSubWindow();
+    void updateAddressBar();
     void showOscilloscope();
-    void updateStatusBar(QMdiSubWindow *window);
 
 private:
     void createActions();
