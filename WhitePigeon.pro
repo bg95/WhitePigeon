@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui opengl multimedia
+QT       += core gui opengl multimedia webkit webkitwidgets network
 
 #needs
 #libpulse-dev
@@ -31,20 +31,10 @@ SOURCES += main.cpp\
     core/WPPipe.cpp \
     core/WPMixer.cpp \
     WPScore/WPPersistentTree.cpp \
-    musictextitem.cpp \
-    musicscene.cpp \
-    musicarcitem.cpp \
-    getmusicinfodialog.cpp \
-    musicbracketitem.cpp \
-    musicdotitem.cpp \
-    musiclineitem.cpp \
-    musicbaritem.cpp \
-    musicrowitem.cpp \
-    musicwholeitem.cpp \
+#    WPScore/WPAllocator.cpp
     core/WPSynthesisController.cpp \
     QRecentFilesMenu.cpp \
     WPWindow.cpp \
-    addressbar.cpp \
     musicwholeitem.cpp \
     musictextitem.cpp \
     musicscene.cpp \
@@ -77,19 +67,8 @@ HEADERS  +=\
     WPScore/WPPersistentTree.h \
     WPScore/WPAllocator.h \
     core/WPSynthesisController.h \
-    musictextitem.h \
-    musicscene.h \
-    musicarcitem.h \
-    getmusicinfodialog.h \
-    musicbracketitem.h \
-    musicdotitem.h \
-    musiclineitem.h \
-    musicbaritem.h \
-    musicrowitem.h \
-    musicwholeitem.h \
     QRecentFilesMenu.h \
     WPWindow.h \
-    addressbar.h \
     musicwholeitem.h \
     musictextitem.h \
     musicscene.h \
@@ -102,3 +81,8 @@ HEADERS  +=\
     getmusicinfodialog.h
 
 TRANSLATIONS += Chinese.ts
+
+RESOURCES += \
+    whitepigeon.qrc
+
+FORMS +=

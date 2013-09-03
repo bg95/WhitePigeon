@@ -1,6 +1,7 @@
 #include <QtWidgets>
+#include <QtWebKitWidgets/QWebView>
 
-#include "musicscene.h"
+// #include "musicscene.h"
 #include <QGraphicsView>    // #include "musicview.h"
 #include "WPScore/WPScore.h"
 #include "core/WPSynthesisController.h"
@@ -14,6 +15,7 @@ WPWindow::WPWindow(QWidget *parent, Qt::WindowFlags flags)
     filePath = QString();
     score = new WPScore;
     lastVersion = score->getCurrentVersion();
+    mode = File;
 
     scene = new musicScene(this);
     // scene->setScore(score);
@@ -23,8 +25,20 @@ WPWindow::WPWindow(QWidget *parent, Qt::WindowFlags flags)
     view = new musicView(this);
     view->setScene(scene);
 
+    webView = new QWebView;
+
     setWidget(view);
     setAttribute(Qt::WA_DeleteOnClose);
+}
+
+WPWindow::Mode WPWindow::getMode() const
+{
+    return mode;
+}
+
+void WPWindow::setMode(Mode __mode)
+{
+    mode = __mode;
 }
 
 bool WPWindow::isSaved() const
@@ -40,13 +54,25 @@ QString WPWindow::currentFilePath() const
 bool WPWindow::loadFile(const QString &file)
 {
     saved = true;
-    filePath = QFileInfo(file).canonicalFilePath();
-    // score->load(filePath.toStdString());
-    // scene->setScore(score);
-    // lastVersion = score->getCurrentVersion();
-    setWindowModified(false);
-    setWindowTitle(QFileInfo(file).fileName() + "[*]");
-    return true;
+    if (mode == File)
+    {
+        filePath = QFileInfo(file).canonicalFilePath();
+        // score->load(filePath.toStdString());
+        // scene->setScore(score);
+        // lastVersion = score->getCurrentVersion();
+        setWindowModified(false);
+        setWindowTitle(QFileInfo(file).fileName() + "[*]");
+        return true;
+    }
+    else
+    {
+        QUrl url(file);
+        filePath = url.path();
+        webView->load(url);
+        setWidget(webView);
+        webView->show();
+        return true;
+    }
 }
 
 bool WPWindow::saveFile()

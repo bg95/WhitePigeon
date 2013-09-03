@@ -2,17 +2,24 @@
 #define WPWINDOW_H
 
 #include <QMdiSubWindow>
+#include <QGraphicsScene>   // Deleted
 #include <QGraphicsView>    // Deleted
 
-class musicScene;
+typedef QGraphicsScene musicScene; // class musicScene;
 typedef QGraphicsView musicView;   // class musicView;
 class WPSynthesisController;
 class WPScore;
+class QWebView;
 
 class WPWindow : public QMdiSubWindow
 {
 public:
     WPWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+
+    enum Mode {File, Web};
+
+    Mode getMode() const;
+    void setMode(Mode __mode);
 
     bool isSaved() const;
     QString currentFilePath() const;
@@ -31,11 +38,13 @@ private:
     bool okToContinue();
 
     bool saved;
+    Mode mode;
     QString filePath;
     WPScore *score;
     int lastVersion;
     musicView *view;
     musicScene *scene;
+    QWebView *webView;
 };
 
 #endif // WPWINDOW_H

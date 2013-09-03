@@ -10,7 +10,10 @@ class QMdiArea;
 class QMdiSubWindow;
 class WPWindow;
 class WPSynthesisController;
-class AddressBar;
+class QLineEdit;
+class QPushButton;
+class QHBoxLayout;
+class QVBoxLayout;
 
 class MainWindow : public QMainWindow
 {
@@ -28,6 +31,9 @@ private slots:
     void newFile();
     void loadFile();
     void loadFile(const QString &file);
+    void goToSite();
+    void showPath();
+    void setAddressVisible(bool visible);
     bool saveFile();
     bool saveAsFile();
     void closeFile();
@@ -80,10 +86,13 @@ private:
     QToolBar *toolToolBar;
 
     /* Private widget list */
-    AddressBar *addressBar;
-    QDockWidget *addressDock;
-    WPSynthesisController *controller;
+    QLineEdit *addressEdit;
+    QPushButton *goButton;
+    QHBoxLayout *addressLayout;
     QMdiArea *mdiArea;
+    QVBoxLayout *mainLayout;
+    QWidget *widget;
+    WPSynthesisController *controller;
     OscilloscopeWindow *oscilloscopeWindow;
     int countNumber;
 };

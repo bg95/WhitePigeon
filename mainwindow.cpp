@@ -4,7 +4,6 @@
 #include "core/WPSynthesisController.h"
 #include "OscilloscopeWindow.h"
 #include "WPWindow.h"
-#include "addressbar.h"
 
 #include "mainwindow.h"
 
@@ -29,7 +28,6 @@ MainWindow::MainWindow()
     setWindowTitle(tr("WhitePigeon"));
     // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
     setContextMenuPolicy(Qt::ActionsContextMenu);
-    setCentralWidget(mdiArea);
 
     /* UI settings */
     createActions();
@@ -90,7 +88,6 @@ void MainWindow::createActions()
     closeAction = new QAction(this);
     closeAction->setText(tr("Close"));
     // closeAction->setIcon(QIcon(":/images/close.jpg"));
-    closeAction->setShortcut(QKeySequence::Close);
     closeAction->setStatusTip(tr("Close the file"));
     closeAction->setToolTip(tr("Close the file"));
     closeAction->setEnabled(false);
@@ -245,19 +242,35 @@ void MainWindow::createToolBar()
 
 void MainWindow::createAddressBar()
 {
-    addressBar = new AddressBar(this);
-    connect(addressBar, SIGNAL(go(QString)),
-            this, SLOT(loadFile(QString)));
+    addressEdit = new QLineEdit(this);
+    connect(addressEdit, SIGNAL(returnPressed()),
+            this, SLOT(goToSite()));
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
-            addressBar, SLOT(showPath(QMdiSubWindow*)));
+            this, SLOT(showPath()));
 
-    addressDock = new QDockWidget(this);
-    addressDock->setAllowedAreas(Qt::TopDockWidgetArea);
-    addressDock->setWidget(addressBar);
-    addressDock->setFeatures(QDockWidget::DockWidgetVerticalTitleBar);
+    goButton = new QPushButton(this);
+    goButton->setText("Go");
+    connect(goButton, SIGNAL(clicked()),
+            this, SLOT(goToSite()));
+
+    addressLayout = new QHBoxLayout;
+    addressLayout->setSpacing(0);
+    addressLayout->addWidget(addressEdit);
+    addressLayout->addWidget(goButton);
     connect(addressViewAction, SIGNAL(triggered(bool)),
-            addressDock, SLOT(setVisible(bool)));
-    addDockWidget(Qt::TopDockWidgetArea, addressDock);
+            this, SLOT(setAddressVisible(bool)));
+
+    mainLayout = new QVBoxLayout;
+    mainLayout->setSpacing(0);
+    mainLayout->addLayout(addressLayout);
+    mainLayout->addWidget(mdiArea);
+
+    widget = new QWidget(this);
+    widget->setLayout(mainLayout);
+    addressEdit->setParent(widget);
+    goButton->setParent(widget);
+    mdiArea->setParent(widget);
+    setCentralWidget(widget);
 }
 
 void MainWindow::createContextMenu()
@@ -292,7 +305,7 @@ void MainWindow::readSettings()
 
     settings.beginGroup("AddressBar");
     addressViewAction->setChecked(settings.value("visible").toBool());
-    addressDock->setVisible(settings.value("visible").toBool());
+    setAddressVisible(settings.value("visible").toBool());
     settings.endGroup();
 }
 
@@ -316,7 +329,7 @@ void MainWindow::writeSettings()
     settings.endGroup();
 
     settings.beginGroup("AddressBar");
-    settings.setValue("visible", addressDock->isVisible());
+    settings.setValue("visible", addressViewAction->isChecked());
     settings.endGroup();
 }
 
@@ -354,28 +367,70 @@ void MainWindow::loadFile()
 
 void MainWindow::loadFile(const QString& file)
 {
-    WPWindow *window = findChild(file);
-    if (window)
+    QUrl url(file);
+    if (url.isLocalFile())
     {
-        mdiArea->setActiveSubWindow(window);
-        statusBar()->showMessage(tr("File already opened"), 2000);
-    }
-    else
-    {
-        window = createNewChild();
-        if (window->loadFile(file))
+        WPWindow *window = findChild(file);
+        if (window)
         {
-            window->show();
             mdiArea->setActiveSubWindow(window);
-            recentFilesMenu->addRecentFile(file);
-            statusBar()->showMessage(tr("File loaded"), 2000);
+            statusBar()->showMessage(tr("File already opened"), 2000);
         }
         else
         {
-            window->close();
-            statusBar()->showMessage(tr("Loading canceled"), 2000);
+            window = createNewChild();
+            if (window->loadFile(file))
+            {
+                window->show();
+                mdiArea->setActiveSubWindow(window);
+                recentFilesMenu->addRecentFile(file);
+                statusBar()->showMessage(tr("File loaded"), 2000);
+            }
+            else
+            {
+                window->close();
+                statusBar()->showMessage(tr("Loading canceled"), 2000);
+            }
         }
     }
+    else
+    {
+        if (url.isValid())
+        {
+            WPWindow *window = createNewChild();
+            window->setMode(WPWindow::Web);
+            window->loadFile(file);
+            window->show();
+            mdiArea->setActiveSubWindow(window);
+        }
+        else
+        {
+            QMessageBox::warning(this, tr("White Pigeon"),
+                    tr("Cannot find the file or website"),
+                    QMessageBox::Ok);
+            statusBar()->showMessage(tr("Illegal file path or url"), 2000);
+        }
+    }
+}
+
+void MainWindow::goToSite()
+{
+    loadFile(addressEdit->text());
+}
+
+void MainWindow::showPath()
+{
+    WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
+    if (window)
+    {
+        addressEdit->setText(window->currentFilePath());
+    }
+}
+
+void MainWindow::setAddressVisible(bool visible)
+{
+    addressEdit->setVisible(visible);
+    goButton->setVisible(visible);
 }
 
 bool MainWindow::saveFile()
