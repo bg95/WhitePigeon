@@ -53,6 +53,7 @@ class Fraction
 		bool operator > (const Fraction &) const;
 		bool operator >= (const Fraction &) const;
 		Fraction operator = (const Fraction &);
+		Fraction operator - () const;
 		Fraction operator + (const Fraction &) const;
 		Fraction operator += (const Fraction &);
 		Fraction operator - (const Fraction &) const;
@@ -66,10 +67,77 @@ class Fraction
 		int X, Y;
 };
 
+template <class T> class TrieNode
+{
+	public:
+		enum OperationMode{VISIT, EDIT};
+		TrieNode();
+		~TrieNode();
+		TrieNode *go(const T &, const OperationMode);
+		TrieNode *go(const std::vector <T> &, const OperationMode);
+		void endanger();
+		bool isDangerous();
+		void freeAll(); // be careful!
+	private:
+		bool Jeopardy;
+		std::vector < std::pair <T, TrieNode <T> *> > Kids;
+};
+
 Fraction stringToFraction(const std::string &);
 Fraction doubleToFraction(const double &); // warning!!!
 std::string intToString(const int &);
 std::string fractionToString(const Fraction &);
 int ran();
+
+template <class T> TrieNode <T>::TrieNode()
+{
+	Jeopardy = 0;
+	Kids.clear();
+}
+
+template <class T> TrieNode <T>::~TrieNode()
+{
+	Kids.clear();
+}
+
+template <class T> TrieNode <T> *TrieNode <T>::go(const T &Ch, const TrieNode::OperationMode Mode = TrieNode::VISIT)
+{
+	TrieNode *Result = NULL;
+	for (typename std::vector < std::pair <T, TrieNode <T> *> >::iterator it = Kids.begin(); it != Kids.end(); ++ it)
+		if (it->first == Ch)
+		{
+			Result = it->second;
+			break;
+		}
+	if (Mode == TrieNode::EDIT && !Result)
+		Result = new TrieNode;
+	Kids.push_back(std::make_pair(Ch, Result));
+	return Result;
+}
+
+template <class T> TrieNode <T> *TrieNode <T>::go(const std::vector <T> &Str, const TrieNode::OperationMode Mode = TrieNode::VISIT)
+{
+	TrieNode *Result = this;
+	for (typename std::vector <T>::const_iterator it = Str.begin(); Result && it != Str.end(); ++ it)
+		Result = Result->go(*it, Mode);
+	return Result;
+}
+
+template <class T> void TrieNode <T>::endanger()
+{
+	Jeopardy = 1;
+}
+
+template <class T> bool TrieNode <T>::isDangerous()
+{
+	return Jeopardy;
+}
+
+template <class T> void TrieNode <T>::freeAll()
+{
+	for (typename std::vector < std::pair <T, TrieNode <T> *> >::iterator it = Kids.begin(); it != Kids.end(); ++ it)
+		it->second->freeAll();
+	delete this;
+}
 
 #endif

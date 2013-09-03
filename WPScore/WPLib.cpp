@@ -85,6 +85,13 @@ Fraction Fraction::operator = (const Fraction &F)
 	return *this;
 }
 
+Fraction Fraction::operator - () const
+{
+	Fraction Result = *this;
+	Result.X = - Result.X;
+	return Result;
+}
+
 Fraction Fraction::operator + (const Fraction &F) const
 {
 	Fraction Result(F.Y / GCD(Y, F.Y) * X + Y / GCD(Y, F.Y) * F.X, Y / GCD(Y, F.Y) * F.Y);
