@@ -36,6 +36,16 @@ SOURCES += main.cpp\
     core/WPMixer.cpp \
     WPScore/WPPersistentTree.cpp \
     WPScore/WPAllocator.cpp \
+    musictextitem.cpp \
+    musicscene.cpp \
+    musicarcitem.cpp \
+    getmusicinfodialog.cpp \
+    musicbracketitem.cpp \
+    musicdotitem.cpp \
+    musiclineitem.cpp \
+    musicbaritem.cpp \
+    musicrowitem.cpp \
+    musicwholeitem.cpp \
     core/WPSynthesisController.cpp \
 #    core/WPTuningFork.cpp \
     WPDLLManager/WPDLLManager.cpp \
@@ -81,6 +91,16 @@ HEADERS  += \
     WPDLLManager/WPDLLModifier.h \
     core/WPPropertyAndModifiers.h \
     WPDLLManager/WPDLLTimbreManager.h \
+    musictextitem.h \
+    musicscene.h \
+    musicarcitem.h \
+    getmusicinfodialog.h \
+    musicbracketitem.h \
+    musicdotitem.h \
+    musiclineitem.h \
+    musicbaritem.h \
+    musicrowitem.h \
+    musicwholeitem.h \
     QRecentFilesMenu.h \
     WPWindow.h
 
