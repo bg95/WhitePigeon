@@ -21,6 +21,8 @@ WPScore::~WPScore()
 void WPScore::save(const std::string &FileName)
 {
 	FILE *fo = fopen(FileName.c_str(), "wb");
+	if (fo == NULL)
+		return;
 	fprintf(fo, "<version>Score File Format 0b</version>");
 	QByteArray BA;
 	BA.append("<versioninfo>All rights reserved.</versioninfo>");
@@ -87,6 +89,8 @@ int WPScore::load(const std::string &FileName)
 	{
 		QByteArray BA = QByteArray::fromRawData(Rest.c_str(), Rest.size());
 		BA = qUncompress(BA);
+		if (BA.isEmpty())
+			return WPScore::FileIncomplete;
 		Rest = BA.data();
 		AnalysisScore0a(Rest);
 	}
