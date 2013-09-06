@@ -37,6 +37,7 @@ signals:
     void pathModified();
     void loadProgress(int);
     void statusBarMessage(const QString &);
+    void loadFinished();
     void linkClicked(const QUrl &);
 
 private slots:
@@ -45,7 +46,8 @@ private slots:
     void onLoadProgress(int progress);
     void onStatusBarMessage(const QString &);
     void onLinkClicked(const QUrl &);
-	void loadingFailure(const bool &);
+    void loadFailure(bool);
+    void refreshIcon();
 
 private:
     bool okToContinue();

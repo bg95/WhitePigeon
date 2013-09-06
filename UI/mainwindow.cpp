@@ -76,7 +76,7 @@ void MainWindow::createActions()
 
     saveAsAction = new QAction(this);
     saveAsAction->setText(tr("Save &As..."));
-    saveAsAction->setIcon(QIcon(":/images/save.gif"));
+    saveAsAction->setIcon(QIcon(":/images/saveas.gif"));
     saveAsAction->setShortcut(QKeySequence::SaveAs);
     saveAsAction->setStatusTip(tr("Save the file under a new name"));
     saveAsAction->setToolTip(tr("Save the file under a new name"));
@@ -157,7 +157,7 @@ void MainWindow::createActions()
 
     oscilloscopeAction = new QAction(this);
     oscilloscopeAction->setText(tr("&Oscilloscope"));
-    // oscilloscopeAction->setIcon(QIcon(":/images/oscilloscope.jpg"));
+    oscilloscopeAction->setIcon(QIcon(":/images/oscilloscope.png"));
     // oscilloscopeAction->setShortcut();
     oscilloscopeAction->setStatusTip(tr("Show an oscilloscope"));
     oscilloscopeAction->setToolTip(tr("Show an oscilloscope"));
@@ -248,7 +248,8 @@ void MainWindow::createAddressBar()
             this, SLOT(updateAddressBar()));
 
     goButton = new QPushButton(this);
-    goButton->setText("Go");
+    goButton->setIcon(QIcon(":/images/go.gif"));
+    // goButton->setFlat(true);
     connect(goButton, SIGNAL(clicked()),
             this, SLOT(goToSite()));
 
@@ -521,6 +522,11 @@ void MainWindow::updateAddressBar()
     }
 }
 
+void MainWindow::onLoadFinished()
+{
+    statusBar()->showMessage(tr(""), 1);
+}
+
 void MainWindow::updateActionsNeedingSubWindow()
 {
     WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
@@ -536,7 +542,7 @@ void MainWindow::updateActionsNeedingSubWindow()
 
 void MainWindow::showLoadingProgress(int percent)
 {
-    statusBar()->showMessage(tr("Loading %1%").arg(percent), 500);
+    statusBar()->showMessage(tr("Loading %1%").arg(percent));
 }
 
 void MainWindow::showStatusBarMessage(const QString &msg)
@@ -567,6 +573,8 @@ WPWindow* MainWindow::createNewChild()
             this, SLOT(showStatusBarMessage(const QString &)));
     connect(window, SIGNAL(linkClicked(const QUrl &)),
             this, SLOT(openAWebPage(const QUrl &)));
+    connect(window, SIGNAL(loadFinished()),
+            this, SLOT(onLoadFinished()));
     mdiArea->addSubWindow(window);
     return window;
 }

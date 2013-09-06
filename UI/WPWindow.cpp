@@ -72,14 +72,17 @@ bool WPWindow::loadFile(const QString &file)
     {
         QUrl url(file);
         filePath = url.url();
+        QWebSettings::setIconDatabasePath(QCoreApplication::applicationDirPath());
         connect(webView, SIGNAL(loadProgress(int)),
                 this, SLOT(onLoadProgress(int)));
         connect(webView, SIGNAL(statusBarMessage(QString)),
                 this, SLOT(onStatusBarMessage(const QString &)));
         connect(webView, SIGNAL(linkClicked(QUrl)),
                 this, SLOT(onLinkClicked(const QUrl &)));
+        connect(webView, SIGNAL(iconChanged()),
+                this, SLOT(refreshIcon()));
         connect(webView, SIGNAL(loadFinished(bool)),
-                this, SLOT(loadingFailure(bool)));
+                this, SLOT(loadFailure(bool)));
         webView->load(url);
 		webView->page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
         setWidget(webView);
@@ -161,12 +164,19 @@ void WPWindow::onLinkClicked(const QUrl &url)
     emit linkClicked(url);
 }
 
-void WPWindow::loadingFailure(const bool &Flag)
+void WPWindow::loadFailure(bool Flag)
 {
 	if (!Flag)
     {
 		setWindowTitle("Problem loading page");
     }
+    emit loadFinished();
+}
+
+void WPWindow::refreshIcon()
+{
+    qDebug()<<"i change myslef; "<<webView->icon().name();
+    setWindowIcon(webView->icon());
 }
 
 bool WPWindow::okToContinue()
