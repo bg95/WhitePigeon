@@ -13,7 +13,7 @@ class QWebView;
 
 class WPWindow : public QMdiSubWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
     WPWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
@@ -35,10 +35,17 @@ protected:
 
 signals:
     void pathModified();
+    void loadProgress(int);
+    void statusBarMessage(const QString &);
+    void linkClicked(const QUrl &);
 
 private slots:
     void onScoreModified();
-    void changeFilePathInWebMode(QUrl url);
+	void changeFilePathInWebMode(const QUrl &url);
+    void onLoadProgress(int progress);
+    void onStatusBarMessage(const QString &);
+    void onLinkClicked(const QUrl &);
+	void loadingFailure(const bool &);
 
 private:
     bool okToContinue();

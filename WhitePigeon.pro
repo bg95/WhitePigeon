@@ -6,10 +6,6 @@
 
 QT       += core gui opengl multimedia webkit webkitwidgets network
 
-#needs
-#libpulse-dev
-#qtmultimedia5-dev
-
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = WhitePigeon
@@ -27,24 +23,24 @@ SOURCES += main.cpp\
     WPScore/WPInterval.cpp \
     core/WPSynthesizer.cpp \
     core/WPWave.cpp \
-    mainwindow.cpp \
     core/WPPipe.cpp \
     core/WPMixer.cpp \
     WPScore/WPPersistentTree.cpp \
 #    WPScore/WPAllocator.cpp
     core/WPSynthesisController.cpp \
-    QRecentFilesMenu.cpp \
-    WPWindow.cpp \
-    musicwholeitem.cpp \
-    musictextitem.cpp \
-    musicscene.cpp \
-    musicrowitem.cpp \
-    musiclineitem.cpp \
-    musicdotitem.cpp \
-    musicbracketitem.cpp \
-    musicbaritem.cpp \
-    musicarcitem.cpp \
-    getmusicinfodialog.cpp
+    UI/WPWindow.cpp \
+    UI/QRecentFilesMenu.cpp \
+    UI/mainwindow.cpp \
+    musicshower/musicwholeitem.cpp \
+    musicshower/musictextitem.cpp \
+    musicshower/musicscene.cpp \
+    musicshower/musicrowitem.cpp \
+    musicshower/musiclineitem.cpp \
+    musicshower/musicdotitem.cpp \
+    musicshower/musicbracketitem.cpp \
+    musicshower/musicbaritem.cpp \
+    musicshower/musicarcitem.cpp \
+    musicshower/getmusicinfodialog.cpp
 
 HEADERS  +=\
     WPScore/WPSPosition.h \
@@ -58,7 +54,6 @@ HEADERS  +=\
     WPScore/WPInterval.h \
     core/WPSynthesizer.h \
     core/WPWave.h \
-    mainwindow.h \
     core/WPTimbre.h \
     core/WPTuningFork.h \
     core/WPVarTimbre.h \
@@ -67,18 +62,19 @@ HEADERS  +=\
     WPScore/WPPersistentTree.h \
     WPScore/WPAllocator.h \
     core/WPSynthesisController.h \
-    QRecentFilesMenu.h \
-    WPWindow.h \
-    musicwholeitem.h \
-    musictextitem.h \
-    musicscene.h \
-    musicrowitem.h \
-    musiclineitem.h \
-    musicdotitem.h \
-    musicbracketitem.h \
-    musicbaritem.h \
-    musicarcitem.h \
-    getmusicinfodialog.h
+    UI/WPWindow.h \
+    UI/QRecentFilesMenu.h \
+    UI/mainwindow.h \
+    musicshower/musicwholeitem.h \
+    musicshower/musictextitem.h \
+    musicshower/musicscene.h \
+    musicshower/musicrowitem.h \
+    musicshower/musiclineitem.h \
+    musicshower/musicdotitem.h \
+    musicshower/musicbracketitem.h \
+    musicshower/musicbaritem.h \
+    musicshower/musicarcitem.h \
+    musicshower/getmusicinfodialog.h
 
 TRANSLATIONS += Chinese.ts
 

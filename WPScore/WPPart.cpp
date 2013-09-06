@@ -4,6 +4,7 @@ WPPart::WPPart (WPScore *M)
 {
 	Master = M;
 	IsToBePlayed = 1;
+	Volume = 1.0;
 	PlayingPosition = WPPosition (Fraction (0, 1));
 	VerMap.clear();
 	MasterVer = Master->getCurrentVersion();
@@ -23,6 +24,7 @@ WPPart::WPPart (WPScore *M, const std::string &S)
 {
 	Master = M;
 	IsToBePlayed = 1;
+	Volume = 1.0;
 	PlayingPosition = WPPosition (Fraction (0, 1));
 	VerMap.clear();
 	MasterVer = Master->getCurrentVersion();
@@ -106,7 +108,25 @@ void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)
 	synchronizeWithMaster();
 	implementVersion();
 	Notes[MyVer].insert(P, N);
-	// Need to change properties;
+	std::vector <WPProperty> V = Properties[MyVer].traverse();
+	for (std::vector <WPProperty> :: iterator it = V.begin(); it != V.end(); ++ it)
+	{
+		if (it->getInterval().begin() < P && P < it->getInterval().end())
+		{
+			Properties[MyVer].remove(*it);
+			it->lengthen(N.getLength());
+			Properties[MyVer].insert(*it);
+		}
+		else
+		{
+			if (P <= it->getInterval().begin())
+			{
+				Properties[MyVer].remove(*it);
+				it->shiftRight(N.getLength());
+				Properties[MyVer].insert(*it);
+			}
+		}
+	}
 }
 
 void WPPart::deleteMultinote(const WPInterval &I)
@@ -158,6 +178,11 @@ bool WPPart::isToBePlayed()
 	return IsToBePlayed;
 }
 
+double WPPart::getVolume()
+{
+	return isToBePlayed() ? Volume : 0.0;
+}
+
 int WPPart::displayOrder()
 {
 	synchronizeWithMaster();
@@ -169,6 +194,22 @@ void WPPart::setOrder(const int &K)
 	synchronizeWithMaster();
 	implementVersion();
 	Orders[MyVer] = K;
+}
+
+WPInterval WPPart::getExtendedInterval(const WPInterval &I)
+{
+	synchronizeWithMaster();
+	WPPosition S = Notes[MyVer].getLeftEnding(I.begin());
+	WPPosition T = Notes[MyVer].getRightEnding(I.end());
+	return WPInterval (S, T);
+}
+
+WPInterval WPPart::getReducedInterval(const WPInterval &I)
+{
+	synchronizeWithMaster();
+	WPPosition S = Notes[MyVer].getRightEnding(I.begin());
+	WPPosition T = Notes[MyVer].getLeftEnding(I.end());
+	return WPInterval (S, T);
 }
 
 std::vector <WPMultinote> WPPart::getAllNotes()
@@ -183,10 +224,31 @@ std::vector<WPProperty> WPPart::getAllProperties()
 	return Properties[MyVer].traverse();
 }
 
+std::vector<WPProperty> WPPart::filterPropertiesByPrefix(const std::string &S)
+{
+	synchronizeWithMaster();
+	return filterPrefix(Properties[MyVer].traverse(), S);
+}
+
 std::vector<WPMultinote> WPPart::getNotesByInterval(WPInterval &I)
 {
 	synchronizeWithMaster();
 	return Notes[MyVer].query(I).traverse();
+}
+
+void WPPart::lockForRead()
+{
+	Master->lockForRead();
+}
+
+void WPPart::lockForWrite()
+{
+	Master->lockForWrite();
+}
+
+void WPPart::unlock()
+{
+	Master->unlock();
 }
 
 //~ void WPPart::insertMultinote(const WPPosition &P, const WPMultinote &N)

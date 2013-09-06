@@ -25,13 +25,19 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *);
-
+/*
+public slots:
+	void showLoadingProgress(int); // Added by Token. Perhaps a flaw.
+	void showStatusBarMessage(const QString &); // Added by Token. Perhaps a flaw.
+	void openAWebPage(const QUrl &); // Added by Token. Perhaps a flaw.
+*/
 private slots:
     /* Action functions */
     void newFile();
     void loadFile();
     void loadFile(const QString &file);
     void goToSite();
+    void openAWebPage(const QUrl &);
     void setAddressVisible(bool visible);
     bool saveFile();
     bool saveAsFile();
@@ -41,6 +47,8 @@ private slots:
     void stopAll();
     void updateActionsNeedingSubWindow();
     void updateAddressBar();
+    void showLoadingProgress(int);
+    void showStatusBarMessage(const QString &);
     void showOscilloscope();
 
 private:

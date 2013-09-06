@@ -19,6 +19,7 @@ MainWindow::MainWindow()
     mdiArea->setViewMode(QMdiArea::TabbedView);
     mdiArea->setTabsMovable(true);
     mdiArea->setActivationOrder(QMdiArea::CreationOrder);
+	mdiArea->setTabsClosable(true);
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this, SLOT(updateActionsNeedingSubWindow()));
 
@@ -47,7 +48,7 @@ void MainWindow::createActions()
 {
     newAction = new QAction(this);
     newAction->setText(tr("&New"));
-    // newAction->setIcon(QIcon(":/images/new.jpg"));
+    newAction->setIcon(QIcon(":/images/new.gif"));
     newAction->setShortcut(QKeySequence::New);
     newAction->setStatusTip(tr("Create a new file"));
     newAction->setToolTip(tr("Create a new file"));
@@ -56,7 +57,7 @@ void MainWindow::createActions()
 
     openAction = new QAction(this);
     openAction->setText(tr("&Open..."));
-    // openAction->setIcon(QIcon(":/images/open.jpg"));
+    openAction->setIcon(QIcon(":/images/open.gif"));
     openAction->setShortcut(QKeySequence::Open);
     openAction->setStatusTip(tr("Open an existing file"));
     openAction->setToolTip(tr("Open an existing file"));
@@ -65,7 +66,7 @@ void MainWindow::createActions()
 
     saveAction = new QAction(this);
     saveAction->setText(tr("&Save"));
-    // saveAction->setIcon(QIcon(":/images/save.jpg"));
+    saveAction->setIcon(QIcon(":/images/save.gif"));
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setStatusTip(tr("Save the file to disk"));
     saveAction->setToolTip(tr("Save the file"));
@@ -75,7 +76,7 @@ void MainWindow::createActions()
 
     saveAsAction = new QAction(this);
     saveAsAction->setText(tr("Save &As..."));
-    // saveAsAction->setIcon(QIcon(":/images/saveas.jpg"));
+    saveAsAction->setIcon(QIcon(":/images/save.gif"));
     saveAsAction->setShortcut(QKeySequence::SaveAs);
     saveAsAction->setStatusTip(tr("Save the file under a new name"));
     saveAsAction->setToolTip(tr("Save the file under a new name"));
@@ -85,7 +86,7 @@ void MainWindow::createActions()
 
     closeAction = new QAction(this);
     closeAction->setText(tr("Close"));
-    // closeAction->setIcon(QIcon(":/images/close.jpg"));
+    closeAction->setIcon(QIcon(":/images/close.gif"));
     closeAction->setStatusTip(tr("Close the file"));
     closeAction->setToolTip(tr("Close the file"));
     closeAction->setEnabled(false);
@@ -94,7 +95,7 @@ void MainWindow::createActions()
 
     closeAllAction = new QAction(this);
     closeAllAction->setText(tr("Close All"));
-    // closeAllAction->setIcon(QIcon(":/images/closeall.jpg"));
+    closeAllAction->setIcon(QIcon(":/images/closeall.gif"));
     // closeAllAction->setShortcut();
     closeAllAction->setStatusTip(tr("Close all files"));
     closeAllAction->setToolTip(tr("Close all files"));
@@ -113,7 +114,7 @@ void MainWindow::createActions()
 
     playAction = new QAction(this);
     playAction->setText(tr("Play"));
-    // playAction->setIcon(QIcon(":/images/play.jpg"));
+    playAction->setIcon(QIcon(":/images/play.gif"));
     // playAction->setShortcut();
     playAction->setStatusTip(tr("Play the score"));
     playAction->setToolTip(tr("Play the score"));
@@ -123,7 +124,7 @@ void MainWindow::createActions()
 
     stopAction = new QAction(this);
     stopAction->setText(tr("Stop"));
-    // stopAction->setIcon(QIcon(":/images/stop.jpg"));
+    stopAction->setIcon(QIcon(":/images/stop.gif"));
     // stopAction->setShortcut();
     stopAction->setStatusTip(tr("Stop playing"));
     stopAction->setToolTip(tr("Stop playing"));
@@ -260,6 +261,7 @@ void MainWindow::createAddressBar()
 
     mainLayout = new QVBoxLayout;
     mainLayout->setSpacing(0);
+	mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addLayout(addressLayout);
     mainLayout->addWidget(mdiArea);
 
@@ -338,7 +340,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     closeAllFiles();
     writeSettings();
-    event->accept();
+	event->accept();
 }
 
 
@@ -365,7 +367,7 @@ void MainWindow::loadFile()
 
 void MainWindow::loadFile(const QString& file)
 {
-    QUrl url(file);
+	QUrl url = QUrl::fromUserInput(file);
     QFileInfo fileInfo(file);
     if (fileInfo.isFile())
     {
@@ -396,11 +398,11 @@ void MainWindow::loadFile(const QString& file)
     {
         if (url.isValid())
         {
-            if (file.indexOf("http://") == 0)
-            {
+			if (url.scheme() == "http")
+			{
                 WPWindow *window = createNewChild();
                 window->setMode(WPWindow::Web);
-                window->loadFile(file);
+				window->loadFile(url.url());
                 window->show();
                 mdiArea->setActiveSubWindow(window);
             }
@@ -424,6 +426,11 @@ void MainWindow::loadFile(const QString& file)
 void MainWindow::goToSite()
 {
     loadFile(addressEdit->text());
+}
+
+void MainWindow::openAWebPage(const QUrl &url)
+{
+    loadFile(url.url());
 }
 
 void MainWindow::setAddressVisible(bool visible)
@@ -527,6 +534,16 @@ void MainWindow::updateActionsNeedingSubWindow()
     closeAllAction->setEnabled(hasActiveWindow);
 }
 
+void MainWindow::showLoadingProgress(int percent)
+{
+    statusBar()->showMessage(tr("Loading %1%").arg(percent), 500);
+}
+
+void MainWindow::showStatusBarMessage(const QString &msg)
+{
+    statusBar()->showMessage(msg, 2000);
+}
+
 void MainWindow::showOscilloscope()
 {
     if (!oscilloscopeWindow)
@@ -544,6 +561,12 @@ WPWindow* MainWindow::createNewChild()
     WPWindow *window = new WPWindow;
     connect(window, SIGNAL(pathModified()),
             this, SLOT(updateAddressBar()));
+    connect(window, SIGNAL(loadProgress(int)),
+            this, SLOT(showLoadingProgress(int)));
+    connect(window, SIGNAL(statusBarMessage(const QString &)),
+            this, SLOT(showStatusBarMessage(const QString &)));
+    connect(window, SIGNAL(linkClicked(const QUrl &)),
+            this, SLOT(openAWebPage(const QUrl &)));
     mdiArea->addSubWindow(window);
     return window;
 }

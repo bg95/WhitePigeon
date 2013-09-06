@@ -20,16 +20,16 @@ WPWindow::WPWindow(QWidget *parent, Qt::WindowFlags flags)
     scene = new musicScene(this);
     // scene->setScore(score);
     // connect(scene, SIGNAL(scoreModified()),
-    //         this, SLOT(onScoreModified()));
+    //         this, SLOT(onScoreModified()));QObject::connect: No such signal QWebView::urlChanged(QString)
 
     view = new musicView(this);
     view->setScene(scene);
 
     webView = new QWebView(this);
-    connect(webView, SIGNAL(titleChanged(QString)),
-            this, SLOT(setWindowTitle(QString)));
-    connect(webView, SIGNAL(urlChanged(QUrl)),
-            this, SLOT(changeFilePathInWebMode(QUrl)));
+    connect(webView, SIGNAL(titleChanged(const QString &)),
+        this, SLOT(setWindowTitle(const QString &)));
+    connect(webView, SIGNAL(urlChanged(const QUrl &)),
+        this, SLOT(changeFilePathInWebMode(const QUrl &)));
 
     setWidget(view);
     setAttribute(Qt::WA_DeleteOnClose);
@@ -71,8 +71,17 @@ bool WPWindow::loadFile(const QString &file)
     else
     {
         QUrl url(file);
-        filePath = url.path();
+        filePath = url.url();
+        connect(webView, SIGNAL(loadProgress(int)),
+                this, SLOT(onLoadProgress(int)));
+        connect(webView, SIGNAL(statusBarMessage(QString)),
+                this, SLOT(onStatusBarMessage(const QString &)));
+        connect(webView, SIGNAL(linkClicked(QUrl)),
+                this, SLOT(onLinkClicked(const QUrl &)));
+        connect(webView, SIGNAL(loadFinished(bool)),
+                this, SLOT(loadingFailure(bool)));
         webView->load(url);
+		webView->page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
         setWidget(webView);
         return true;
     }
@@ -131,10 +140,33 @@ void WPWindow::onScoreModified()
     setWindowModified(lastVersion != score->getCurrentVersion());
 }
 
-void WPWindow::changeFilePathInWebMode(QUrl url)
+void WPWindow::changeFilePathInWebMode(const QUrl &url)
 {
-    filePath = url.path();
+    filePath = url.url();
     emit pathModified();
+}
+
+void WPWindow::onLoadProgress(int progress)
+{
+    emit loadProgress(progress);
+}
+
+void WPWindow::onStatusBarMessage(const QString &msg)
+{
+    emit statusBarMessage(msg);
+}
+
+void WPWindow::onLinkClicked(const QUrl &url)
+{
+    emit linkClicked(url);
+}
+
+void WPWindow::loadingFailure(const bool &Flag)
+{
+	if (!Flag)
+    {
+		setWindowTitle("Problem loading page");
+    }
 }
 
 bool WPWindow::okToContinue()
