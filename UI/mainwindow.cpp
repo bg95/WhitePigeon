@@ -247,9 +247,10 @@ void MainWindow::createAddressBar()
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this, SLOT(updateAddressBar()));
 
-    goButton = new QPushButton(this);
-    goButton->setIcon(QIcon(":/images/go.gif"));
-    // goButton->setFlat(true);
+	goButton = new QPushButton(this);
+	goButton->setIcon(QIcon(":/images/go.png"));
+	goButton->setCursor(QCursor(QPixmap(":/images/mouse.ico")));
+	goButton->setFlat(true);
     connect(goButton, SIGNAL(clicked()),
             this, SLOT(goToSite()));
 
@@ -359,7 +360,7 @@ void MainWindow::loadFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
                                tr("Open a file"), ".",
-                               tr("Score files (*.01)"));
+							   tr("Score files (*.wps)"));
     if (!fileName.isEmpty())
     {
         loadFile(fileName);
@@ -524,7 +525,7 @@ void MainWindow::updateAddressBar()
 
 void MainWindow::onLoadFinished()
 {
-    statusBar()->showMessage(tr(""), 1);
+	statusBar()->clearMessage();
 }
 
 void MainWindow::updateActionsNeedingSubWindow()

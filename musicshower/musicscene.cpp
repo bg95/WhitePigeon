@@ -10,15 +10,19 @@
 const int musicScene::musicHeight[12] = {6, -1, 7, 1, -1, 2, -1, 3, 4, -1, 5, -1};
 
 musicScene::musicScene(QWidget *parent)
-    : QGraphicsScene(parent)
+	: QGraphicsScene(parent),
+	  music(NULL),
+	  partNumber(0),
+	  rowNumber(0),
+	  widget(NULL)
 {
     setSceneRect(0, 0, 2000, 10000);
 }
 
-void musicScene::getAddress(QString add)
+void musicScene::setScore(WPScore *score)
 {
-    music.close();
-    music.load(add.toStdString());
+	music = score;
+	display();
 }
 
 void musicScene::setRect(QRectF rect)
@@ -28,11 +32,15 @@ void musicScene::setRect(QRectF rect)
 
 void musicScene::display()
 {
-    partNumber = music.countPartNumber();
+	music->lockForRead();
+	partNumber = music->countPartNumber();
+	music->unlock();
     numbers.resize(partNumber);
     for (int i = 0; i < partNumber; ++i)
     {
-        std::vector <WPMultinote> multiNote = music.getPartByOrder(i)->getAllNotes();
+		music->lockForRead();
+		std::vector <WPMultinote> multiNote = music->getPartByOrder(i)->getAllNotes();
+		music->unlock();
         std::vector<WPMultinote>::iterator iter;
         numbers[i].clear();
         for (iter = multiNote.begin(); iter != multiNote.end(); iter++)
@@ -88,11 +96,6 @@ void musicScene::display()
             thisText->setLines(lines);
         }
     }
-    qDebug() << numbers[0].count();
-    for (int i = 0; i < 5; ++i)
-    {
-        qDebug() << numbers[0][i]->musicHeight;
-    }
     bars.resize(partNumber);
     for (int i = 0; i < partNumber; ++i)
     {
@@ -100,7 +103,7 @@ void musicScene::display()
         bars[i].push_back(thisbar);
     }
 
-    int barsNumber = bars[0].count();
+	int barsNumber = (bars.size() ? bars[0].count() : 0);
 
     rowNumber = barsNumber / 4 + (barsNumber % 4 != 0);
     rows.resize(rowNumber);
@@ -121,6 +124,9 @@ void musicScene::display()
             rows[j / 4]->insertMusic(bars[i][j], i + 1, j % 4 + 1);
         }
     }
+
+	delete widget;
+	widget = NULL;
 
     widget = new musicWholeItem;
     widget->setPos(sceneRect().width() / 2, sceneRect().height() / 2);

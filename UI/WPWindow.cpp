@@ -1,7 +1,7 @@
 #include <QtWidgets>
 #include <QtWebKitWidgets/QWebView>
 
-// #include "musicscene.h"
+#include "musicshower/musicscene.h"
 #include <QGraphicsView>    // #include "musicview.h"
 #include "WPScore/WPScore.h"
 #include "core/WPSynthesisController.h"
@@ -18,7 +18,7 @@ WPWindow::WPWindow(QWidget *parent, Qt::WindowFlags flags)
     mode = File;
 
     scene = new musicScene(this);
-    // scene->setScore(score);
+	scene->setScore(score);
     // connect(scene, SIGNAL(scoreModified()),
     //         this, SLOT(onScoreModified()));QObject::connect: No such signal QWebView::urlChanged(QString)
 
@@ -61,12 +61,15 @@ bool WPWindow::loadFile(const QString &file)
     if (mode == File)
     {
         filePath = QFileInfo(file).canonicalFilePath();
-        // score->load(filePath.toStdString());
-        // scene->setScore(score);
-        // lastVersion = score->getCurrentVersion();
+		int result = 0;
+		score->lockForWrite();
+		result = score->load(filePath.toStdString());
+		lastVersion = score->getCurrentVersion();
+		score->unlock();
+		scene->setScore(score);
         setWindowModified(false);
         setWindowTitle(QFileInfo(file).fileName() + "[*]");
-        return true;
+		return (result == 0);
     }
     else
     {
@@ -100,8 +103,10 @@ bool WPWindow::saveFile()
     {
         return false;
     }
-    // score->save(filePath.toStdString());
-    // lastVersion = score->getCurrentVersion();
+	score->lockForRead();
+	score->save(filePath.toStdString());
+	lastVersion = score->getCurrentVersion();
+	score->unlock();
     setWindowModified(false);
     return true;
 }
@@ -112,12 +117,14 @@ bool WPWindow::saveFile(const QString &file)
     {
         return true;
     }
-    saved = true;
-    filePath = QFileInfo(file).canonicalFilePath();
-    // score->save(filePath.toStdString());
-    // lastVersion = score->getCurrentVersion();
+	saved = true;
+	score->lockForRead();
+	score->save(file.toStdString());
+	lastVersion = score->getCurrentVersion();
+	score->unlock();
+	filePath = QFileInfo(file).canonicalFilePath();
     setWindowModified(false);
-    setWindowTitle(QFileInfo(file).fileName() + "[*]");
+	setWindowTitle(QFileInfo(file).fileName() + "[*]");
     return true;
 }
 
@@ -175,7 +182,6 @@ void WPWindow::loadFailure(bool Flag)
 
 void WPWindow::refreshIcon()
 {
-    qDebug()<<"i change myslef; "<<webView->icon().name();
     setWindowIcon(webView->icon());
 }
 

@@ -19,11 +19,11 @@ public:
     musicScene(QWidget *parent = 0);
     void setRect(QRectF rect);
     void display();
-    void getAddress(QString add);
+	void setScore(WPScore *);
     ~musicScene();
 
 private:
-    WPScore music;
+	WPScore *music;
     QString address;
     int partNumber;
     QVector< QVector <musicTextItem *> > numbers;

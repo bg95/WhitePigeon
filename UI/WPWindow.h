@@ -2,10 +2,9 @@
 #define WPWINDOW_H
 
 #include <QMdiSubWindow>
-#include <QGraphicsScene>   // Deleted
 #include <QGraphicsView>    // Deleted
 
-typedef QGraphicsScene musicScene; // class musicScene;
+class musicScene;
 typedef QGraphicsView musicView;   // class musicView;
 class WPSynthesisController;
 class WPScore;
