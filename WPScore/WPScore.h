@@ -20,10 +20,12 @@ class WPScore;
 class WPScore: public QReadWriteLock
 {
 	public:
+		static const int FailToOpenFile;
+		static const int FileIncomplete;
 		WPScore();
 		~WPScore();
 		void save(const std::string &);
-		void load(const std::string &);
+		int load(const std::string &);
 		void close();
 		WPPart *newPart();
 		WPPart *newPart(std::string);

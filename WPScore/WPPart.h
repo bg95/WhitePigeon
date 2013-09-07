@@ -19,6 +19,9 @@ class WPPart
 		WPPart(WPScore *, const std::string &);
 		~WPPart();
 		std::string getName();
+		void lockForRead();
+		void lockForWrite();
+		void unlock();
 		void insertProperty(const WPProperty &); // remember to call newVersion() first!
 		bool deleteProperty(const WPProperty &); // remember to call newVersion() first!
 		void insertMultinote(const WPPosition &, const WPMultinote &); // remember to call newVersion() first!

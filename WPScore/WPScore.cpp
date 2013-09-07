@@ -1,5 +1,8 @@
 #include "WPScore.h"
 
+const int WPScore::FailToOpenFile = - 1;
+const int WPScore::FileIncomplete = - 2;
+
 WPScore::WPScore()
 {
 	PartList.clear();
@@ -17,7 +20,9 @@ WPScore::~WPScore()
 
 void WPScore::save(const std::string &FileName)
 {
-	FILE *fo = fopen(FileName.c_str(), "w");
+	FILE *fo = fopen(FileName.c_str(), "wb");
+	if (fo == NULL)
+		return;
 	fprintf(fo, "<version>Score File Format 0b</version>");
 	QByteArray BA;
 	BA.append("<versioninfo>All rights reserved.</versioninfo>");
@@ -53,27 +58,29 @@ void WPScore::save(const std::string &FileName)
 	BA = qCompress(BA, 9);
 	int NS = BA.size();
 	fprintf(stderr, "size = %u\n", BA.size());
-	char *S = BA.data();
-	for (int k = 0; k < NS; ++ k)
-		fprintf(fo, "%c", S[k]);
+	fwrite(BA.data(), NS, 1, fo);
 	fclose(fo);
 }
 
-void WPScore::load(const std::string &FileName)
+int WPScore::load(const std::string &FileName)
 {
-	FILE *fi = fopen(FileName.c_str(), "r");
+	FILE *fi = fopen(FileName.c_str(), "rb");
+	if (fi == NULL)
+		return WPScore::FailToOpenFile;
 	std::string V = "";
-	char Ch;
+	int Ch;
 	const int Version_Size = 9; // length of "<version>"
-	while (fscanf(fi, "%c", &Ch) != EOF)
+	while ((Ch = getc(fi)) != EOF)
 	{
-		V = V + Ch;
+		V.push_back(Ch);
 		if ((int) V.size() > Version_Size && "</version>" == V.substr(V.size() - (Version_Size + 1), Version_Size + 1))
 			break;
 	}
+	if (Ch == EOF)
+		return WPScore::FileIncomplete;
 	V = V.substr(Version_Size, V.size() - (Version_Size * 2 + 1));
 	std::string Rest = "";
-	while (fscanf(fi, "%c", &Ch) != EOF)
+	while ((Ch = getc(fi)) != EOF)
 		Rest.push_back(Ch);
 	fclose(fi);
 	if (V == "Score File Format 0a")
@@ -82,9 +89,12 @@ void WPScore::load(const std::string &FileName)
 	{
 		QByteArray BA = QByteArray::fromRawData(Rest.c_str(), Rest.size());
 		BA = qUncompress(BA);
+		if (BA.isEmpty())
+			return WPScore::FileIncomplete;
 		Rest = BA.data();
 		AnalysisScore0a(Rest);
 	}
+	return 0;
 }
 
 void WPScore::close()
