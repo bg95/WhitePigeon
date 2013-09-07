@@ -57,12 +57,24 @@ private:
     int processTempo(double time, double &tempo);
     void processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo, std::string &timbre);
     //freq should be filled with 0's
+    void outputNote();
     std::map<WPProperty, WPPropertyAndModifiers> propmap;
     QIODevice *output;
     WPPart *part;
     bool slowingdown;
     WP12EqualTuning defaulttuning;
     WPDefaultNoteModifier defaultnotemodifier;
+
+    WPWave *swave;
+    WPWave *twave;
+    std::string timbrename;
+    double time0, time1;
+    std::vector<std::vector<double> > freq, amp;
+    std::vector<double> tempo, time;
+    int samplecnt;
+
+    std::vector<WPNote> notes;
+    std::vector<WPProperty> sprop, eprop;
 
 };
 

@@ -5,6 +5,8 @@
 #include "core/WPSynthesizer.h"
 #include "WPDLLManager/WPCallbackManager.h"
 
+#include <cstdlib>
+
 class WPTuningFork : public WPTimbre
 {
 public:
@@ -21,8 +23,9 @@ public:
     static void *(*callback)(WPCallbackManager::CallbackFunc);
     
 private:
-	double time, phi;
+	double time, phi, phi2;
 	double envelope(double rise, double sustain, double decay, double t);
+	double rand11();
 
 };
 
