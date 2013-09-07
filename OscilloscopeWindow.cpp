@@ -6,24 +6,24 @@
 #include "core/WPPipe.h"
 
 OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
-    QMainWindow(parent)/*,
+    QMainWindow(parent),/*
     ui(new Ui::OscilloscopeWindow),
     glwidget(this),
     glwidgetR(this),
     glwidgetI(this),
-    glwidgetSTFT(this),
-    oscilloscope(this)*/
+    glwidgetSTFT(this),*/
+    oscilloscope(this)
 {
     //ui->setupUi(this);
     setGeometry(100, 50, 1000, 600);
-    pipe = new WPPipe();
+    //pipe = new WPPipe();
 }
 
 OscilloscopeWindow::~OscilloscopeWindow()
 {
     //delete ui;
     delete audioinput;
-    delete pipe;
+    //delete pipe;
 }
 
 void OscilloscopeWindow::showEvent(QShowEvent *)
@@ -35,16 +35,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 	WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 16)), note3(7, Fraction(1, 16));
 	WPNote note4(-5, Fraction(1, 1)), note5(-1, Fraction(1, 16)), note6(2, Fraction(1, 16));
     WPNote longnote(0, Fraction(10, 1));
-/*
-    WPWave *twave = synthesizer.synthesize(note1);
-    //twave->play();
-    wave.clear();
-    wave.setFormat(WPWave::defaultAudioFormat());
-    wave.mixWith(0.5, *twave, 0.5);
-    delete twave;
-    qDebug("synthesis finished");
-    wave.play();
-*/
+
 	score = new WPScore;
 	score->lockForWrite();
 	score->newPart("whitepig");
@@ -54,7 +45,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 	score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note2));
 	score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note3));
 	score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
-	score->unlock();
+    score->unlock();/*
 	score->lockForWrite();
 	score->newPart("white");
 	score->unlock();
@@ -64,7 +55,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->getPartList()[1].insertMultinote(WPPosition(Fraction(500, 2)), WPMultinote(note6));
     score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
 	score->unlock();
-
+*/
 	score->lockForWrite();
 	score->save("pig.wps");
 	score->close();
@@ -73,32 +64,20 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 
     file = new QFile("wave.out");
     file->open(QIODevice::WriteOnly);
-    qDebug("part num = %d\n", score->getPartList().size());
+    qDebug("part num = %d\n", (int)score->getPartList().size());
     controller = new WPSynthesisController;
     //connect(controller, SIGNAL(synthesisFinished()), this, SLOT(waveDecodeFinished()));
     //controller->synthesizeAndOutput(*score, file);
-    //controller->synthesizeAndPlay(*score);
-    //this->
-/*
-    WPSynthesizer synthesizer;
-    WPTuningFork tuningfork;
-    synthesizer.loadTimbre(&tuningfork);
-    qDebug("synthesizer constructed");
-    pipe->open(QIODevice::ReadWrite);
+    controller->synthesizeAndPlay(*score);
 
-    synthesizer.setOutputDevice(*pipe);
-    synthesizer.startSynthesis(score->getPartList()[0]);
-    static QAudioOutput *audiooutput = new QAudioOutput(WPWave::defaultAudioFormat());
-    audiooutput->start(pipe);
-*/
-/*
+
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     audioinput->setVolume(0.1);
     oscilloscope.setInputDevice(*audioinput->start());
     //oscilloscope.setInputDevice(*pipe);
     //oscilloscope.setInputDevice(*controller->synthesize(*score));
-    //oscilloscope.start(100, 4096);
-    oscilloscope.start(100, 512);*/
+    oscilloscope.start(100, 4096);
+    //oscilloscope.start(100, 512);
 }
 
 void OscilloscopeWindow::resizeEvent(QResizeEvent *)
@@ -107,7 +86,7 @@ void OscilloscopeWindow::resizeEvent(QResizeEvent *)
     glwidgetR.setGeometry(0, height() / 5 + 1, width(), height() / 5 - 1);
     glwidgetI.setGeometry(0, height() / 5 * 2 + 1, width(), height() / 5 - 1);
     glwidgetSTFT.setGeometry(0, height() / 5 * 3 + 1, width(), height() / 5 * 2 - 1);*/
-    //oscilloscope.setGeometry(0, 0, width(), height());
+    oscilloscope.setGeometry(0, 0, width(), height());
 }
 
 void OscilloscopeWindow::hideEvent(QHideEvent *)

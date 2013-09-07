@@ -31,6 +31,12 @@ void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *outpu
     recycle();
     synthesizer = new WPSynthesizer[partnum];
 
+    synthesizer[0].setOutputDevice(*output);
+    synthesizer[0].setPart(score.getPartList()[0]);
+    connect(&synthesizer[0], SIGNAL(synthesisFinished()), this, SLOT(oneSynthesizerFinished()));
+    connect(&synthesizer[0], SIGNAL(synthesisFinished()), this, SLOT(mixerFinished()));
+    synthesizer[0].start();
+/*
     mixer->setWatingTime(10);
     mixer->setOutput(*output);
     mixer->setReadLength(8000);
@@ -50,7 +56,7 @@ void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *outpu
     for (i = 0; i < partnum; i++)
         //synthesizer[i].startSynthesis(score.getPartList()[i]);
         synthesizer[i].start();
-    mixer->start();
+    mixer->start();*/
 }
 
 QIODevice *WPSynthesisController::synthesize(WPScore &score) //don't run two threads in this function simultaneously

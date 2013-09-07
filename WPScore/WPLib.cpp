@@ -8,6 +8,39 @@ Fraction::~Fraction()
 {
 }
 
+Fraction::Fraction(const double &D)
+{
+#pragma message("Caution! Please be careful transferring a real number to a rational number! It might cause fatal error!")
+	std::vector <int> frac;
+	long double a = D;
+	double acceptableEps = 1.0;
+	for (int i = 1; i <= 16; ++ i)
+	{
+		if (fabsl(floorl(a)) > INT_MAX)
+			break;
+		int b = floorl(a);
+		frac.push_back(b);
+		long double c = a - b;
+		a = 1.0 / c;
+		std::reverse(frac.begin(), frac.end());
+		Fraction Tmp(1, 0);
+		for (std::vector <int> :: iterator it = frac.begin(); it != frac.end(); ++ it)
+			Tmp = Tmp.inverse() + *it;
+		std::reverse(frac.begin(), frac.end());
+		if (fabs(Tmp.toDouble() - D) > acceptableEps)
+		{
+			frac.pop_back();
+			break;
+		}
+		acceptableEps = fabs(Tmp.toDouble() - D);
+	}
+	std::reverse(frac.begin(), frac.end());
+	X = 1;
+	Y = 0;
+	for (std::vector <int> :: iterator it = frac.begin(); it != frac.end(); ++ it)
+		*this = this->inverse() + *it;
+}
+
 Fraction::Fraction(const int &I)
 {
 	X = I;
@@ -52,10 +85,17 @@ Fraction Fraction::operator = (const Fraction &F)
 	return *this;
 }
 
+Fraction Fraction::operator - () const
+{
+	Fraction Result = *this;
+	Result.X = - Result.X;
+	return Result;
+}
+
 Fraction Fraction::operator + (const Fraction &F) const
 {
-	Fraction Result(F.Y / std::__gcd(Y, F.Y) * X + Y / std::__gcd(Y, F.Y) * F.X, Y / std::__gcd(Y, F.Y) * F.Y);
-	int d = std::__gcd(Result.X, Result.Y);
+	Fraction Result(F.Y / GCD(Y, F.Y) * X + Y / GCD(Y, F.Y) * F.X, Y / GCD(Y, F.Y) * F.Y);
+	int d = GCD(Result.X, Result.Y);
 	Result.X /= d;
 	Result.Y /= d;
 	return Result;
@@ -69,8 +109,8 @@ Fraction Fraction::operator += (const Fraction &F)
 
 Fraction Fraction::operator - (const Fraction &F) const
 {
-	Fraction Result(F.Y / std::__gcd(Y, F.Y) * X - Y / std::__gcd(Y, F.Y) * F.X, Y / std::__gcd(Y, F.Y) * F.Y);
-	int d = std::__gcd(Result.X, Result.Y);
+	Fraction Result(F.Y / GCD(Y, F.Y) * X - Y / GCD(Y, F.Y) * F.X, Y / GCD(Y, F.Y) * F.Y);
+	int d = GCD(Result.X, Result.Y);
 	Result.X /= d;
 	Result.Y /= d;
 	return Result;
@@ -84,8 +124,8 @@ Fraction Fraction::operator -= (const Fraction &F)
 
 Fraction Fraction::operator * (const Fraction &F) const
 {
-	Fraction Result(F.X / std::__gcd(F.X, Y) * X / std::__gcd(X, F.Y), Y / std::__gcd(F.X, Y) * F.Y / std::__gcd(X, F.Y));
-	int d = std::__gcd(Result.X, Result.Y);
+	Fraction Result((long long) F.X / GCD(F.X, Y) * X / GCD(X, F.Y), (long long) Y / GCD(F.X, Y) * F.Y / GCD(X, F.Y));
+	int d = GCD(Result.X, Result.Y);
 	Result.X /= d;
 	Result.Y /= d;
 	return Result;
@@ -152,4 +192,10 @@ std::string intToString(const int &I)
 std::string fractionToString(const Fraction &F)
 {
 	return intToString(F.X) + "/" + intToString(F.Y);
+}
+
+
+Fraction doubleToFraction(const double &D)
+{
+	return D;
 }

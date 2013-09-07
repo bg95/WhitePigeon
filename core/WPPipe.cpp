@@ -150,7 +150,7 @@ qint64 WPPipe::readData(char *data, qint64 maxlen)
         }
     }
 
-    qDebug("pipe %X read end", (quint64)this);
+    qDebug("pipe %X read %ld end", (quint64)this, maxlen);
     lock.unlock();
     return maxlen;
 }
@@ -165,7 +165,7 @@ qint64 WPPipe::writeData(const char *data, qint64 maxlen)
     quesize += maxlen;
     checkSuf();
 
-    qDebug("pipe %X write end", (quint64)this);
+    qDebug("pipe %X write %ld end", (quint64)this, maxlen);
     lock.unlock();
     return maxlen;
 }

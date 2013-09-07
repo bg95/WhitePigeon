@@ -21,10 +21,11 @@ bool WPDLLTimbreManager::setTimbre(std::string timbrenamepara)
         name.push_back(c);
     }
     iss >> para;
+    fname.append("/home/pt-cr/Projects/WhitePigeon/plugins/");
     fname.append("lib");
     fname.append(name);
     fname.append(".so");
-    if (!manager.openDLL(name))
+    if (!manager.openDLL(fname))
         return false;
     if (!manager.sendCallbackHandle())
     {

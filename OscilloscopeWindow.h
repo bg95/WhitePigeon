@@ -30,7 +30,7 @@ public slots:
     void waveDecodeFinished();
 
 private:
-    Ui::OscilloscopeWindow *ui;
+    //Ui::OscilloscopeWindow *ui;
     //MyGLWidget glwidget, glwidgetR, glwidgetI, glwidgetSTFT;
     WPOscilloscope oscilloscope;
     WPWave wave;

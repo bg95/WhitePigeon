@@ -14,7 +14,7 @@ WPSynthesizer::WPSynthesizer(WPTimbre *_timbre, QObject *parent) :
 WPSynthesizer::~WPSynthesizer()
 {
     if (isRunning())
-        qDebug("Synthesizer %X is still running", (quint64)this);
+        qDebug("Synthesizer %X is still running", (unsigned)(quint64)this);
     quit(); //?
     qDebug("Synthesizer waiting");
     wait();
@@ -173,7 +173,7 @@ void WPSynthesizer::synthesizePart()
                     {
                         qCritical() << output->errorString();
                     }
-                    QThread::usleep(100); //remember to remove
+                    //QThread::usleep(100); //remember to remove
                 }
                 
                 samplecnt = 0;
@@ -286,7 +286,8 @@ int WPSynthesizer::processNote(double time, double &notelength)
     if (notemodicnt == 0)
     {
         notemodicnt++;
-        return defaultnotemodifier.modifyNote(time);
+        notelength = defaultnotemodifier.modifyNote(time);
+        return notemodicnt;
     }
     return notemodicnt;
 }
@@ -301,6 +302,11 @@ int WPSynthesizer::processTempo(double time, double &tempo)
             tempo = (*propmapiter).second.sampleModifier()->modifyTempo(time, tempo);
             tempocnt++;
         }
+    if (tempocnt == 0)
+    {
+        tempocnt++;
+        tempo = 100.0;
+    }
     return tempocnt;
 }
 
@@ -314,6 +320,11 @@ int WPSynthesizer::processTimbre(double time, std::string &timbrename)
             timbrename = (*propmapiter).second.sampleModifier()->modifyTimbre();
             timbrecnt++;
         }
+    if (timbrecnt == 0)
+    {
+        timbrecnt++;
+        timbrename = "WPTuningFork";
+    }
     return timbrecnt;
 }
 

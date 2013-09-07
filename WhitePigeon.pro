@@ -10,6 +10,9 @@ QT       += core gui opengl multimedia
 #libpulse-dev
 #qtmultimedia5-dev
 
+#to compile a plug-in
+#g++ WPTuningFork.cpp -o  libWPTuningFork.so -fPIC -shared -I /usr/include/qt5/QtCore -I /usr/include/qt5/QtMultimedia -I /usr/include/qt5 -I ./.. -g
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = WhitePigeon

@@ -22,6 +22,7 @@ public:
     
 private:
 	double time, phi;
+	double envelope(double rise, double sustain, double decay, double t);
 
 };
 

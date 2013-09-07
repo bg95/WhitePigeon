@@ -1,7 +1,8 @@
 #include "WPCallbackManager.h"
 #include "WPDLLManager.h"
 
-WPDLLManager::WPDLLManager()
+WPDLLManager::WPDLLManager() :
+    handle(0)
 {
 }
 
