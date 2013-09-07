@@ -32,7 +32,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
 
-	WPNote note1(0, Fraction(1, 1)), note2(4, Fraction(1, 16)), note3(7, Fraction(1, 16));
+    WPNote note1(0, Fraction(10, 1)), note2(4, Fraction(1, 16)), note3(7, Fraction(1, 16));
 	WPNote note4(-5, Fraction(1, 1)), note5(-1, Fraction(1, 16)), note6(2, Fraction(1, 16));
     WPNote longnote(0, Fraction(10, 1));
 

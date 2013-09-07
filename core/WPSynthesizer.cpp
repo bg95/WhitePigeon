@@ -115,6 +115,7 @@ void WPSynthesizer::synthesizePart()
     //part->unlock();
     while (!(fragment.first.getLength() == Fraction(-1, 1)))
     {
+        qDebug("start processing one fragment");
         std::vector<WPNote> notes = fragment.first.getNotes();
         std::vector<WPProperty> sprop = fragment.second.first, eprop = fragment.second.second;
 
@@ -150,6 +151,7 @@ void WPSynthesizer::synthesizePart()
                 dur = 0.0;
                 vtime.clear();
                 vtime.push_back(0.0);
+                vtime.resize(samplecnt);
                 for (i = 1; i < samplecnt; i++)
                 {
                     vtime[i] = vtime[i - 1] + (time[i] - time[i - 1]) / ((tempo[i] + tempo[i - 1]) / 2.0 / 60.0);
@@ -173,6 +175,7 @@ void WPSynthesizer::synthesizePart()
                     {
                         qCritical() << output->errorString();
                     }
+                    qDebug("Synthesizer written to output %d samples", swave->data.size());
                     //QThread::usleep(100); //remember to remove
                 }
                 
