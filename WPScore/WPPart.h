@@ -37,8 +37,8 @@ class WPPart
 		void setOrder(const int &);
 		void hide();
 		bool isHidden();
-		void moveUp(int Times = 1);
-		void moveDown(int Times = 1);
+		void moveUp(unsigned int Times = 1);
+		void moveDown(unsigned int Times = 1);
 		WPInterval getExtendedInterval(const WPInterval &);
 		WPInterval getReducedInterval(const WPInterval &);
 		std::vector <WPMultinote> getAllNotes();
