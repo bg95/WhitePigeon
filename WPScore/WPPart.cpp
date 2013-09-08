@@ -196,6 +196,44 @@ void WPPart::setOrder(const int &K)
 	Orders[MyVer] = K;
 }
 
+void WPPart::hide()
+{
+	setOrder(- 1);
+}
+
+bool WPPart::isHidden()
+{
+	return displayOrder() == - 1;
+}
+
+void WPPart::moveUp(unsigned int Times = 1)
+{
+	if (isHidden())
+		return;
+	for (; Times > 0; -- Times)
+	{
+		int MyOrder = displayOrder();
+		if (MyOrder == 0)
+			return;
+		Master->getPartByOrder(MyOrder - 1)->setOrder(MyOrder);
+		setOrder(MyOrder - 1);
+	}
+}
+
+void WPPart::moveDown(unsigned int Times = 1)
+{
+	if (isHidden())
+		return;
+	for (; Times > 0; -- Times)
+	{
+		int MyOrder = displayOrder();
+		if (MyOrder == Master->countPartNumber() - 1)
+			return;
+		Master->getPartByOrder(MyOrder + 1)->setOrder(MyOrder);
+		setOrder(MyOrder + 1);
+	}
+}
+
 WPInterval WPPart::getExtendedInterval(const WPInterval &I)
 {
 	synchronizeWithMaster();
