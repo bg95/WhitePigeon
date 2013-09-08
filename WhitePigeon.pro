@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui opengl multimedia webkit webkitwidgets network
+CONFIG += opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -40,7 +41,21 @@ SOURCES += main.cpp\
     musicshower/musicbracketitem.cpp \
     musicshower/musicbaritem.cpp \
     musicshower/musicarcitem.cpp \
-    musicshower/getmusicinfodialog.cpp
+    musicshower/getmusicinfodialog.cpp \
+    musicshower/musicview.cpp \
+    core/WPPropertyAndModifiers.cpp \
+    core/WPOscilloscope.cpp \
+    core/WPModifier.cpp \
+    WPDLLManager/WPDLLTimbreManager.cpp \
+    WPDLLManager/WPDLLTimbre.cpp \
+    WPDLLManager/WPDLLModifier.cpp \
+    WPDLLManager/WPDLLManager.cpp \
+    WPDLLManager/WPCallbackManager.cpp \
+    plugins/WPDefaultNoteModifier.cpp \
+    plugins/WP12EqualTuning.cpp \
+    OscilloscopeWindow.cpp \
+    myglwidget.cpp \
+    UI/QRecentWebsitesMenu.cpp
 
 HEADERS  +=\
     WPScore/WPSPosition.h \
@@ -55,7 +70,6 @@ HEADERS  +=\
     core/WPSynthesizer.h \
     core/WPWave.h \
     core/WPTimbre.h \
-    core/WPTuningFork.h \
     core/WPVarTimbre.h \
     core/WPPipe.h \
     core/WPMixer.h \
@@ -74,7 +88,21 @@ HEADERS  +=\
     musicshower/musicbracketitem.h \
     musicshower/musicbaritem.h \
     musicshower/musicarcitem.h \
-    musicshower/getmusicinfodialog.h
+    musicshower/getmusicinfodialog.h \
+    musicshower/musicview.h \
+    core/WPPropertyAndModifiers.h \
+    core/WPOscilloscope.h \
+    core/WPModifier.h \
+    WPDLLManager/WPDLLTimbreManager.h \
+    WPDLLManager/WPDLLTimbre.h \
+    WPDLLManager/WPDLLModifier.h \
+    WPDLLManager/WPDLLManager.h \
+    WPDLLManager/WPCallbackManager.h \
+    plugins/WPDefaultNoteModifier.h \
+    plugins/WP12EqualTuning.h \
+    OscilloscopeWindow.h \
+    myglwidget.h \
+    UI/QRecentWebsitesMenu.h
 
 TRANSLATIONS += Chinese.ts
 

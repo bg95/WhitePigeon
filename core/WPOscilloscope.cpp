@@ -26,11 +26,13 @@ void WPOscilloscope::start(quint32 _period, quint32 _length)
     period = _period;
     length = _length;
     timer->start(period);
+    qDebug("oscilloscope started");
 }
 
 void WPOscilloscope::refresh()
 {
     QByteArray input = inputdevice->readAll();
+    //QByteArray input = inputdevice->read(length * sizeof(WPWave::WaveDataType));
     QByteArray bytearray(input.rightJustified(length * sizeof(WPWave::WaveDataType), 0, true));
     WPWave::WaveDataType *begin = (WPWave::WaveDataType *)bytearray.constData();
     QVector<WPWave::WaveDataType> data;
@@ -41,7 +43,7 @@ void WPOscilloscope::refresh()
     }
 
     wave.setData(data);
-    //printf("oscilloscope: input length = %d\n", wave.data.size());
+    //qDebug("oscilloscope: input length = %d", wave.data.size());
     wave.FFT();
     repaint();
 }
@@ -53,6 +55,7 @@ void WPOscilloscope::initializeGL()
 
 void WPOscilloscope::paintGL()
 {
+    //qDebug("Oscilloscope paint");
     int i;
     glLoadIdentity();
     glOrtho(0.0, length, -1.0, 1.0, -1.0, 1.0);

@@ -20,6 +20,7 @@ class WPWave : public QObject
 public:
     typedef qint16 WaveDataType;
     static const WaveDataType maxWaveDataType = 32767, minWaveDataType = -32768;
+    static const int SamplingRate = 48000;
     static const double PI = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
     static const double Ksigma = 6.0;   //The Gauss function is considered very small (as 0) if |x| > Ksigma * sigma
     //_FFT means Inverse FFT, so as _STFT, _Gabor
@@ -31,6 +32,8 @@ public:
     template <class Type> static void Gabor(const Type *begin, const Type *end, double sigma, int period, QVector<QVector<std::complex<double> > > &out);
     static void _Gabor(const QVector<QVector<std::complex<double> > > &in, double sigma, int period, QVector<std::complex<double> > &out);
     static QAudioFormat defaultAudioFormat();
+
+    static WPWave *newWPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format);
 
     explicit WPWave(QObject *parent = 0);
     WPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format, QObject *parent = 0);

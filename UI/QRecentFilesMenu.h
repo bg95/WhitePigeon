@@ -25,11 +25,17 @@
 #include <QMenu>
 #include <QStringList>
 
+class MainWindow;
+
 class QRecentFilesMenu : public QMenu
 {
     Q_OBJECT
     Q_PROPERTY(int maxCount READ maxCount WRITE setMaxCount)
     Q_PROPERTY(QString format READ format WRITE setFormat)
+
+    // Friendship decleration
+    friend MainWindow;
+
 public:
     //! Constructs a menu with parent parent.
     QRecentFilesMenu(QWidget * parent = 0 );
@@ -80,6 +86,9 @@ public slots:
 signals:
     //! This signal is emitted when a recent file in this menu is triggered.
     void recentFileTriggered(const QString & filename);
+
+    //! This signal is emitted when the recent files menu modified.
+    void recentFilesModified();
 
 private slots:
     void menuTriggered(QAction*);

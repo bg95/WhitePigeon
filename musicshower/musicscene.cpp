@@ -10,19 +10,19 @@
 const int musicScene::musicHeight[12] = {6, -1, 7, 1, -1, 2, -1, 3, 4, -1, 5, -1};
 
 musicScene::musicScene(QWidget *parent)
-	: QGraphicsScene(parent),
-	  music(NULL),
-	  partNumber(0),
-	  rowNumber(0),
-	  widget(NULL)
+    : QGraphicsScene(parent),
+      partNumber(0),
+      rowNumber(0),
+      widget(NULL),
+      music(NULL)
 {
-    setSceneRect(0, 0, 2000, 10000);
+    setSceneRect(0, 0, 2000, 2000);
 }
 
 void musicScene::setScore(WPScore *score)
 {
-	music = score;
-	display();
+    music = score;
+    display();
 }
 
 void musicScene::setRect(QRectF rect)
@@ -32,15 +32,11 @@ void musicScene::setRect(QRectF rect)
 
 void musicScene::display()
 {
-	music->lockForRead();
-	partNumber = music->countPartNumber();
-	music->unlock();
+    partNumber = music->countPartNumber();
     numbers.resize(partNumber);
     for (int i = 0; i < partNumber; ++i)
     {
-		music->lockForRead();
-		std::vector <WPMultinote> multiNote = music->getPartByOrder(i)->getAllNotes();
-		music->unlock();
+        std::vector <WPMultinote> multiNote = music->getPartByOrder(i)->getAllNotes();
         std::vector<WPMultinote>::iterator iter;
         numbers[i].clear();
         for (iter = multiNote.begin(); iter != multiNote.end(); iter++)
@@ -103,7 +99,15 @@ void musicScene::display()
         bars[i].push_back(thisbar);
     }
 
-	int barsNumber = (bars.size() ? bars[0].count() : 0);
+    int barsNumber;
+    if (bars.size())
+    {
+        barsNumber = bars[0].count();
+    }
+    else
+    {
+        barsNumber = 0;
+    }
 
     rowNumber = barsNumber / 4 + (barsNumber % 4 != 0);
     rows.resize(rowNumber);
@@ -124,9 +128,6 @@ void musicScene::display()
             rows[j / 4]->insertMusic(bars[i][j], i + 1, j % 4 + 1);
         }
     }
-
-	delete widget;
-	widget = NULL;
 
     widget = new musicWholeItem;
     widget->setPos(sceneRect().width() / 2, sceneRect().height() / 2);

@@ -1,6 +1,7 @@
 #include <QtWidgets>
 
 #include "QRecentFilesMenu.h"
+#include "QRecentWebsitesMenu.h"
 #include "core/WPSynthesisController.h"
 #include "OscilloscopeWindow.h"
 #include "WPWindow.h"
@@ -17,11 +18,10 @@ MainWindow::MainWindow()
     mdiArea = new QMdiArea;
     mdiArea->setParent(this);
     mdiArea->setViewMode(QMdiArea::TabbedView);
-    mdiArea->setTabsMovable(true);
     mdiArea->setActivationOrder(QMdiArea::CreationOrder);
 	mdiArea->setTabsClosable(true);
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
-            this, SLOT(updateActionsNeedingSubWindow()));
+            this, SLOT(updateActions()));
 
     /* MainWindow settings */
     setWindowTitle(tr("WhitePigeon"));
@@ -37,6 +37,8 @@ MainWindow::MainWindow()
     createContextMenu();
 
     readSettings();
+    updateActions();
+    updateCompleter();
 }
 
 MainWindow::~MainWindow()
@@ -70,7 +72,6 @@ void MainWindow::createActions()
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setStatusTip(tr("Save the file to disk"));
     saveAction->setToolTip(tr("Save the file"));
-    saveAction->setEnabled(false);
     connect(saveAction, SIGNAL(triggered()),
             this, SLOT(saveFile()));
 
@@ -80,7 +81,6 @@ void MainWindow::createActions()
     saveAsAction->setShortcut(QKeySequence::SaveAs);
     saveAsAction->setStatusTip(tr("Save the file under a new name"));
     saveAsAction->setToolTip(tr("Save the file under a new name"));
-    saveAsAction->setEnabled(false);
     connect(saveAsAction, SIGNAL(triggered()),
             this, SLOT(saveAsFile()));
 
@@ -89,7 +89,6 @@ void MainWindow::createActions()
     closeAction->setIcon(QIcon(":/images/close.gif"));
     closeAction->setStatusTip(tr("Close the file"));
     closeAction->setToolTip(tr("Close the file"));
-    closeAction->setEnabled(false);
     connect(closeAction, SIGNAL(triggered()),
             this, SLOT(closeFile()));
 
@@ -99,18 +98,53 @@ void MainWindow::createActions()
     // closeAllAction->setShortcut();
     closeAllAction->setStatusTip(tr("Close all files"));
     closeAllAction->setToolTip(tr("Close all files"));
-    closeAllAction->setEnabled(false);
     connect(closeAllAction, SIGNAL(triggered()),
             this, SLOT(closeAllFiles()));
 
     exitAction = new QAction(this);
     exitAction->setText(tr("E&xit"));
-    // exitAction->setIcon(QIcon(":/images/exit.jpg"));
+    exitAction->setIcon(QIcon(":/images/exit.png"));
     exitAction->setShortcut(QKeySequence::Quit);
     exitAction->setStatusTip(tr("Exit the application"));
     exitAction->setToolTip(tr("Exit the application"));
     connect(exitAction, SIGNAL(triggered()),
             this, SLOT(close()));
+
+    newPartAction = new QAction(this);
+    newPartAction->setText(tr("New part"));
+    newPartAction->setIcon(QIcon(":/images/newpart.png"));
+    // newPartAction->setShortcut();
+    newPartAction->setStatusTip(tr("Build a new part"));
+    newPartAction->setToolTip(tr("Build a new part"));
+    connect(newPartAction, SIGNAL(triggered()),
+            this, SLOT(newPart()));
+
+    undoAction = new QAction(this);
+    undoAction->setText(tr("&Undo"));
+    undoAction->setIcon(QIcon(":/images/undo.png"));
+    undoAction->setShortcut(QKeySequence::Undo);
+    undoAction->setStatusTip(tr("Undo"));
+    undoAction->setToolTip(tr("Undo"));
+    connect(undoAction, SIGNAL(triggered()),
+            this, SLOT(undo()));
+
+    redoAction = new QAction(this);
+    redoAction->setText(tr("&Redo"));
+    redoAction->setIcon(QIcon(":/images/redo.png"));
+    redoAction->setShortcut(QKeySequence::Redo);
+    redoAction->setStatusTip(tr("Redo"));
+    redoAction->setToolTip(tr("Redo"));
+    connect(redoAction, SIGNAL(triggered()),
+            this, SLOT(redo()));
+
+    refreshAction = new QAction(this);
+    refreshAction->setText(tr("Refresh"));
+    refreshAction->setIcon(QIcon(":/images/refresh.png"));
+    refreshAction->setShortcut(QKeySequence::Refresh);
+    refreshAction->setStatusTip(tr("Refresh"));
+    refreshAction->setToolTip(tr("Refresh"));
+    connect(refreshAction, SIGNAL(triggered()),
+            this, SLOT(refresh()));
 
     playAction = new QAction(this);
     playAction->setText(tr("Play"));
@@ -118,7 +152,6 @@ void MainWindow::createActions()
     // playAction->setShortcut();
     playAction->setStatusTip(tr("Play the score"));
     playAction->setToolTip(tr("Play the score"));
-    playAction->setEnabled(false);
     connect(playAction, SIGNAL(triggered()),
             this, SLOT(play()));
 
@@ -158,7 +191,6 @@ void MainWindow::createActions()
     oscilloscopeAction = new QAction(this);
     oscilloscopeAction->setText(tr("&Oscilloscope"));
     oscilloscopeAction->setIcon(QIcon(":/images/oscilloscope.png"));
-    // oscilloscopeAction->setShortcut();
     oscilloscopeAction->setStatusTip(tr("Show an oscilloscope"));
     oscilloscopeAction->setToolTip(tr("Show an oscilloscope"));
     connect(oscilloscopeAction, SIGNAL(triggered()),
@@ -174,10 +206,18 @@ void MainWindow::createMenus()
 
     recentFilesMenu = new QRecentFilesMenu(fileMenu);
     recentFilesMenu->setTitle(tr("&Recent Files"));
+    recentFilesMenu->setIcon(QIcon(":/images/recent.png"));
     connect(recentFilesMenu, SIGNAL(recentFileTriggered(const QString &)),
             this, SLOT(loadFile(const QString &)));
 
+    recentWebsitesMenu = new QRecentWebsitesMenu(fileMenu);
+    recentWebsitesMenu->setTitle(tr("History visit websites"));
+    recentWebsitesMenu->setIcon(QIcon(":/images/web.gif"));
+    connect(recentWebsitesMenu, SIGNAL(recentWebsiteTriggered(const QString &)),
+            this, SLOT(loadFile(const QString &)));
+
     fileMenu->addMenu(recentFilesMenu);
+    fileMenu->addMenu(recentWebsitesMenu);
     fileMenu->addSeparator();
     fileMenu->addAction(saveAction);
     fileMenu->addAction(saveAsAction);
@@ -186,6 +226,12 @@ void MainWindow::createMenus()
     fileMenu->addAction(closeAllAction);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAction);
+
+    editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu->addAction(newPartAction);
+    editMenu->addSeparator();
+    editMenu->addAction(undoAction);
+    editMenu->addAction(redoAction);
 
     musicMenu = menuBar()->addMenu(tr("&Music"));
     musicMenu->addAction(playAction);
@@ -241,21 +287,50 @@ void MainWindow::createToolBar()
 
 void MainWindow::createAddressBar()
 {
+    undoButton = new QPushButton(this);
+    undoButton->setIcon(QIcon(":/images/undo.png"));
+    undoButton->setFlat(true);
+    connect(undoButton, SIGNAL(clicked()),
+            this, SLOT(undo()));
+
+    redoButton = new QPushButton(this);
+    redoButton->setIcon(QIcon(":/images/redo.png"));
+    redoButton->setFlat(true);
+    connect(redoButton, SIGNAL(clicked()),
+            this, SLOT(redo()));
+
+    refreshButton = new QPushButton(this);
+    refreshButton->setIcon(QIcon(":/images/refresh.png"));
+    refreshButton->setFlat(true);
+    connect(refreshButton, SIGNAL(clicked()),
+            this, SLOT(refresh()));
+
+    completer = new QCompleter;
+    completer->setMaxVisibleItems(5);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    connect(recentFilesMenu, SIGNAL(recentFilesModified()),
+            this, SLOT(updateCompleter()));
+    connect(recentWebsitesMenu, SIGNAL(recentWebsitesModified()),
+            this, SLOT(updateCompleter()));
+
     addressEdit = new QLineEdit(this);
+    addressEdit->setCompleter(completer);
     connect(addressEdit, SIGNAL(returnPressed()),
             this, SLOT(goToSite()));
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this, SLOT(updateAddressBar()));
 
 	goButton = new QPushButton(this);
-	goButton->setIcon(QIcon(":/images/go.png"));
-	goButton->setCursor(QCursor(QPixmap(":/images/mouse.ico")));
+    goButton->setIcon(QIcon(":/images/go.gif"));
 	goButton->setFlat(true);
     connect(goButton, SIGNAL(clicked()),
             this, SLOT(goToSite()));
 
     addressLayout = new QHBoxLayout;
     addressLayout->setSpacing(0);
+    addressLayout->addWidget(undoButton);
+    addressLayout->addWidget(redoButton);
+    addressLayout->addWidget(refreshButton);
     addressLayout->addWidget(addressEdit);
     addressLayout->addWidget(goButton);
     connect(addressViewAction, SIGNAL(triggered(bool)),
@@ -263,15 +338,12 @@ void MainWindow::createAddressBar()
 
     mainLayout = new QVBoxLayout;
     mainLayout->setSpacing(0);
-	mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addLayout(addressLayout);
     mainLayout->addWidget(mdiArea);
 
     widget = new QWidget(this);
     widget->setLayout(mainLayout);
-    addressEdit->setParent(widget);
-    goButton->setParent(widget);
-    mdiArea->setParent(widget);
     setCentralWidget(widget);
 }
 
@@ -294,6 +366,10 @@ void MainWindow::readSettings()
 
     settings.beginGroup("RecentFiles");
     recentFilesMenu->restoreState(settings.value("files").toByteArray());
+    settings.endGroup();
+
+    settings.beginGroup("RecentWebsites");
+    recentWebsitesMenu->restoreState(settings.value("websites").toByteArray());
     settings.endGroup();
 
     settings.beginGroup("ToolBar");
@@ -322,6 +398,10 @@ void MainWindow::writeSettings()
 
     settings.beginGroup("RecentFiles");
     settings.setValue("files", recentFilesMenu->saveState());
+    settings.endGroup();
+
+    settings.beginGroup("RecentWebsites");
+    settings.setValue("websites", recentWebsitesMenu->saveState());
     settings.endGroup();
 
     settings.beginGroup("ToolBar");
@@ -360,7 +440,7 @@ void MainWindow::loadFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
                                tr("Open a file"), ".",
-							   tr("Score files (*.wps)"));
+                               tr("Score files (*.01)"));
     if (!fileName.isEmpty())
     {
         loadFile(fileName);
@@ -386,7 +466,7 @@ void MainWindow::loadFile(const QString& file)
             {
                 window->show();
                 mdiArea->setActiveSubWindow(window);
-                recentFilesMenu->addRecentFile(file);
+                recentFilesMenu->addRecentFile(fileInfo.canonicalFilePath());
                 statusBar()->showMessage(tr("File loaded"), 2000);
             }
             else
@@ -437,6 +517,9 @@ void MainWindow::openAWebPage(const QUrl &url)
 
 void MainWindow::setAddressVisible(bool visible)
 {
+    undoButton->setVisible(visible);
+    redoButton->setVisible(visible);
+    refreshButton->setVisible(visible);
     addressEdit->setVisible(visible);
     goButton->setVisible(visible);
 }
@@ -476,7 +559,7 @@ bool MainWindow::saveAsFile()
         if (window->saveFile(file))
         {
             statusBar()->showMessage(tr("File saved"), 2000);
-            recentFilesMenu->addRecentFile(file);
+            recentFilesMenu->addRecentFile(QFileInfo(file).canonicalFilePath());
             return true;
         }
         else
@@ -499,6 +582,39 @@ void MainWindow::closeAllFiles()
         window->close();
 }
 
+void MainWindow::newPart()
+{
+    WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
+    window->newPart();
+}
+
+void MainWindow::undo()
+{
+    WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
+    if (window)
+    {
+        window->undo();
+    }
+}
+
+void MainWindow::redo()
+{
+    WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
+    if (window)
+    {
+        window->redo();
+    }
+}
+
+void MainWindow::refresh()
+{
+    WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
+    if (window)
+    {
+        window->refresh();
+    }
+}
+
 void MainWindow::play()
 {
     WPWindow *window = dynamic_cast<WPWindow *>(mdiArea->activeSubWindow());
@@ -508,6 +624,20 @@ void MainWindow::play()
 void MainWindow::stopAll()
 {
     // controller->stopAll();
+}
+
+void MainWindow::updateActions()
+{
+    WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
+    bool hasActiveWindow = (window != NULL);
+    bool isWindowFileMode = (window != NULL && window->getMode() == WPWindow::File);
+
+    saveAction->setEnabled(isWindowFileMode);
+    saveAsAction->setEnabled(isWindowFileMode);
+    newPartAction->setEnabled(isWindowFileMode);
+    playAction->setEnabled(isWindowFileMode);
+    closeAction->setEnabled(hasActiveWindow);
+    closeAllAction->setEnabled(hasActiveWindow);
 }
 
 void MainWindow::updateAddressBar()
@@ -523,22 +653,31 @@ void MainWindow::updateAddressBar()
     }
 }
 
-void MainWindow::onLoadFinished()
+void MainWindow::updateCompleter()
 {
-	statusBar()->clearMessage();
+    QStringList list = recentFilesMenu->m_files;
+    for (QList<WebHistory>::Iterator iter = recentWebsitesMenu->m_list.begin();
+         iter != recentWebsitesMenu->m_list.end();
+         ++iter)
+    {
+        QString str = iter->first;
+        if (str.left(7) == "http://")
+        {
+            str.remove(0, 7);
+        }
+        list << str;
+    }
+    completer->setModel(new QStringListModel(list));
 }
 
-void MainWindow::updateActionsNeedingSubWindow()
+void MainWindow::onLoadFinished(const QPair<QString, QString> &history)
 {
-    WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
-    bool hasActiveWindow = (window != NULL);
-    bool isWindowFileMode = (window != NULL && window->getMode() == WPWindow::File);
-
-    saveAction->setEnabled(isWindowFileMode);
-    saveAsAction->setEnabled(isWindowFileMode);
-    playAction->setEnabled(isWindowFileMode);
-    closeAction->setEnabled(hasActiveWindow);
-    closeAllAction->setEnabled(hasActiveWindow);
+    statusBar()->clearMessage();
+    updateActions();
+    if (history.second != tr("Problem loading page"))
+    {
+        recentWebsitesMenu->addRecentWebsite(history);
+    }
 }
 
 void MainWindow::showLoadingProgress(int percent)
@@ -555,7 +694,7 @@ void MainWindow::showOscilloscope()
 {
     if (!oscilloscopeWindow)
     {
-        // oscilloscopeWindow = new OscilloscopeWindow(this);
+        oscilloscopeWindow = new OscilloscopeWindow(this);
     }
     oscilloscopeWindow->show();
 }
@@ -574,8 +713,8 @@ WPWindow* MainWindow::createNewChild()
             this, SLOT(showStatusBarMessage(const QString &)));
     connect(window, SIGNAL(linkClicked(const QUrl &)),
             this, SLOT(openAWebPage(const QUrl &)));
-    connect(window, SIGNAL(loadFinished()),
-            this, SLOT(onLoadFinished()));
+    connect(window, SIGNAL(loadFinished(const QPair<QString, QString> &)),
+            this, SLOT(onLoadFinished(const QPair<QString, QString> &)));
     mdiArea->addSubWindow(window);
     return window;
 }

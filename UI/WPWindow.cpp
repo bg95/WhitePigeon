@@ -2,7 +2,7 @@
 #include <QtWebKitWidgets/QWebView>
 
 #include "musicshower/musicscene.h"
-#include <QGraphicsView>    // #include "musicview.h"
+#include "musicshower/musicview.h"
 #include "WPScore/WPScore.h"
 #include "core/WPSynthesisController.h"
 
@@ -19,20 +19,42 @@ WPWindow::WPWindow(QWidget *parent, Qt::WindowFlags flags)
 
     scene = new musicScene(this);
 	scene->setScore(score);
-    // connect(scene, SIGNAL(scoreModified()),
-    //         this, SLOT(onScoreModified()));QObject::connect: No such signal QWebView::urlChanged(QString)
 
     view = new musicView(this);
     view->setScene(scene);
 
+    QWebSettings::setIconDatabasePath(QCoreApplication::applicationDirPath());
     webView = new QWebView(this);
     connect(webView, SIGNAL(titleChanged(const QString &)),
         this, SLOT(setWindowTitle(const QString &)));
     connect(webView, SIGNAL(urlChanged(const QUrl &)),
         this, SLOT(changeFilePathInWebMode(const QUrl &)));
+    connect(webView, SIGNAL(loadProgress(int)),
+            this, SLOT(onLoadProgress(int)));
+    connect(webView, SIGNAL(statusBarMessage(QString)),
+            this, SLOT(onStatusBarMessage(const QString &)));
+    connect(webView, SIGNAL(linkClicked(QUrl)),
+            this, SLOT(onLinkClicked(const QUrl &)));
+    connect(webView, SIGNAL(iconChanged()),
+            this, SLOT(refreshIcon()));
+    connect(webView, SIGNAL(loadFinished(bool)),
+            this, SLOT(loadFailure(bool)));
+    webView->page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
 
+    webView->hide();
     setWidget(view);
     setAttribute(Qt::WA_DeleteOnClose);
+}
+
+WPWindow::~WPWindow()
+{
+    score->lockForWrite();
+    score->close();
+    // tell other to stop
+    delete score;
+    delete view;
+    delete scene;
+    delete webView;
 }
 
 WPWindow::Mode WPWindow::getMode() const
@@ -43,6 +65,10 @@ WPWindow::Mode WPWindow::getMode() const
 void WPWindow::setMode(Mode __mode)
 {
     mode = __mode;
+    if (mode == Web)
+    {
+        webView->show();
+    }
 }
 
 bool WPWindow::isSaved() const
@@ -61,33 +87,21 @@ bool WPWindow::loadFile(const QString &file)
     if (mode == File)
     {
         filePath = QFileInfo(file).canonicalFilePath();
-		int result = 0;
+        int result = 0;
 		score->lockForWrite();
 		result = score->load(filePath.toStdString());
-		lastVersion = score->getCurrentVersion();
-		score->unlock();
+        lastVersion = score->getCurrentVersion();
+        score->unlock();
 		scene->setScore(score);
         setWindowModified(false);
         setWindowTitle(QFileInfo(file).fileName() + "[*]");
-		return (result == 0);
+        return result == 0;
     }
     else
     {
         QUrl url(file);
         filePath = url.url();
-        QWebSettings::setIconDatabasePath(QCoreApplication::applicationDirPath());
-        connect(webView, SIGNAL(loadProgress(int)),
-                this, SLOT(onLoadProgress(int)));
-        connect(webView, SIGNAL(statusBarMessage(QString)),
-                this, SLOT(onStatusBarMessage(const QString &)));
-        connect(webView, SIGNAL(linkClicked(QUrl)),
-                this, SLOT(onLinkClicked(const QUrl &)));
-        connect(webView, SIGNAL(iconChanged()),
-                this, SLOT(refreshIcon()));
-        connect(webView, SIGNAL(loadFinished(bool)),
-                this, SLOT(loadFailure(bool)));
         webView->load(url);
-		webView->page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
         setWidget(webView);
         return true;
     }
@@ -117,6 +131,7 @@ bool WPWindow::saveFile(const QString &file)
     {
         return true;
     }
+    qDebug() << file;
 	saved = true;
 	score->lockForRead();
 	score->save(file.toStdString());
@@ -128,20 +143,74 @@ bool WPWindow::saveFile(const QString &file)
     return true;
 }
 
+void WPWindow::newPart()
+{
+    score->lockForWrite();
+    score->newPart();
+    score->unlock();
+    // scene->setScore(score);
+}
+
+void WPWindow::undo()
+{
+    if (mode == Web)
+    {
+        webView->back();
+    }
+    else
+    {
+        // ...
+    }
+}
+
+void WPWindow::redo()
+{
+    if (mode == Web)
+    {
+        webView->forward();
+    }
+    else
+    {
+        // ...
+    }
+}
+
+void WPWindow::refresh()
+{
+    if (mode == Web)
+    {
+        webView->stop();
+        webView->load(QUrl(filePath));
+    }
+    else
+    {
+        scene->setScore(score);
+    }
+}
+
 void WPWindow::play_with(WPSynthesisController *controller)
 {
-    // controller->synthesizeAndPlay();
+    // controller->synthesizeAndPlay(*score);
 }
 
 void WPWindow::closeEvent(QCloseEvent *closeEvent)
 {
-    if (okToContinue())
+    if (mode == Web)
     {
+        webView->stop();
+        webView->close();
         closeEvent->accept();
     }
     else
     {
-        closeEvent->ignore();
+        if (okToContinue())
+        {
+            closeEvent->accept();
+        }
+        else
+        {
+            closeEvent->ignore();
+        }
     }
 }
 
@@ -175,9 +244,9 @@ void WPWindow::loadFailure(bool Flag)
 {
 	if (!Flag)
     {
-		setWindowTitle("Problem loading page");
+        setWindowTitle("Problem loading page");
     }
-    emit loadFinished();
+    emit loadFinished(QPair<QString, QString>(webView->url().url(), windowTitle()));
 }
 
 void WPWindow::refreshIcon()
@@ -187,7 +256,7 @@ void WPWindow::refreshIcon()
 
 bool WPWindow::okToContinue()
 {
-    if (isWindowModified() && mode == File)
+    if (isWindowModified())
     {
         int r = QMessageBox::warning(this, tr("WhitePigeon"),
                         tr("The document has been modified.\n"

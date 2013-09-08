@@ -1,8 +1,9 @@
 #ifndef WPPROPERTYANDMODIFIERS_H
 #define WPPROPERTYANDMODIFIERS_H
 
-#include "WPScore/WPProperty.h"
+#include <sstream>
 #include "WPDLLManager/WPDLLManager.h"
+#include "WPScore/WPProperty.h"
 #include "WPModifier.h"
 
 class WPPropertyAndModifiers
@@ -26,7 +27,7 @@ private:
     WPDLLManager manager;
     std::vector<WPModifier *> modifiers;
     WPModifier *samplemodifier;
-    std::string name, para, fname;\
+    std::string name, para, fname;
 
 };
 

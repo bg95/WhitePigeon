@@ -54,6 +54,7 @@ void QRecentFilesMenu::addRecentFile(const QString &fileName)
         m_files.removeLast();
 
     updateRecentFileActions();
+    emit recentFilesModified();
 }
 
 void QRecentFilesMenu::clearMenu()
@@ -61,6 +62,7 @@ void QRecentFilesMenu::clearMenu()
     m_files.clear();
 
     updateRecentFileActions();
+    emit recentFilesModified();
 }
 
 int QRecentFilesMenu::maxCount() const

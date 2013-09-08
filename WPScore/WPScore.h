@@ -29,7 +29,6 @@ class WPScore: public QReadWriteLock
 		void close();
 		WPPart *newPart();
 		WPPart *newPart(std::string);
-		void deletePart(WPPart *);
 		std::vector <WPPart> &getPartList();
 		//~ std::vector <WPProperty> getPropertyList() const;
 		int countPartNumber();

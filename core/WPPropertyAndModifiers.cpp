@@ -38,10 +38,10 @@ bool WPPropertyAndModifiers::setProperty(WPProperty &_prop)
         qWarning("No setCallback !");
         return false;
     }
-    samplemodifier = manager.newObject();
+    samplemodifier = (WPModifier *)manager.newObject();
     if (!samplemodifier)
         return false;
-    samplemodifier.set(para);
+    samplemodifier->set(para);
     return true;
 }
 
@@ -51,9 +51,9 @@ void WPPropertyAndModifiers::setNumModifiers(int n)
     clearModifiers();
     while (n--)
     {
-        modi = manager.newObject();
+        modi = (WPModifier *)manager.newObject();
         modi->set(para);
-        modifiers.push_back(manager.newObject());
+        modifiers.push_back((WPModifier *)manager.newObject());
 
     }
 }
