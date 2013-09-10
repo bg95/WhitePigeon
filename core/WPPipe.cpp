@@ -159,7 +159,10 @@ qint64 WPPipe::writeData(const char *data, qint64 maxlen)
 {
     QByteArray *bytearray = new QByteArray(data, maxlen);
 
+    ///
+    qDebug("Data %X want to write to pipe %X!", (quint64)data, (quint64)this);
 	lock.lock();
+    qDebug("Data %X writing to pipe %X started!", (quint64)data, (quint64)this);
 
     que.push_back(bytearray);
     quesize += maxlen;
