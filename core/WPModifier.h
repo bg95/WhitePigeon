@@ -1,6 +1,7 @@
 #ifndef WPMODIFIER_H
 #define WPMODIFIER_H
 
+#include <Qt>
 #include "WPScore/WPNote.h"
 #include "WPScore/WPMultinote.h"
 

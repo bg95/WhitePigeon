@@ -23,6 +23,7 @@ public:
     
 private:
     std::vector<double> notestarts;
+    int notei;
     
 };
 

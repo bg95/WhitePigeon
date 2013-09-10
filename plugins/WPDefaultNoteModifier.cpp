@@ -25,15 +25,15 @@ void WPDefaultNoteModifier::setNotes(const std::vector<WPMultinote> &notes, Frac
         i++;
     }
     notestarts.pop_back();
+    notei = 0;
 }
 
 double WPDefaultNoteModifier::modifyNote(double time)
 {
-    std::vector<WPMultinote> multinotes = getNotes();
-    int i;
-    for (i = 0; i < notestarts.size(); i++)
-        if (timePassed(notestarts[i]))
-            return multinotes[i].getNotes()[0].getLength().toDouble();
+    std::vector<WPMultinote> &multinotes = getNotes();
+    for (; notestarts[notei] <= getTime() && notei < notestarts.size(); notei++)
+        if (timePassed(notestarts[notei]))
+            return multinotes[notei].getNotes()[0].getLength().toDouble();
     return -1;
 }
 /*

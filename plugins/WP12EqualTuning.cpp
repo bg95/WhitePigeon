@@ -15,6 +15,8 @@ WP12EqualTuning::~WP12EqualTuning()
 void WP12EqualTuning::reset()
 {
     basefreq = 440.0;
+    currentmultinoteiter = getNotes().begin();
+    qDebug("WP12EqualTuning::reset this = %X", (quint64)this);
 }
 
 void WP12EqualTuning::set(std::string para)
@@ -25,10 +27,8 @@ void WP12EqualTuning::set(std::string para)
 }
 
 std::vector<double> WP12EqualTuning::modifyFreq(double time, std::vector<double> freq)
-{/*
-    char str[128];
-    memset(str, 0, 128);
-    WPMultinote cmnote = getCurrentMultinote();*/
+{
+    //WPMultinote cmnote = getCurrentMultinote();
     std::vector<WPNote> notes = getCurrentMultinote().getNotes();
     std::vector<WPNote>::iterator iter;
     freq.clear();
@@ -41,13 +41,22 @@ WPMultinote WP12EqualTuning::getCurrentMultinote()
 {
     double time = getTime();
     double stime = (-getNotesOffset()).toDouble();
-    std::vector<WPMultinote> notes = getNotes();
-    std::vector<WPMultinote>::iterator iter;
-    for (iter = notes.begin(); iter != notes.end(); iter++)
+    std::vector<WPMultinote> &notes = getNotes();
+    bool frombegin = false;
+    qDebug("WP12EqualTuning::getCurrentMultinote this = %X notes.begin = %X", (quint64)this, (quint64)&*(notes.begin()));
+    currentmultinoteiter = notes.begin();
+    while (!frombegin)
     {
-        if (time >= stime && time < stime + (*iter).getLength().toDouble())
-            return (*iter);
-        stime += (*iter).getLength().toDouble();
+        if (currentmultinoteiter == notes.end())
+            currentmultinoteiter = notes.begin();
+        if (currentmultinoteiter == notes.begin())
+            frombegin = true;
+        for (; currentmultinoteiter != notes.end(); currentmultinoteiter++)
+        {
+            if (time >= stime && time < stime + (*currentmultinoteiter).getLength().toDouble())
+                return (*currentmultinoteiter);
+            stime += (*currentmultinoteiter).getLength().toDouble();
+        }
     }
     return WPMultinote();
 }

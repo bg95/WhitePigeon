@@ -111,7 +111,6 @@ void WPSynthesizer::synthesizePart()
     {
         qDebug("start processing one fragment");
         notes = fragment.first.getNotes();
-        qDebug("notes.pitch = %d", notes[0].getPitch());
         sprop = fragment.second.first;
         eprop = fragment.second.second;
 

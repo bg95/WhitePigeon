@@ -1,6 +1,7 @@
 #ifndef WP12EQUALTUNING_H
 #define WP12EQUALTUNING_H
 
+#include <Qt>
 #include <sstream>
 #include "core/WPModifier.h"
 #include "WPScore/WPNote.h"
@@ -29,6 +30,7 @@ public:
 private:
     double cal12EqualTuning(WPNote note);
     double basefreq;
+    std::vector<WPMultinote>::iterator currentmultinoteiter;
 
 };
 
