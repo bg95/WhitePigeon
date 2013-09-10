@@ -89,6 +89,7 @@ void WPMixer::run()
     fileout = new QFile(filename);
     qDebug("fileout.open %d", fileout->open(QIODevice::WriteOnly));
 */
+    qDebug("Mixer %X in thread %X\n", (quint64)this, (quint64)QThread::currentThread());
     timer.start(0);
     exec();
 }

@@ -31,37 +31,45 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     //WPCallbackManager::init();
     //wave.readFile("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/wave suprised.wav");
     //connect(&wave, SIGNAL(finished()), this, SLOT(waveDecodeFinished()));
+    qDebug("OscilloscopeWindow %X in thread %X\n", (quint64)this, (quint64)QThread::currentThread());
 
-    WPNote note1(0, Fraction(2, 1)), note2(4, Fraction(2, 1)), note3(7, Fraction(2, 1));
-    WPNote note4(-5, Fraction(2, 1)), note5(-1, Fraction(2, 1)), note6(2, Fraction(2, 1));
+    WPNote note1(0, Fraction(1, 16)), note2(4, Fraction(1, 16)), note3(7, Fraction(1, 16));
+    WPNote note4(-5, Fraction(1, 4)), note5(-1, Fraction(1, 4)), note6(2, Fraction(1, 4));
     WPNote longnote(0, Fraction(10, 1));
 
 	score = new WPScore;
-	score->lockForWrite();
+
+    score->lockForWrite();
 	score->newPart("whitepig");
 	score->unlock();
     score->lockForRead();
-	score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 2)), WPMultinote(note3));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note2));
-	score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
+    for (int i = 0; i < 40; i++)
+    {
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(i, 1)), WPMultinote(note1));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3 * i + 1, 3)), WPMultinote(note2));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3 * i + 2, 3)), WPMultinote(note3));
+    }
+    score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
     score->unlock();
 
 	score->lockForWrite();
 	score->newPart("white");
 	score->unlock();
-	score->lockForRead();
-    score->getPartList()[1].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note4));
-    score->getPartList()[1].insertMultinote(WPPosition(Fraction(100, 2)), WPMultinote(note6));
-    score->getPartList()[1].insertMultinote(WPPosition(Fraction(200, 1)), WPMultinote(note5));
+    score->lockForRead();
+    for (int i = 0; i < 10; i++)
+    {
+        score->getPartList()[1].insertMultinote(WPPosition(Fraction(i, 1)), WPMultinote(note4));
+        score->getPartList()[1].insertMultinote(WPPosition(Fraction(3 * i + 1, 3)), WPMultinote(note5));
+        score->getPartList()[1].insertMultinote(WPPosition(Fraction(3 * i + 2, 3)), WPMultinote(note6));
+    }
     score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
 	score->unlock();
 
 	score->lockForWrite();
-	score->save("pig.wps");
+    score->save("pig.wps");
 	score->close();
 	score->load("pig.wps");
-	score->unlock();
+    score->unlock();
 
     file = new QFile("wave.out");
     file->open(QIODevice::WriteOnly);

@@ -1,5 +1,7 @@
 #include "WP12EqualTuning.h"
 
+#include <cstring>
+
 void *(*WP12EqualTuning::callback)(WPCallbackManager::CallbackFunc) = 0;
 
 WP12EqualTuning::WP12EqualTuning()
@@ -23,11 +25,14 @@ void WP12EqualTuning::set(std::string para)
 }
 
 std::vector<double> WP12EqualTuning::modifyFreq(double time, std::vector<double> freq)
-{
-    WPMultinote cmnote = getCurrentMultinote();
+{/*
+    char str[128];
+    memset(str, 0, 128);
+    WPMultinote cmnote = getCurrentMultinote();*/
+    std::vector<WPNote> notes = getCurrentMultinote().getNotes();
     std::vector<WPNote>::iterator iter;
     freq.clear();
-    for (iter = cmnote.getNotes().begin(); iter != cmnote.getNotes().end(); iter++)
+    for (iter = notes.begin(); iter != notes.end(); iter++)
         freq.push_back(cal12EqualTuning(*iter));
     return freq;
 }

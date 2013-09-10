@@ -70,6 +70,7 @@ void WPSynthesizer::slowDown()
 void WPSynthesizer::run()
 {
     qDebug("synthesizer run");
+    qDebug("Synthesizer %X in thread %X\n", (quint64)this, (quint64)QThread::currentThread());
     slowingdown = false;
     synthesizePart();
     exec();
@@ -110,6 +111,7 @@ void WPSynthesizer::synthesizePart()
     {
         qDebug("start processing one fragment");
         notes = fragment.first.getNotes();
+        qDebug("notes.pitch = %d", notes[0].getPitch());
         sprop = fragment.second.first;
         eprop = fragment.second.second;
 
@@ -384,7 +386,7 @@ void WPSynthesizer::outputNote()
         {
             qCritical() << output->errorString();
         }
-        qDebug("Synthesizer written to output %d samples", swave->data.size());
+        //qDebug("Synthesizer written to output %d samples", swave->data.size());
         //QThread::usleep(100); //remember to remove
     }
 }

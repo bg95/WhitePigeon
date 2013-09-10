@@ -75,8 +75,8 @@ WPWave *WPTuningFork::synthesize(double dur, double time0, double time1, double 
             std::sin(phi * 2.0) * std::exp(-4.0 * t) +
         	std::sin(phi * 3.0) * std::exp(-9.0 * t) +
         	std::sin(phi * 4.0) * std::exp(-16.0 * t) +*/
-            std::sin(phi * 5.0) * std::exp(-25.0 * t) +
-            std::sin(phi * 9.0) * std::exp(-81.0 * t)
+            0.3 * std::sin(phi * 5.0) * std::exp(-25.0 * t) +
+            0.3 * std::sin(phi * 9.0) * std::exp(-81.0 * t)
         )
         ));
         phi += 2 * WPWave::PI * ifreq / double(WPWave::SamplingRate);

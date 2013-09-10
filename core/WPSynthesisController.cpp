@@ -25,6 +25,7 @@ WPSynthesisController::~WPSynthesisController()
 
 void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *output)
 {
+    qDebug("SynthesisController %X in thread %X\n", (quint64)this, (quint64)QThread::currentThread());
     int i;
     partnum = score.getPartList().size();
 
