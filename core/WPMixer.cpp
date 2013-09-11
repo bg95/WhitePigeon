@@ -19,6 +19,8 @@ WPMixer::WPMixer(QObject *parent) :
 
 WPMixer::~WPMixer()
 {
+    if (channel)
+        delete[] channel;
 }
 
 bool WPMixer::openInputChannels(int number_of_channels)
@@ -101,7 +103,7 @@ void WPMixer::sumUp()
     qint64 bytesavailable, maxbytesread, bytesread;
     qint64 readlengthbytes = readlength * sizeof(WPWave::WaveDataType);
     bool existopen;
-    qDebug("mixer sumUp()");
+    //qDebug("mixer sumUp()");
     while (true)
     {
         existopen = false;
@@ -137,7 +139,10 @@ void WPMixer::sumUp()
                 bytesavailable = channel[i].bytesAvailable();
                 if (bytesavailable >= readlengthbytes)
                 {
+                    static int total=0;
                     bytesread = channel[i].read((char *)tdata, readlengthbytes);
+                    total+=bytesread;
+                    qDebug("MIXER: total=%d",total);
                     if (maxbytesread < bytesread)
                         maxbytesread = bytesread;
                     for (j = 0; j < readlength; j++)

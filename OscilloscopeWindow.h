@@ -28,6 +28,7 @@ public:
 
 public slots:
     void waveDecodeFinished();
+    //virtual void hideEvent(QHideEvent *);
 
 private:
     //Ui::OscilloscopeWindow *ui;

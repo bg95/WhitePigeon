@@ -43,7 +43,7 @@ WPMultinote WP12EqualTuning::getCurrentMultinote()
     double stime = (-getNotesOffset()).toDouble();
     std::vector<WPMultinote> &notes = getNotes();
     bool frombegin = false;
-    qDebug("WP12EqualTuning::getCurrentMultinote this = %X notes.begin = %X", (quint64)this, (quint64)&*(notes.begin()));
+    //qDebug("WP12EqualTuning::getCurrentMultinote this = %X notes.begin = %X", (quint64)this, (quint64)&*(notes.begin()));
     currentmultinoteiter = notes.begin();
     while (!frombegin)
     {

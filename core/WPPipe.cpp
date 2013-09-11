@@ -8,7 +8,7 @@ WPPipe::WPPipe(QObject *parent) :
     def(0),
     suf(-1),
     isclosing(false),
-    lock(QMutex::NonRecursive)/*,
+    lock(QMutex::Recursive)/*,
     filein(0),
     fileout(0),
     closingtimer(0)*/
@@ -23,7 +23,7 @@ WPPipe::WPPipe(qint64 _def, qint64 _suf, QObject *parent) :
     def(_def),
     suf(_suf),
     isclosing(false),
-    lock(QMutex::NonRecursive)/*,
+    lock(QMutex::Recursive)/*,
     filein(0),
     fileout(0),
     closingtimer(0)*/
@@ -33,6 +33,7 @@ WPPipe::WPPipe(qint64 _def, qint64 _suf, QObject *parent) :
 WPPipe::~WPPipe()
 {
     qDebug("pipe %X deleted", (quint64)this);
+    clear();
 }
 
 bool WPPipe::open(OpenMode mode)
@@ -66,35 +67,9 @@ void WPPipe::close()
 {
     if (!isOpen())
         return;
-    qDebug("pipe %X closed", (quint64)this);
     //lock.lock();
-/*
-    if (filein)
-    {
-        if (filein->isOpen())
-        {
-            filein->close();
-            qDebug("pipe %X filein closed", (quint64)this);
-            delete filein;
-            filein = 0;
-        }
-        else
-            qWarning("pipe %X filein is not open!", (quint64)this);
-    }
-    if (fileout)
-    {
-        if (fileout->isOpen())
-        {
-            fileout->flush();
-            qDebug() << fileout->errorString();
-            fileout->close();
-            qDebug("pipe %X fileout closed", (quint64)this);
-            delete fileout;
-            fileout = 0;
-        }
-        else
-            qWarning("pipe %X fileout is not open!", (quint64)this);
-    }*/
+    clear();
+    qDebug("pipe %X closed", (quint64)this);
     QIODevice::close();
     //lock.unlock();
 }
@@ -112,7 +87,7 @@ qint64 WPPipe::readData(char *data, qint64 maxlen)
     std::deque<QByteArray *>::iterator iter;
     if (maxlen > quesize)
     {
-        qWarning("pipe %X reading too much, %d available", (quint64)this, quesize);
+        //qWarning("pipe %X reading too much, %d available", (quint64)this, quesize);
         maxlen = quesize;
         //memset(data, 0, quesize);
         //quesize = 0;
@@ -150,7 +125,7 @@ qint64 WPPipe::readData(char *data, qint64 maxlen)
         }
     }
 
-    qDebug("pipe %X read %ld end", (quint64)this, maxlen);
+    //qDebug("pipe %X read %ld end", (quint64)this, maxlen);
     lock.unlock();
     return maxlen;
 }
@@ -160,15 +135,16 @@ qint64 WPPipe::writeData(const char *data, qint64 maxlen)
     QByteArray *bytearray = new QByteArray(data, maxlen);
 
     ///
-    qDebug("Data %X want to write to pipe %X!", (quint64)data, (quint64)this);
+    //qDebug("Data %X want to write to pipe %X!", (quint64)data, (quint64)this);
 	lock.lock();
-    qDebug("Data %X writing to pipe %X started!", (quint64)data, (quint64)this);
+    //qDebug("Data %X writing to pipe %X started!", (quint64)data, (quint64)this);
 
     que.push_back(bytearray);
     quesize += maxlen;
     checkSuf();
 
-    qDebug("pipe %X write %ld end", (quint64)this, maxlen);
+    qDebug("pipe %X write %ld end %d bytes in total", (quint64)this, maxlen, quesize);
+    //qDebug("pipe %X suf input %d bytes", (quint64)this, quesize);
     lock.unlock();
     return maxlen;
 }
@@ -176,6 +152,8 @@ qint64 WPPipe::writeData(const char *data, qint64 maxlen)
 void WPPipe::clear()
 {
     lock.lock();
+    for (std::deque<QByteArray *>::iterator iter = que.begin(); iter != que.end(); iter++)
+        delete (*iter);
     que.clear();
     quesize = 0;
     readpos = 0;
@@ -248,7 +226,18 @@ inline void WPPipe::checkSuf() const
 {
     if (suf != -1 && quesize > suf)
     {
-        qDebug("pipe %X suf input", (quint64)this);
+        qDebug("pipe %X suf input %d bytes", (quint64)this, quesize);
         emit sufficientInput();
     }
 }
+/*
+void WPPipe::unlockedClear()
+{
+    for (std::deque<QByteArray *>::iterator iter = que.begin(); iter != que.end(); iter++)
+        delete (*iter);
+    que.clear();
+    quesize = 0;
+    readpos = 0;
+    checkDef();
+}
+*/

@@ -55,44 +55,47 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->newPart("whitepig");
     score->unlock();
     score->lockForRead();
+
+    for (int i = 0; i < 16; i++)
+    {
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3 * i, 1)), WPMultinote(note1));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3 * i + 1, 1)), WPMultinote(note2));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3 * i + 2, 1)), WPMultinote(note3));
+    }
     /*
     for (int i = 0; i < 800; i++)
     {
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(i, 1)), WPMultinote(note1));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3 * i + 1, 3)), WPMultinote(note2));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3 * i + 2, 3)), WPMultinote(note3));
-    }
-    */
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note1));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note5));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(3, 1)), WPMultinote(note5));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(4, 1)), WPMultinote(note6));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(5, 1)), WPMultinote(note6));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(6, 1)), WPMultinote(note55));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(8, 1)), WPMultinote(note4));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(9, 1)), WPMultinote(note4));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(10, 1)), WPMultinote(note3));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(11, 1)), WPMultinote(note3));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(12, 1)), WPMultinote(note2));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(13, 1)), WPMultinote(note2));
-    score->getPartList()[0].insertMultinote(WPPosition(Fraction(14, 1)), WPMultinote(note11));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note1));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note5));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3, 1)), WPMultinote(note5));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(4, 1)), WPMultinote(note6));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(5, 1)), WPMultinote(note6));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(6, 1)), WPMultinote(note55));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(8, 1)), WPMultinote(note4));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(9, 1)), WPMultinote(note4));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(10, 1)), WPMultinote(note3));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(11, 1)), WPMultinote(note3));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(12, 1)), WPMultinote(note2));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(13, 1)), WPMultinote(note2));
+        score->getPartList()[0].insertMultinote(WPPosition(Fraction(14, 1)), WPMultinote(note11));
+    }*/
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
     score->unlock();
 
-
+/*
 	score->lockForWrite();
 	score->newPart("white");
 	score->unlock();
     score->lockForRead();
-    /*
-    for (int i = 0; i < 200; i++)
+
+    for (int i = 0; i < 16; i++)
     {
-        score->getPartList()[1].insertMultinote(WPPosition(Fraction(i, 1)), WPMultinote(note4));
-        score->getPartList()[1].insertMultinote(WPPosition(Fraction(3 * i + 1, 3)), WPMultinote(note5));
-        score->getPartList()[1].insertMultinote(WPPosition(Fraction(3 * i + 2, 3)), WPMultinote(note6));
+        score->getPartList()[1].insertMultinote(WPPosition(Fraction(3 * i, 1)), WPMultinote(note4));
+        score->getPartList()[1].insertMultinote(WPPosition(Fraction(3 * i + 1, 1)), WPMultinote(note5));
+        score->getPartList()[1].insertMultinote(WPPosition(Fraction(3 * i + 2, 1)), WPMultinote(note6));
     }
-    */
+
     for (int i = 0; i < 16; i++)
     {
         score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i, 2)), WPMultinote((i % 8 != 7) ? notel1 : notel3));
@@ -106,7 +109,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 	score->close();
 	score->load("pig.wps");
     score->unlock();
-
+*/
     file = new QFile("wave.out");
     file->open(QIODevice::WriteOnly);
     qDebug("part num = %d\n", (int)score->getPartList().size());

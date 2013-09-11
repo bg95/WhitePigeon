@@ -1,4 +1,5 @@
 #include "WPSynthesizer.h"
+#include "WPPipe.h"
 
 WPSynthesizer::WPSynthesizer(QObject *parent) :
     QThread(parent)
@@ -58,10 +59,11 @@ void WPSynthesizer::setPart(WPPart &_part)
 void WPSynthesizer::slowDown()
 {
     //does not work
+    qDebug("synthesizer %X trying to slow down", (quint64)this);
     if (!slowingdown)
     {
         slowingdown = true;
-        qDebug("synthesizer slowing down");
+        qDebug("synthesizer %X slowing down", (quint64)this);
         QThread::usleep(100000);
         slowingdown = false;
     }
@@ -380,11 +382,20 @@ void WPSynthesizer::outputNote()
         {
             twave = timbre[j]->synthesize(dur, vtime[i - 1], vtime[i], amp[i - 1][j], amp[i][j], freq[i - 1][j], freq[i][j]);
             swave->mixWith(1.0, *twave, 1.0);
+            delete twave;
+        }
+        while (((WPPipe *)output)->isDefSuf() == 1)
+        {
+            qDebug("Synthesizer %X waiting", (quint64)this);
+            QThread::usleep(100000);
         }
         if (output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType)) == -1)
         {
             qCritical() << output->errorString();
         }
+        static int total=0;
+        total+=swave->data.size() * sizeof(WPWave::WaveDataType);
+        qDebug("SYNTHESIZER: total=%d",total);
         //qDebug("Synthesizer written to output %d samples", swave->data.size());
         //QThread::usleep(100); //remember to remove
     }

@@ -38,7 +38,7 @@ template <class T> T *WPAllocator <T>::Allocate()
 	{
 		J = 0;
 		++ I;
-		Memo.push_back(new T[1 << I]);
+        Memo.push_back(new T[1 << I]);
 	}
 	return Memo[I] + J;
 }
@@ -50,7 +50,7 @@ template <class T> void WPAllocator <T>::Recycle()
 	J = 0;
 	while (!Memo.empty())
 	{
-		delete[] Memo.back();
+        delete[] Memo.back();
 		Memo.pop_back();
 	}
 }

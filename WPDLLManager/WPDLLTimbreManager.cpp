@@ -45,6 +45,7 @@ WPTimbre *WPDLLTimbreManager::newTimbre()
     WPTimbre *t = (WPTimbre *)manager.newObject();
     t->set(para);
     timbres.push_back(t);
+    qDebug("TimbreManager %X newTimbre %X", (quint64)this, (quint64)t);
     return t;
 }
 

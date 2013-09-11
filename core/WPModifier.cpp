@@ -47,12 +47,12 @@ void WPModifier::setNotes(const std::vector<WPMultinote> &notes, Fraction offset
 {
     wpmodifier_notes = notes;
     wpmodifier_notesoffset = offset;
-    qDebug("WPModifier::setNotes this = %X wpmodifier_notes.begin() = %X", (quint64)this, (quint64)&*wpmodifier_notes.begin());
+    //qDebug("WPModifier::setNotes this = %X wpmodifier_notes.begin() = %X", (quint64)this, (quint64)&*wpmodifier_notes.begin());
 }
 
 std::vector<WPMultinote> &WPModifier::getNotes()
 {
-    qDebug("WPModifier::setNotes this = %X wpmodifier_notes.begin() = %X", (quint64)this, (quint64)&*wpmodifier_notes.begin());
+    //qDebug("WPModifier::getNotes this = %X wpmodifier_notes.begin() = %X", (quint64)this, (quint64)&*wpmodifier_notes.begin());
     return wpmodifier_notes;
 }
 

@@ -55,6 +55,7 @@ private slots:
 private:
     inline void checkDef() const;
     inline void checkSuf() const;
+    //void unlockedClear();
     std::deque<QByteArray *> que;
     qint64 quesize, readpos;
     qint64 def, suf;

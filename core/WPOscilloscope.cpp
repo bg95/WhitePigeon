@@ -4,6 +4,7 @@
 WPOscilloscope::WPOscilloscope(QWidget *parent) :
     QGLWidget(parent)
 {
+    length = 0;
     timer = new QTimer();
     inputdevice = 0;
     connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));

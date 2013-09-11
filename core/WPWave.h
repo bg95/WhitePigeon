@@ -71,7 +71,7 @@ public slots:
     
 private:
     QAudioFormat format;
-    QAudioDecoder decoder;
+    QAudioDecoder *decoder;
     //bool isdecoded; //never used
     //bool isFFTed; //never used
 
