@@ -3,24 +3,28 @@
 WPSynthesisController::WPSynthesisController(QObject *parent) :
     QObject(parent),
     synthesizer(0),
-    mixer(new WPMixer),
-    outpipe(new WPPipe),
-    audiooutput(new QAudioOutput(WPWave::defaultAudioFormat())),
+    mixer(0),
+    outpipe(0),
+    audiooutput(0),
     //tuningfork(new WPTuningFork),
-    lock(QMutex::NonRecursive),
-    dlltimbre(new WPDLLTimbre)
-{
+    lock(QMutex::NonRecursive)//,
+    //dlltimbre(new WPDLLTimbre)
+{/*
     if (!dlltimbre->loadDLL("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/plugins/WPTimbre/libWPTuningFork.so"))
-        qWarning("unable to open dlltimbre");
+        qWarning("unable to open dlltimbre");*/
 }
 
 WPSynthesisController::~WPSynthesisController()
 {
+    if (synthesizer)
+        delete[] synthesizer;
+    qDebug("WPSynthesisController: Synthesizers deleted");
     delete mixer;
+    qDebug("WPSynthesisController: Mixer deleted");
     delete outpipe;
     delete audiooutput;
     //delete tuningfork;
-    delete dlltimbre;
+    //delete dlltimbre;
 }
 
 void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *output)
@@ -29,8 +33,12 @@ void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *outpu
     int i;
     partnum = score.getPartList().size();
 
-    recycle();
+    if (synthesizer)
+        delete[] synthesizer;
+    if (mixer)
+        delete mixer;
     synthesizer = new WPSynthesizer[partnum];
+    mixer = new WPMixer;
 /*
     synthesizer[0].setOutputDevice(*output);
     synthesizer[0].setPart(score.getPartList()[0]);
@@ -62,6 +70,9 @@ void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *outpu
 
 QIODevice *WPSynthesisController::synthesize(WPScore &score) //don't run two threads in this function simultaneously
 {
+    if (outpipe)
+        delete outpipe;
+    outpipe = new WPPipe;
     outpipe->open(QIODevice::ReadWrite);
     synthesizeAndOutput(score, outpipe);
     return outpipe;
@@ -69,15 +80,25 @@ QIODevice *WPSynthesisController::synthesize(WPScore &score) //don't run two thr
 
 void WPSynthesisController::synthesizeAndPlay(WPScore &score)
 {
+    if (audiooutput)
+        delete audiooutput;
+    audiooutput = new QAudioOutput(WPWave::defaultAudioFormat());
     //connect(audiooutput, SIGNAL(stateChanged(QAudio::State)), this, SLOT(audiooutputStateChanged(QAudio::State)));
     audiooutput->start(synthesize(score));
 }
 
 void WPSynthesisController::stopPlaying()
 {
+    if (!audiooutput)
+        return;
     if (audiooutput->state() != QAudio::StoppedState)
         audiooutput->stop();
     emit playingStopped();
+}
+
+void WPSynthesisController::stopAll()
+{
+    recycle();
 }
 
 void WPSynthesisController::oneSynthesizerFinished()
@@ -98,6 +119,7 @@ void WPSynthesisController::mixerFinished()
 {
     qDebug("mixer finished");
     delete[] synthesizer;
+    synthesizer = 0;
     //for (int i = 0; i < partnum; i++)
     //    synthesizer[i].deleteLater();
     if (outpipe->isOpen())
@@ -128,4 +150,10 @@ void WPSynthesisController::recycle()
         delete[] synthesizer;
         synthesizer = 0;
     }
+    delete mixer;
+    mixer = 0;
+    delete outpipe;
+    outpipe = 0;
+    delete audiooutput;
+    audiooutput = 0;
 }

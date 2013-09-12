@@ -40,15 +40,21 @@ signals:
     void synthesisFinished();
     
 public slots:
-    void slowDown();
 
 protected:
     void run();
 
 private slots:
-    void synthesizePart();
+    //void synthesizePart();
+    void synthesizePartLoopBody();
 
 private:
+    void synthesizePartInitialize();
+    void synthesizePartFinalize();
+    void synthesizePartLoopInitialize();
+    void synthesizePartLoopFinalize();
+    void scheduleSynthesizePartLoopBody();
+
     void processProperties(double time0, double time1, std::vector<WPProperty> &sprop, std::vector<WPProperty> &eprop);
     int processTuningFreqAmp(double time, std::vector<double> &freq, std::vector<double> &amp);
     //void processFreqAmpMultiple(double time, std::vector<double> &freq, std::vector<double> &amp);
@@ -61,10 +67,10 @@ private:
     std::map<WPProperty, WPPropertyAndModifiers> propmap;
     QIODevice *output;
     WPPart *part;
-    bool slowingdown;
     WP12EqualTuning defaulttuning;
     WPDefaultNoteModifier defaultnotemodifier;
 
+    std::pair<WPMultinote, std::pair<std::vector<WPProperty>, std::vector<WPProperty> > > fragment;
     WPWave *swave;
     WPWave *twave;
     std::string timbrename;
@@ -72,9 +78,14 @@ private:
     std::vector<std::vector<double> > freq, amp;
     std::vector<double> tempo, time;
     int samplecnt;
+    double notelength;
+    double timeend;
 
     std::vector<WPNote> notes;
     std::vector<WPProperty> sprop, eprop;
+    WPPropertyAndModifiers *pam;
+
+    QTimer timer;
 
 };
 

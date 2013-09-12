@@ -41,12 +41,12 @@ private:
     WPMixer *mixer;
     WPPipe *outpipe;
     QAudioOutput *audiooutput;
-    QFile *file;
+    //QFile *file;
     QMutex lock;
     int partnum;
 
     //WPTuningFork *tuningfork; //for test
-    WPDLLTimbre *dlltimbre; //for test
+    //WPDLLTimbre *dlltimbre; //for test
     
 };
 

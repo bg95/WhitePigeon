@@ -143,7 +143,7 @@ qint64 WPPipe::writeData(const char *data, qint64 maxlen)
     quesize += maxlen;
     checkSuf();
 
-    qDebug("pipe %X write %ld end %d bytes in total", (quint64)this, maxlen, quesize);
+    //qDebug("pipe %X write %ld end %d bytes in total", (quint64)this, maxlen, quesize);
     //qDebug("pipe %X suf input %d bytes", (quint64)this, quesize);
     lock.unlock();
     return maxlen;

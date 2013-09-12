@@ -33,7 +33,7 @@ public slots:
 private:
     //Ui::OscilloscopeWindow *ui;
     //MyGLWidget glwidget, glwidgetR, glwidgetI, glwidgetSTFT;
-    WPOscilloscope oscilloscope;
+    WPOscilloscope *oscilloscope;
     WPWave wave;
     QAudioInput *audioinput;
     WPPipe *pipe;

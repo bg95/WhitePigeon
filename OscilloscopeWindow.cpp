@@ -12,7 +12,7 @@ OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     glwidgetR(this),
     glwidgetI(this),
     glwidgetSTFT(this),*/
-    oscilloscope(this)
+    oscilloscope(new WPOscilloscope(this))
 {
     //ui->setupUi(this);
     setGeometry(100, 50, 1000, 600);
@@ -22,6 +22,7 @@ OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
 OscilloscopeWindow::~OscilloscopeWindow()
 {
     //delete ui;
+    delete oscilloscope;
     delete audioinput;
     //delete pipe;
 }
@@ -37,13 +38,16 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     //WPNote note4(-5, Fraction(1, 4)), note5(-1, Fraction(1, 4)), note6(2, Fraction(1, 4));
     WPNote longnote(0, Fraction(10, 1));
     WPNote note1(0, Fraction(1, 1)), note2(2, Fraction(1, 1)), note3(4, Fraction(1, 1)), note4(5, Fraction(1, 1)), note5(7, Fraction(1, 1)), note6(9, Fraction(1, 1));
-    WPNote note11(0, Fraction(2, 1)), note55(7, Fraction(2, 1));
-    WPNote notel1(-12, Fraction(1, 2)), notel5(-17, Fraction(1, 2)), notel3(-20, Fraction(1, 2));
+    WPNote note11(0, Fraction(2, 1)), note22(2, Fraction(2, 1)), note55(7, Fraction(2, 1));
+    WPNote notel1(-12 + 12, Fraction(1, 2)), notel5(-17 + 12, Fraction(1, 2)), notel3(-20 + 12, Fraction(1, 2));
+    Fraction pos;
     score = new WPScore;
 /*
     score->lockForWrite();
     score->newPart("whitepig");
     score->unlock();
+
+
     score->lockForRead();
     score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(longnote));
     score->getPartList()[0].insertMultinote(WPPosition(Fraction(10, 1)), WPMultinote(longnote));
@@ -54,62 +58,121 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->lockForWrite();
     score->newPart("whitepig");
     score->unlock();
-    score->lockForRead();
-
-    for (int i = 0; i < 16; i++)
+    score->lockForRead();/**/
+    pos = Fraction(0, 1);
+    for (int i = 0; i < 10; i++)
     {
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3 * i, 1)), WPMultinote(note1));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3 * i + 1, 1)), WPMultinote(note2));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3 * i + 2, 1)), WPMultinote(note3));
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note1));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note1));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note6));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note6));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note55));
+        pos += Fraction(2, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note2));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note2));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note11));
+        pos += Fraction(2, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note22));
+        pos += Fraction(2, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note22));
+        pos += Fraction(2, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note1));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note1));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note6));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note6));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note55));
+        pos += Fraction(2, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note2));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note2));
+        pos += Fraction(1, 1);
+        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note11));
+        pos += Fraction(2, 1);
     }
-    /*
-    for (int i = 0; i < 800; i++)
-    {
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(0, 1)), WPMultinote(note1));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(1, 1)), WPMultinote(note1));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(2, 1)), WPMultinote(note5));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(3, 1)), WPMultinote(note5));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(4, 1)), WPMultinote(note6));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(5, 1)), WPMultinote(note6));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(6, 1)), WPMultinote(note55));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(8, 1)), WPMultinote(note4));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(9, 1)), WPMultinote(note4));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(10, 1)), WPMultinote(note3));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(11, 1)), WPMultinote(note3));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(12, 1)), WPMultinote(note2));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(13, 1)), WPMultinote(note2));
-        score->getPartList()[0].insertMultinote(WPPosition(Fraction(14, 1)), WPMultinote(note11));
-    }*/
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
     score->unlock();
 
-/*
+
 	score->lockForWrite();
 	score->newPart("white");
 	score->unlock();
     score->lockForRead();
-
-    for (int i = 0; i < 16; i++)
-    {
-        score->getPartList()[1].insertMultinote(WPPosition(Fraction(3 * i, 1)), WPMultinote(note4));
-        score->getPartList()[1].insertMultinote(WPPosition(Fraction(3 * i + 1, 1)), WPMultinote(note5));
-        score->getPartList()[1].insertMultinote(WPPosition(Fraction(3 * i + 2, 1)), WPMultinote(note6));
-    }
-
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < 16 * 30; i++)
     {
         score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i, 2)), WPMultinote((i % 8 != 7) ? notel1 : notel3));
         score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i + 1, 2)), WPMultinote(notel5));
     }
     score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
+    //score->getPartList()[1].setToBeMuted();
     score->unlock();
 
 	score->lockForWrite();
     score->save("pig.wps");
 	score->close();
+    score->unlock();
+
+    score->lockForWrite();
 	score->load("pig.wps");
     score->unlock();
-*/
+
     file = new QFile("wave.out");
     file->open(QIODevice::WriteOnly);
     qDebug("part num = %d\n", (int)score->getPartList().size());
@@ -121,11 +184,11 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     audioinput->setVolume(0.1);
-    oscilloscope.setInputDevice(*audioinput->start());
-    //oscilloscope.setInputDevice(*pipe);
-    //oscilloscope.setInputDevice(*controller->synthesize(*score));
-    oscilloscope.start(100, 4096);
-    //oscilloscope.start(100, 512);
+    oscilloscope->setInputDevice(*audioinput->start());
+    //oscilloscope->setInputDevice(*pipe);
+    //oscilloscope->setInputDevice(*controller->synthesize(*score));
+    oscilloscope->start(100, 4096);
+    //oscilloscope->start(100, 512);
 }
 
 void OscilloscopeWindow::resizeEvent(QResizeEvent *)
@@ -134,12 +197,13 @@ void OscilloscopeWindow::resizeEvent(QResizeEvent *)
     glwidgetR.setGeometry(0, height() / 5 + 1, width(), height() / 5 - 1);
     glwidgetI.setGeometry(0, height() / 5 * 2 + 1, width(), height() / 5 - 1);
     glwidgetSTFT.setGeometry(0, height() / 5 * 3 + 1, width(), height() / 5 * 2 - 1);*/
-    oscilloscope.setGeometry(0, 0, width(), height());
+    oscilloscope->setGeometry(0, 0, width(), height());
 }
 
 void OscilloscopeWindow::hideEvent(QHideEvent *)
 {
     //wave.stop();
+    delete controller;
     delete score;
     //controller.stopAll();
 }

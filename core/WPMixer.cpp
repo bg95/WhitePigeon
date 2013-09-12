@@ -19,8 +19,24 @@ WPMixer::WPMixer(QObject *parent) :
 
 WPMixer::~WPMixer()
 {
+    qDebug("Deleting mixer %X", (quint64)this);
+    /*
     if (channel)
         delete[] channel;
+    if (sdata != 0)
+    {
+        delete[] sdata;
+        sdata = 0;
+    }
+    if (tdata != 0)
+    {
+        delete[] tdata;
+        tdata = 0;
+    }*/
+    //I don't know if deleting is necessary
+    quit();
+    qDebug("Mixer %X waiting to stop", (quint64)this);
+    wait();
 }
 
 bool WPMixer::openInputChannels(int number_of_channels)
@@ -99,13 +115,13 @@ void WPMixer::run()
 void WPMixer::sumUp()
 {
     //assume no other threads are reading the channel
-    qint32 i, j;
-    qint64 bytesavailable, maxbytesread, bytesread;
-    qint64 readlengthbytes = readlength * sizeof(WPWave::WaveDataType);
-    bool existopen;
-    //qDebug("mixer sumUp()");
-    while (true)
-    {
+    //while (true)
+    //{
+        qint32 i, j;
+        qint64 bytesavailable, maxbytesread, bytesread;
+        qint64 readlengthbytes = readlength * sizeof(WPWave::WaveDataType);
+        bool existopen;
+        //qDebug("mixer sumUp()");
         existopen = false;
         for (i = 0; i < chcnt; i++)
         {
@@ -117,7 +133,7 @@ void WPMixer::sumUp()
         }
         if (i < chcnt)
         {
-            qDebug("mixer waiting");
+            qDebug("mixer %X waiting", (quint64)this);
             timer.start(waitingtime);
             return;
         }
@@ -139,10 +155,10 @@ void WPMixer::sumUp()
                 bytesavailable = channel[i].bytesAvailable();
                 if (bytesavailable >= readlengthbytes)
                 {
-                    static int total=0;
+                    //static int total=0;
                     bytesread = channel[i].read((char *)tdata, readlengthbytes);
-                    total+=bytesread;
-                    qDebug("MIXER: total=%d",total);
+                    //total+=bytesread;
+                    //qDebug("MIXER: total=%d",total);
                     if (maxbytesread < bytesread)
                         maxbytesread = bytesread;
                     for (j = 0; j < readlength; j++)
@@ -161,7 +177,10 @@ void WPMixer::sumUp()
             qDebug("%lld bytes read from channel %d", bytesread, i);
         }
         output->write((char *)sdata, maxbytesread);
-    }
+
+        timer.start(0);
+        return;
+    //}
 }
 
 void WPMixer::truncateAdd(WPWave::WaveDataType &a, WPWave::WaveDataType b)
