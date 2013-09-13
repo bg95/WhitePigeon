@@ -43,16 +43,20 @@ private slots:
     void newPart();
     void undo();
     void redo();
+    void switchVersion(QAction*);
+    void recordCurrentVersion();
     void refresh();
     void play();
     void stopAll();
     void updateActions();
+    void updateVersionMenu(WPWindow *);
     void updateAddressBar();
     void updateCompleter();
     void onLoadFinished(const QPair<QString, QString> &);
     void showLoadingProgress(int);
     void showStatusBarMessage(const QString &);
     void showOscilloscope();
+    void recongiseImage();
 
 private:
     void createActions();
@@ -63,7 +67,8 @@ private:
     void readSettings();
     void writeSettings();
 
-    WPWindow *createNewChild();
+    WPWindow *createNewChildFileMode();
+    WPWindow *createNewChildWebMode();
     WPWindow *findChild(const QString &file);
 
     /* Action list */
@@ -85,12 +90,14 @@ private:
     QAction *toolToolViewAction;
     QAction *addressViewAction;
     QAction *oscilloscopeAction;
+    QAction *imageRecogniseAction;
 
     /* Menu list */
     QMenu *fileMenu;
     QRecentFilesMenu *recentFilesMenu;
     QRecentWebsitesMenu *recentWebsitesMenu;
     QMenu *editMenu;
+    QMenu *versionMenu;
     QMenu *musicMenu;
     QMenu *viewMenu;
     QMenu *toolsViewMenu;

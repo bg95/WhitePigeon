@@ -5,8 +5,6 @@
 #include <QPair>
 #include <QList>
 
-class MainWindow;
-
 typedef QPair<QString, QString> WebHistory;
 
 class QRecentWebsitesMenu : public QMenu
@@ -14,7 +12,7 @@ class QRecentWebsitesMenu : public QMenu
     Q_OBJECT
     Q_PROPERTY(int maxCount READ maxCount WRITE setMaxCount)
 
-    friend MainWindow;
+    friend class MainWindow;
 
 public:
     QRecentWebsitesMenu(QWidget * parent = 0 );

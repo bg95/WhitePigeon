@@ -25,8 +25,6 @@
 #include <QMenu>
 #include <QStringList>
 
-class MainWindow;
-
 class QRecentFilesMenu : public QMenu
 {
     Q_OBJECT
@@ -34,7 +32,7 @@ class QRecentFilesMenu : public QMenu
     Q_PROPERTY(QString format READ format WRITE setFormat)
 
     // Friendship decleration
-    friend MainWindow;
+    friend class MainWindow;
 
 public:
     //! Constructs a menu with parent parent.

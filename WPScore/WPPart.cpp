@@ -206,7 +206,7 @@ bool WPPart::isHidden()
 	return displayOrder() == - 1;
 }
 
-void WPPart::moveUp(unsigned int Times = 1)
+void WPPart::moveUp(unsigned int Times)
 {
 	if (isHidden())
 		return;
@@ -220,7 +220,7 @@ void WPPart::moveUp(unsigned int Times = 1)
 	}
 }
 
-void WPPart::moveDown(unsigned int Times = 1)
+void WPPart::moveDown(unsigned int Times)
 {
 	if (isHidden())
 		return;

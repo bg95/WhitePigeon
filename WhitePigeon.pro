@@ -55,7 +55,13 @@ SOURCES += main.cpp\
     plugins/WP12EqualTuning.cpp \
     OscilloscopeWindow.cpp \
     myglwidget.cpp \
-    UI/QRecentWebsitesMenu.cpp
+    UI/QRecentWebsitesMenu.cpp \
+    UI/versiondialog.cpp \
+    plugins/WPTempoModifier.cpp \
+    plugins/WPAmpModifier.cpp \
+    WPImage/Parallel_Lines.cpp \
+    WPImage/Image_Processing.cpp \
+    WPImage/Image.cpp
 
 HEADERS  +=\
     WPScore/WPSPosition.h \
@@ -102,11 +108,18 @@ HEADERS  +=\
     plugins/WP12EqualTuning.h \
     OscilloscopeWindow.h \
     myglwidget.h \
-    UI/QRecentWebsitesMenu.h
+    UI/QRecentWebsitesMenu.h \
+    UI/versiondialog.h \
+    plugins/WPTempoModifier.h \
+    plugins/WPAmpModifier.h \
+    WPImage/Parallel_Lines.h \
+    WPImage/Image_Processing.h \
+    WPImage/Image.h
 
 TRANSLATIONS += Chinese.ts
 
 RESOURCES += \
     whitepigeon.qrc
 
-FORMS +=
+FORMS += \
+    UI/versiondialog.ui

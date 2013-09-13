@@ -21,5 +21,6 @@
         <file>images/stop.gif</file>
         <file>images/undo.png</file>
         <file>images/web.gif</file>
+        <file>images/image.png</file>
     </qresource>
 </RCC>

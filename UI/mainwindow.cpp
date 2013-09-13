@@ -2,9 +2,12 @@
 
 #include "QRecentFilesMenu.h"
 #include "QRecentWebsitesMenu.h"
+#include "versiondialog.h"
 #include "core/WPSynthesisController.h"
+#include "WPImage/Image_Processing.h"
 #include "OscilloscopeWindow.h"
 #include "WPWindow.h"
+#include "musicshower/musicscene.h"
 
 #include "mainwindow.h"
 
@@ -195,6 +198,14 @@ void MainWindow::createActions()
     oscilloscopeAction->setToolTip(tr("Show an oscilloscope"));
     connect(oscilloscopeAction, SIGNAL(triggered()),
             this, SLOT(showOscilloscope()));
+
+    imageRecogniseAction = new QAction(this);
+    imageRecogniseAction->setText(tr("Image Recognition"));
+    imageRecogniseAction->setIcon(QIcon(":/images/image.png"));
+    imageRecogniseAction->setStatusTip(tr("Analyse an image and produce a score"));
+    imageRecogniseAction->setToolTip(tr("Analyse an image and produce a score"));
+    connect(imageRecogniseAction, SIGNAL(triggered()),
+            this, SLOT(recongiseImage()));
 }
 
 void MainWindow::createMenus()
@@ -233,6 +244,12 @@ void MainWindow::createMenus()
     editMenu->addAction(undoAction);
     editMenu->addAction(redoAction);
 
+    versionMenu = new QMenu(editMenu);
+    versionMenu->setTitle(tr("Load/Save Version"));
+    connect(versionMenu, SIGNAL(triggered(QAction*)),
+            this, SLOT(switchVersion(QAction*)));
+    editMenu->addMenu(versionMenu);
+
     musicMenu = menuBar()->addMenu(tr("&Music"));
     musicMenu->addAction(playAction);
     musicMenu->addAction(stopAction);
@@ -250,6 +267,7 @@ void MainWindow::createMenus()
 
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
     toolsMenu->addAction(oscilloscopeAction);
+    toolsMenu->addAction(imageRecogniseAction);
 }
 
 void MainWindow::createToolBar()
@@ -275,6 +293,7 @@ void MainWindow::createToolBar()
 
     toolToolBar = new QToolBar;
     toolToolBar->addAction(oscilloscopeAction);
+    toolToolBar->addAction(imageRecogniseAction);
     toolToolBar->setToolTip(tr("Tools"));
     connect(toolToolViewAction, SIGNAL(triggered(bool)),
             toolToolBar, SLOT(setVisible(bool)));
@@ -431,7 +450,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::newFile()
 {
     ++countNumber;
-    WPWindow *window = createNewChild();
+    WPWindow *window = createNewChildFileMode();
     window->setWindowTitle(tr("untitled %1[*]").arg(countNumber));
     window->show();
 }
@@ -461,7 +480,7 @@ void MainWindow::loadFile(const QString& file)
         }
         else
         {
-            window = createNewChild();
+            window = createNewChildFileMode();
             if (window->loadFile(file))
             {
                 window->show();
@@ -482,8 +501,7 @@ void MainWindow::loadFile(const QString& file)
         {
 			if (url.scheme() == "http")
 			{
-                WPWindow *window = createNewChild();
-                window->setMode(WPWindow::Web);
+                WPWindow *window = createNewChildWebMode();
 				window->loadFile(url.url());
                 window->show();
                 mdiArea->setActiveSubWindow(window);
@@ -531,17 +549,20 @@ bool MainWindow::saveFile()
     {
         if (window->saveFile())
         {
+            qDebug() << "Here 1";
             statusBar()->showMessage(tr("File saved"), 2000);
             return true;
         }
         else
         {
+            qDebug() << "Here 2";
             statusBar()->showMessage(tr("Saving failed"), 2000);
             return false;
         }
     }
     else
     {
+        qDebug() << "Here";
         return saveAsFile();
     }
 }
@@ -606,6 +627,31 @@ void MainWindow::redo()
     }
 }
 
+void MainWindow::switchVersion(QAction *action)
+{
+    if (action->data().isValid())
+    {
+        WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
+        window->switchVersion(action->data().toInt());
+    }
+}
+
+void MainWindow::recordCurrentVersion()
+{
+    VersionDialog *dialog = new VersionDialog(this);
+    if (dialog->exec())
+    {
+        WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
+        int index = dialog->getNumber() - 1;
+        QString information = dialog->getInformation();
+        window->version[index] = window->score->getCurrentVersion();
+        window->enable[index] = true;
+        window->tip[index] = information;
+        updateVersionMenu(window);
+    }
+    delete dialog;
+}
+
 void MainWindow::refresh()
 {
     WPWindow *window = dynamic_cast<WPWindow *> (mdiArea->activeSubWindow());
@@ -638,6 +684,31 @@ void MainWindow::updateActions()
     playAction->setEnabled(isWindowFileMode);
     closeAction->setEnabled(hasActiveWindow);
     closeAllAction->setEnabled(hasActiveWindow);
+
+    updateVersionMenu(window);
+}
+
+void MainWindow::updateVersionMenu(WPWindow *window)
+{
+    bool isWindowFileMode = (window != NULL && window->getMode() == WPWindow::File);
+
+    versionMenu->setEnabled(isWindowFileMode);
+    versionMenu->clear();
+    if (isWindowFileMode)
+    {
+        for (int i = 0; i < 5; ++i)
+        {
+            QAction *versionAction = new QAction(versionMenu);
+            versionAction->setText(tr("Version %1").arg(i + 1));
+            versionAction->setData(window->version[i]);
+            versionAction->setEnabled(window->enable[i]);
+            versionAction->setStatusTip(window->tip[i]);
+            versionMenu->addAction(versionAction);
+        }
+        versionMenu->addSeparator();
+        versionMenu->addAction(tr("Record Current Version"),
+                               this, SLOT(recordCurrentVersion()));
+    }
 }
 
 void MainWindow::updateAddressBar()
@@ -699,12 +770,43 @@ void MainWindow::showOscilloscope()
     oscilloscopeWindow->show();
 }
 
+void MainWindow::recongiseImage()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+                               tr("Open an image file"), ".");
+    if (fileName.isEmpty())
+        return;
+    QString filePath = QFileInfo(fileName).canonicalFilePath();
+    Image_Processing process;
+    if (!process.Main_Process(filePath))
+    {
+        QMessageBox::warning(this, tr("WhitePigeon"),
+                             tr("Cannot recognise the file"),
+                             QMessageBox::Ok);
+        return;
+    }
+    WPWindow *window = createNewChildFileMode();
+    window->score = process.Save_Data();
+    window->scene->setScore(window->score);
+    ++countNumber;
+    window->setWindowTitle(tr("untitled %1[*]").arg(countNumber));
+    window->setWindowModified(true);
+    window->show();
+}
+
 
 /* private functions */
 
-WPWindow* MainWindow::createNewChild()
+WPWindow* MainWindow::createNewChildFileMode()
 {
     WPWindow *window = new WPWindow;
+    mdiArea->addSubWindow(window);
+    return window;
+}
+
+WPWindow* MainWindow::createNewChildWebMode()
+{
+    WPWindow *window = new WPWindow(WPWindow::Web);
     connect(window, SIGNAL(pathModified()),
             this, SLOT(updateAddressBar()));
     connect(window, SIGNAL(loadProgress(int)),

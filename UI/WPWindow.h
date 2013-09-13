@@ -8,16 +8,20 @@ class musicView;
 class WPSynthesisController;
 class WPScore;
 class QWebView;
+class QVersionMenu;
 
 class WPWindow : public QMdiSubWindow
 {
 	Q_OBJECT
 
-public:
-    WPWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    ~WPWindow();
+    friend class MainWindow;
 
+public:
     enum Mode {File, Web};
+
+    WPWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    WPWindow(Mode __mode, QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    ~WPWindow();
 
     Mode getMode() const;
     void setMode(Mode __mode);
@@ -30,6 +34,7 @@ public:
     void newPart();
     void undo();
     void redo();
+    void switchVersion(int version);
     void refresh();
     void play_with(WPSynthesisController *controller);
 
@@ -44,7 +49,6 @@ signals:
     void linkClicked(const QUrl &);
 
 private slots:
-    void onScoreModified();
 	void changeFilePathInWebMode(const QUrl &url);
     void onLoadProgress(int progress);
     void onStatusBarMessage(const QString &);
@@ -63,6 +67,9 @@ private:
     musicView *view;
     musicScene *scene;
     QWebView *webView;
+    int version[5];
+    bool enable[5];
+    QString tip[5];
 };
 
 #endif // WPWINDOW_H

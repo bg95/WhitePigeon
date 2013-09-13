@@ -6,7 +6,8 @@ QRecentWebsitesMenu::QRecentWebsitesMenu(QWidget * parent)
 : QMenu(parent),
   m_maxCount(50)
 {
-    connect(this, SIGNAL(triggered(QAction*)), this, SLOT(menuTriggered(QAction*)));
+    connect(this, SIGNAL(triggered(QAction*)),
+            this, SLOT(menuTriggered(QAction*)));
 
     setMaxCount(m_maxCount);
 }
@@ -15,7 +16,8 @@ QRecentWebsitesMenu::QRecentWebsitesMenu(const QString & title, QWidget * parent
 : QMenu(title, parent),
   m_maxCount(50)
 {
-    connect(this, SIGNAL(triggered(QAction*)), this, SLOT(menuTriggered(QAction*)));
+    connect(this, SIGNAL(triggered(QAction*)),
+            this, SLOT(menuTriggered(QAction*)));
 
     setMaxCount(m_maxCount);
 }
