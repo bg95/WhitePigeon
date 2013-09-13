@@ -31,7 +31,9 @@ bool WPDLLManager::openDLL(const char *str)
     if (handle)
         closeDLL();
     #ifdef Q_OS_WIN
-        handle = LoadLibrary(str);
+        std::wstringstream WStream;
+        WStream << str;
+        handle = LoadLibrary(WStream.str().data());
     #else
         #ifdef Q_OS_LINUX
             handle = dlopen(str, RTLD_LAZY);
@@ -62,7 +64,7 @@ void *WPDLLManager::getFuncAddr(const char *str) const
     if (!handle)
         return 0;
     #ifdef Q_OS_WIN
-        return GetProcAddress(handle, str);
+        return (void *)GetProcAddress(handle, str);
     #else
         #ifdef Q_OS_LINUX
             return dlsym(handle, str);

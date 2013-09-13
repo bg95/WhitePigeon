@@ -246,7 +246,6 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     //controller->synthesizeAndOutput(*score, file);
     controller->synthesizeAndPlay(*score);
 
-
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     audioinput->setVolume(0.1);
     oscilloscope->setInputDevice(*audioinput->start());
