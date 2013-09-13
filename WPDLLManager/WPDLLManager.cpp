@@ -48,6 +48,8 @@ bool WPDLLManager::openDLL(const char *str)
     }
 
     printf("openDLL %s %X\n", str, (unsigned long long)handle);
+    if (!handle)
+        printf("openDLL error: %s\n", dlerror());
     fflush(stdout);
 
     return handle && create && destroy;

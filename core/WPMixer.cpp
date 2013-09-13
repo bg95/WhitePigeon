@@ -124,7 +124,7 @@ void WPMixer::sumUp()
     }
     if (i < chcnt)
     {
-        //qDebug("mixer %X waiting", (quint64)this);
+        qDebug("mixer %X waiting", (quint64)this);
         timer.start(waitingtime);
         return;
     }

@@ -902,6 +902,8 @@ int Image_Processing::Check_Point_Len(const int &ori_i, const int &ori_j,const i
     qDebug()<<high<<" "<<tol.size();
     if (tol.size()>1)
         qDebug()<<tol[0]<<" "<<tol[1];
+    if (tol.size() == 0)
+        return 0;
     int half = tol[int( tol.size() - 1) / 2];
     int res = 0;
 

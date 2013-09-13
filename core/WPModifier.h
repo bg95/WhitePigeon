@@ -4,13 +4,18 @@
 #include <Qt>
 #include "WPScore/WPNote.h"
 #include "WPScore/WPMultinote.h"
+#include "WPScore/WPLib.h"
 
 class WPModifier
 {
 public:
     WPModifier();
     virtual ~WPModifier();
-    virtual void setTime(double t);
+    virtual void setTime(double t);/*
+    {
+        wpmodifier_prevtime = wpmodifier_time;
+        wpmodifier_time = t;
+    }*/
     //this will be called before each call of modify* function, telling the current time (in beats)
     //call this when overwriting
     double getTime() const;

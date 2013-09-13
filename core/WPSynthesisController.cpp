@@ -32,6 +32,8 @@ void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *outpu
     qDebug("SynthesisController %X in thread %X\n", (quint64)this, (quint64)QThread::currentThread());
     int i;
     partnum = score.getPartList().size();
+    for (i = 0; i < partnum; i++)
+        score.getPartList()[i].startFrom(Fraction(0, 1));
 
     if (synthesizer)
         delete[] synthesizer;
@@ -99,7 +101,17 @@ void WPSynthesisController::stopPlaying()
 
 void WPSynthesisController::stopAll()
 {
-    recycle();
+    if (synthesizer)
+        delete[] synthesizer;
+    synthesizer = 0;
+    qDebug("WPSynthesisController: Synthesizers deleted");
+    delete mixer;
+    mixer = 0;
+    qDebug("WPSynthesisController: Mixer deleted");
+    delete outpipe;
+    outpipe = 0;
+    delete audiooutput;
+    audiooutput = 0;
 }
 
 void WPSynthesisController::oneSynthesizerFinished()

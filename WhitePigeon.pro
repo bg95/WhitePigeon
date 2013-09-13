@@ -65,7 +65,8 @@ SOURCES += main.cpp\
     UI/versiondialog.cpp \
     WPImage/Parallel_Lines.cpp \
     WPImage/Image_Processing.cpp \
-    WPImage/Image.cpp
+    WPImage/Image.cpp \
+    core/WPTimbre.cpp
 
 HEADERS  += \
             myglwidget.h \

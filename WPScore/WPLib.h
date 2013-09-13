@@ -73,8 +73,8 @@ template <class T> class TrieNode
 		enum OperationMode{VISIT, EDIT};
 		TrieNode();
 		~TrieNode();
-		TrieNode *go(const T &, const OperationMode);
-		TrieNode *go(const std::vector <T> &, const OperationMode);
+        TrieNode *go(const T &, const OperationMode = TrieNode::VISIT);
+        TrieNode *go(const std::vector <T> &, const OperationMode = TrieNode::VISIT);
 		void endanger();
 		bool isDangerous();
 		void freeAll(); // be careful!
@@ -100,7 +100,7 @@ template <class T> TrieNode <T>::~TrieNode()
 	Kids.clear();
 }
 
-template <class T> TrieNode <T> *TrieNode <T>::go(const T &Ch, const TrieNode::OperationMode Mode = TrieNode::VISIT)
+template <class T> TrieNode <T> *TrieNode <T>::go(const T &Ch, const TrieNode::OperationMode Mode)
 {
 	TrieNode *Result = NULL;
 	for (typename std::vector < std::pair <T, TrieNode <T> *> >::iterator it = Kids.begin(); it != Kids.end(); ++ it)
@@ -115,7 +115,7 @@ template <class T> TrieNode <T> *TrieNode <T>::go(const T &Ch, const TrieNode::O
 	return Result;
 }
 
-template <class T> TrieNode <T> *TrieNode <T>::go(const std::vector <T> &Str, const TrieNode::OperationMode Mode = TrieNode::VISIT)
+template <class T> TrieNode <T> *TrieNode <T>::go(const std::vector <T> &Str, const TrieNode::OperationMode Mode)
 {
 	TrieNode *Result = this;
 	for (typename std::vector <T>::const_iterator it = Str.begin(); Result && it != Str.end(); ++ it)

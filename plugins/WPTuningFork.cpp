@@ -7,15 +7,7 @@ WPTuningFork::WPTuningFork()
     //printf("WPTuningFork constructor\n");
     //fflush(stdout);
 }
-/*
-WPTuningFork::WPTuningFork(int i)
-{
-}
 
-WPTuningFork::WPTuningFork(double d)
-{
-}
-*/
 WPTuningFork::~WPTuningFork()
 {
     //printf("WPTuningFork destructor\n");
@@ -104,7 +96,12 @@ double WPTuningFork::rand11()
 {
 	return (double)rand() / (double)RAND_MAX * 2.0 - 1.0;
 }
-
+/*
+void WPTuningFork::set2(Fraction g)
+{
+	g += Fraction(1, 2);
+}
+*/
 extern "C"
 {
 	WPTimbre *create()

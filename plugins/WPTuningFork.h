@@ -2,8 +2,12 @@
 #define WPTUNINGFORK_H
 
 #include "core/WPTimbre.h"
+#include "core/WPTimbre.cpp"
 #include "core/WPSynthesizer.h"
 #include "WPDLLManager/WPCallbackManager.h"
+
+#include "WPScore/WPLib.h"
+#include "WPScore/WPLib.cpp"
 
 #include <cstdlib>
 
@@ -13,12 +17,11 @@ public:
     //const static WPTuningFork TuningFork;
 
     WPTuningFork();
-    //WPTuningFork(int);
-    //WPTuningFork(double);
     ~WPTuningFork();
     void reset();
     //WPWave *synthesize(double dur, double *amp, double *freq) const;
     WPWave *synthesize(double dur, double time0, double time1, double amp0, double amp1, double freq0, double freq1);
+    //void set2(Fraction g);
     
     static void *(*callback)(WPCallbackManager::CallbackFunc);
     

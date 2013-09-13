@@ -355,7 +355,7 @@ void WPSynthesizer::outputNote()
     vtime.resize(samplecnt);
     for (samplei = 1; samplei < samplecnt; samplei++)
     {
-        vtime[samplei] = vtime[samplei - 1] + (time[samplei] - time[samplei - 1]) / ((tempo[samplei] + tempo[samplei - 1]) / 2.0 / 60.0);
+        vtime[samplei] = vtime[samplei - 1] + (time[samplei] - time[samplei - 1]) / ((tempo[samplei] + tempo[samplei - 1]) / 2.0 / 4.0 / 60.0);
         dur += vtime[samplei] - vtime[samplei - 1];
     }
     timbre.clear();
@@ -412,7 +412,7 @@ void WPSynthesizer::outputNoteInitialize()
     vtime.resize(samplecnt);
     for (samplei = 1; samplei < samplecnt; samplei++)
     {
-        vtime[samplei] = vtime[samplei - 1] + (time[samplei] - time[samplei - 1]) / ((tempo[samplei] + tempo[samplei - 1]) / 2.0 / 60.0);
+        vtime[samplei] = vtime[samplei - 1] + (time[samplei] - time[samplei - 1]) / ((tempo[samplei] + tempo[samplei - 1]) / 2.0 / 4.0 / 60.0);
         dur += vtime[samplei] - vtime[samplei - 1];
     }
     timbre.clear();
@@ -439,7 +439,7 @@ void WPSynthesizer::outputNoteLoopBody()
     {
         if (((WPPipe *)output)->isDefSuf() == 1)
         {
-            //qDebug("Synthesizer %X waiting", (quint64)this);
+            qDebug("Synthesizer %X waiting", (quint64)this);
             outputtimer.singleShot(waitingtime, this, SLOT(outputNoteLoopBody()));
             return;
         }
@@ -447,6 +447,7 @@ void WPSynthesizer::outputNoteLoopBody()
         for (int j = 0; j < notes.size(); j++)
         {
             twave = timbre[j]->synthesize(dur, vtime[samplei - 1], vtime[samplei], amp[samplei - 1][j], amp[samplei][j], freq[samplei - 1][j], freq[samplei][j]);
+            //timbre[j]->set2(Fraction(1, 2));
             swave->mixWith(1.0, *twave, 1.0);
             delete twave;
             twave = 0;

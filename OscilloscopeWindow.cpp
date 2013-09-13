@@ -37,10 +37,17 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     //WPNote note1(0, Fraction(1, 16)), note2(4, Fraction(1, 16)), note3(7, Fraction(1, 16));
     //WPNote note4(-5, Fraction(1, 4)), note5(-1, Fraction(1, 4)), note6(2, Fraction(1, 4));
     WPNote longnote(0, Fraction(10, 1));
+    /*
     WPNote note1(0, Fraction(1, 1)), note2(2, Fraction(1, 1)), note3(4, Fraction(1, 1)), note4(5, Fraction(1, 1)), note5(7, Fraction(1, 1)), note6(9, Fraction(1, 1));
     WPNote note11(0, Fraction(2, 1)), note22(2, Fraction(2, 1)), note33(4, Fraction(2, 1)), note44(5, Fraction(2, 1)), note55(7, Fraction(2, 1));
     WPNote notel1(-12 + 12, Fraction(1, 2)), notel5(-17 + 12, Fraction(1, 2)), notel3(-20 + 12, Fraction(1, 2));
     WPNote notet1(0, Fraction(1, 3)), notet2(2, Fraction(1, 3)), notet3(4, Fraction(1, 3)), notet4(5, Fraction(1, 3)), notet5(7, Fraction(1, 3)), notet6(9, Fraction(1, 3));
+*/
+    WPNote note1(0-9, Fraction(1, 1)), note2(2-9, Fraction(1, 1)), note3(4-9, Fraction(1, 1)), note4(5-9, Fraction(1, 1)), note5(7-9, Fraction(1, 1)), note6(9-9, Fraction(1, 1));
+    WPNote note11(0-9, Fraction(2, 1)), note22(2-9, Fraction(2, 1)), note33(4-9, Fraction(2, 1)), note44(5-9, Fraction(2, 1)), note55(7-9, Fraction(2, 1));
+    WPNote notel1(-12 + 12-9, Fraction(1, 2)), notel5(-17 + 12-9, Fraction(1, 2)), notel3(-20 + 12-9, Fraction(1, 2));
+    WPNote notel77(-1-9, Fraction(2, 1));
+    WPNote notet1(0-9, Fraction(1, 3)), notet2(2-9, Fraction(1, 3)), notet3(4-9, Fraction(1, 3)), notet4(5-9, Fraction(1, 3)), notet5(7-9, Fraction(1, 3)), notet6(9-9, Fraction(1, 3));
     Fraction pos;
     score = new WPScore;
 /*
@@ -169,7 +176,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
         score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note4));
         pos += Fraction(1, 1);
         score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note22));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note33));
+        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notel77));
         pos += Fraction(2, 1);
         score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note1));
         score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note3));
@@ -214,7 +221,8 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
         score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note11));
         pos += Fraction(2, 1);
     }
-    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(48, 1))), "WPTempoModifier 120.0"));
+    //score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(48, 1))), "WPTempoModifier 120.0"));
+    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(8, 1))), "WPSlur"));
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
     score->unlock();
 
@@ -230,12 +238,12 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->unlock();
 
 	score->lockForWrite();
-    score->save("pi.wps");
+    score->save("pi2.wps");
 	score->close();
     score->unlock();
 
     score->lockForWrite();
-    score->load("pi.wps");
+    score->load("pi2.wps");
     score->unlock();
 
     file = new QFile("wave.out");

@@ -459,7 +459,7 @@ void MainWindow::loadFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
                                tr("Open a file"), ".",
-                               tr("Score files (*.01)"));
+                               tr("Score files (*.wps)"));
     if (!fileName.isEmpty())
     {
         loadFile(fileName);

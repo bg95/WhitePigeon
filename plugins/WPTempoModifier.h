@@ -15,7 +15,7 @@ public:
     void set(std::string para);
     double modifyTempo(double, double);
 
-    static void *(*callback)(typename WPCallbackManager::CallbackFunc);
+    static void *(*callback)(WPCallbackManager::CallbackFunc);
 
 private:
     double tempo;
