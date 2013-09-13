@@ -286,6 +286,34 @@ musicBarItem::~musicBarItem()
     lines.clear();
 }
 
+musicBarItem::addArcPairs(musicTextItem *front, musicTextItem *end);
+{
+  QPair<musicTextItem, musicTextItem> thispair(front, end);
+  arcPairs.push_back(thispair);
+
+}
+
+void musicBarItem::arrangeArcs() {
+  foreach (QPair<musicTextItem *, musicTextItem *> thispair, arcPairs) {
+    qreal startx = arcPairs.first->pos().x() - 
+      arcPairs.first->boundingRect().width / 2;
+    qreal endx = arcPairs.second->pos().x() + 
+      arcPairs.second->boundingRect().width / 2;
+    musicArcItem *thisarcitem = new musicArcItem(endx - startx);
+    int firstdots = arcPairs.first->upperDots.count();
+    int seconddots = arcPairs.second->uppreDots.count();
+    qreal firstheight = arcPairs.first->pos().y() - 
+      arcPairs.first->boundingRect().height / 2 -
+      firstdots * arcPairs.first->interval();
+    qreal secondheight = arcPairs.second->pos().y() -
+      arcPairs.second->boundingRect().height / 2 -
+      seconddots * arcPairs.second->interval();
+    qreal realheight = firstheight > secondheight ? secondheight : firstheight;
+    
+     
+
+
+    
 
 
 

@@ -4,17 +4,16 @@
 #include <QMainWindow>
 
 /* Class declearation */
-class QLabel;
 class OscilloscopeWindow;
-
-class musicScene;
-class QGraphicsView;
-class QToolBar;
-
 class QRecentFilesMenu;
 class QMdiArea;
 class QMdiSubWindow;
-
+class WPWindow;
+class WPSynthesisController;
+class QLineEdit;
+class QPushButton;
+class QHBoxLayout;
+class QVBoxLayout;
 
 class MainWindow : public QMainWindow
 {
@@ -22,51 +21,83 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow();
-    void createAWPScore();
-    void readTestFile();
     ~MainWindow();
 
 protected:
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *);
+
+public slots:
+	void showLoadingProgress(int); // Added by Token. Perhaps a flaw.
+	void showStatusBarMessage(const QString &); // Added by Token. Perhaps a flaw.
+	void openAWebPage(const QUrl &); // Added by Token. Perhaps a flaw.
 
 private slots:
     /* Action functions */
     void newFile();
+    void loadFile();
+    void loadFile(const QString &file);
+    void goToSite();
+    void setAddressVisible(bool visible);
+    bool saveFile();
+    bool saveAsFile();
+    void closeFile();
+    void closeAllFiles();
+    void play();
+    void stopAll();
+    void updateActionsNeedingSubWindow();
+    void updateAddressBar();
     void showOscilloscope();
-
-    //void getMusicInformation();
-
-    void updateStatusBar(QMdiSubWindow* window);
-
 
 private:
     void createActions();
     void createMenus();
     void createToolBar();
-    void createStatusBar();
-    //void drawMusic();
+    void createAddressBar();
+    void createContextMenu();
     void readSettings();
     void writeSettings();
-    //void showMusic();
+
+    WPWindow *createNewChild();
+    WPWindow *findChild(const QString &file);
 
     /* Action list */
     QAction *newAction;
+    QAction *openAction;
+    QAction *saveAction;
+    QAction *saveAsAction;
+    QAction *closeAction;
+    QAction *closeAllAction;
+    QAction *exitAction;
+    QAction *playAction;
+    QAction *stopAction;
+    QAction *fileToolViewAction;
+    QAction *musicToolViewAction;
+    QAction *toolToolViewAction;
+    QAction *addressViewAction;
     QAction *oscilloscopeAction;
 
     /* Menu list */
-    QRecentFilesMenu *recentFilesMenu;
-    QMenu *toolsMenu;
     QMenu *fileMenu;
+    QRecentFilesMenu *recentFilesMenu;
+    QMenu *musicMenu;
+    QMenu *viewMenu;
+    QMenu *toolsViewMenu;
+    QMenu *toolsMenu;
 
     /* ToolBar list */
     QToolBar *fileToolBar;
-    QToolBar *toolBar;
+    QToolBar *musicToolBar;
+    QToolBar *toolToolBar;
 
     /* Private widget list */
+    QLineEdit *addressEdit;
+    QPushButton *goButton;
+    QHBoxLayout *addressLayout;
     QMdiArea *mdiArea;
+    QVBoxLayout *mainLayout;
+    QWidget *widget;
+    WPSynthesisController *controller;
     OscilloscopeWindow *oscilloscopeWindow;
-    musicScene *scene;
-    QGraphicsView *view;
     int countNumber;
 };
 

@@ -50,7 +50,6 @@ SOURCES += main.cpp\
 
 HEADERS  +=\
             myglwidget.h \
-    WPScore/WPSPosition.h \
     WPScore/WPScore.h \
     WPScore/WPProperty.h \
     WPScore/WPPosition.h \

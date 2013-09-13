@@ -12,7 +12,6 @@ class Qset;
 
 class musicBarItem
 {
-
 public:
     musicBarItem(QVector<musicTextItem *> tune);
     //musicBarItem(QList<musicTextItem *> tune);
@@ -26,6 +25,8 @@ public:
     //void setHeight(const qreal height);
     //void setWidth(const qreal width);
     void arrangeLines();
+    void arrangeArcs();
+    void addArcPairs(musicTextItem *front, musicTextItem *end);
     void arrangeText(int begin, int end);
     void setClap(const qreal length);
     void fillText();
@@ -43,6 +44,9 @@ private:
     qreal clapLength;
     qreal textWidth;
     QVector <musicTextItem *> numbers;
+    QSet <musicArcItem *> arcs;
+    QVector <musicArcItem *> arcs;
+    QVector<QPair<musicTextItem *, musicTextItem *> > arcPairs;
     QPointF Pos;
     //QSet <musicLineItem *> lines;
     musicLineItem *drawLine(musicTextItem *left, musicTextItem* right, int level);

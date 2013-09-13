@@ -170,17 +170,21 @@ void musicTextItem::removeLine(musicLineItem *line)
 
 void musicTextItem::arrangeDots()
 {
+    //qDebug() << "I have arranged";
     int numberLines = Lines.count();
     qreal inter = - Interval / 2;
     foreach (musicDotItem *thisDot, upperDots)
     {
-        thisDot->setPos(pos().x(), pos().y() - boundingRect().height() / 2 - inter);
+        thisDot->setPos(pos().x(), pos().y() - (boundingRect().height() + 12)/ 2 - inter);
+        //qDebug() << pos().x() << " " << pos().y() - boundingRect().height() / 2 - inter;
         inter += Interval;
     }
     inter = Interval * (2 * numberLines - 1) / 2;
     foreach (musicDotItem *thisDot, lowerDots)
     {
-        thisDot->setPos(pos().x(), pos().y() + boundingRect().height() / 2 + inter);
+        thisDot->setPos(pos().x(), pos().y() + (boundingRect().height() + 10)/ 2 + inter);
+        thisDot->setRadius(2);
+        qDebug() << "downpos" << pos().x() << " " << pos().y() + boundingRect().height() / 2 + inter;
         inter += Interval;
     }
 }
@@ -222,6 +226,12 @@ musicTextItem::~musicTextItem()
 void musicTextItem::setInterval(const qreal inter)
 {
     Interval = inter;
+    arrangeDots();
+}
+
+void musicTextItem::setPos(qreal x, qreal y)
+{
+    QGraphicsItem::setPos(x, y);
     arrangeDots();
 }
 

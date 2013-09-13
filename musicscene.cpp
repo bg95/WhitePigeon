@@ -5,6 +5,7 @@
 #include "WPScore/WPScore.h"
 #include "musicrowitem.h"
 #include "musicwholeitem.h"
+#include "musicdotitem.h"
 #include <QtWidgets>
 
 const int musicScene::musicHeight[12] = {6, -1, 7, 1, -1, 2, -1, 3, 4, -1, 5, -1};
@@ -63,10 +64,12 @@ void musicScene::display()
                 if (dots > 0)
                 {
                     thisText->addUpperDot(dots);
+                    //qDebug() << "really!up";
                 }
                 if (dots < 0)
                 {
-                    thisText->addLowerDot(dots);
+                    thisText->addLowerDot(- dots);
+                    qDebug() << "reallydown";
                 }
             }
             numbers[i].push_back(thisText);
@@ -165,11 +168,14 @@ void musicScene::display()
             addItem(thistext);
             foreach (musicDotItem *thisdot, thistext->upperDots)
             {
-                addItem((musicTextItem *)thisdot);
+                //thisdot->setPos(900, 5400);
+                thisdot->setRadius(2);
+                qDebug() << "reallyadded";
+                addItem((QGraphicsItem *)thisdot);
             }
             foreach (musicDotItem *thisdot, thistext->lowerDots)
             {
-                addItem((musicTextItem *)thisdot);
+                addItem((QGraphicsItem *)thisdot);
             }
         }
     }
