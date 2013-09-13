@@ -17,7 +17,7 @@ public:
     bool openInputChannels(int number_of_channels);
     WPPipe *getInputChannel(int num) const;
     void setOutput(QIODevice &_output);
-    void setWatingTime(int msec);
+    void setWaitingTime(int msec);
     void setReadLength(quint64 length);
     
 signals:

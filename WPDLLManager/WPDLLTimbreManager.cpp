@@ -1,5 +1,7 @@
 #include "WPDLLTimbreManager.h"
 
+std::string WPDLLTimbreManager::TimbrePluginDir("/home/pt-cr/Projects/WhitePigeon/plugins/");
+
 WPDLLTimbreManager::WPDLLTimbreManager()
 {
 }
@@ -21,7 +23,7 @@ bool WPDLLTimbreManager::setTimbre(std::string timbrenamepara)
         name.push_back(c);
     }
     iss >> para;
-    fname.append("/home/pt-cr/Projects/WhitePigeon/plugins/");
+    fname.append(TimbrePluginDir);
     fname.append("lib");
     fname.append(name);
     fname.append(".so");
@@ -45,7 +47,7 @@ WPTimbre *WPDLLTimbreManager::newTimbre()
     WPTimbre *t = (WPTimbre *)manager.newObject();
     t->set(para);
     timbres.push_back(t);
-    qDebug("TimbreManager %X newTimbre %X", (quint64)this, (quint64)t);
+    //qDebug("TimbreManager %X newTimbre %X", (quint64)this, (quint64)t);
     return t;
 }
 

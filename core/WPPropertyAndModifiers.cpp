@@ -1,5 +1,7 @@
 #include "WPPropertyAndModifiers.h"
 
+std::string WPPropertyAndModifiers::ModifierPluginDir("/home/pt-cr/Projects/WhitePigeon/plugins/");
+
 WPPropertyAndModifiers::WPPropertyAndModifiers()
 {
 }
@@ -28,6 +30,7 @@ bool WPPropertyAndModifiers::setProperty(WPProperty &_prop)
         name.push_back(c);
     }
     iss >> para;
+    fname.append(ModifierPluginDir);
     fname.append("lib");
     fname.append(name);
     fname.append(".so");

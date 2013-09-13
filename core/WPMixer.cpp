@@ -65,7 +65,7 @@ void WPMixer::setOutput(QIODevice &_output)
     output = &_output;
 }
 
-void WPMixer::setWatingTime(int msec)
+void WPMixer::setWaitingTime(int msec)
 {
     waitingtime = msec;
 }
@@ -117,69 +117,71 @@ void WPMixer::sumUp()
     //assume no other threads are reading the channel
     //while (true)
     //{
-        qint32 i, j;
-        qint64 bytesavailable, maxbytesread, bytesread;
-        qint64 readlengthbytes = readlength * sizeof(WPWave::WaveDataType);
-        bool existopen;
-        //qDebug("mixer sumUp()");
-        existopen = false;
-        for (i = 0; i < chcnt; i++)
-        {
-            if (channel[i].isOpen())
-                existopen = true;
-            if (channel[i].isOpen() && !channel[i].isClosing() &&
-                channel[i].bytesAvailable() < readlengthbytes)
-                break;
-        }
-        if (i < chcnt)
-        {
-            qDebug("mixer %X waiting", (quint64)this);
-            timer.start(waitingtime);
-            return;
-        }
-        if (!existopen)
-        {
-            delete[] channel;
-            chcnt = 0;
-            emit allInputClosed();
-            quit(); //?
-            return;
-        }
-        memset(sdata, 0, readlengthbytes);
-        maxbytesread = 0;
-        for (i = 0; i < chcnt; i++)
-        {
-            bytesread = 0;
-            if (channel[i].isOpen())
-            {
-                bytesavailable = channel[i].bytesAvailable();
-                if (bytesavailable >= readlengthbytes)
-                {
-                    //static int total=0;
-                    bytesread = channel[i].read((char *)tdata, readlengthbytes);
-                    //total+=bytesread;
-                    //qDebug("MIXER: total=%d",total);
-                    if (maxbytesread < bytesread)
-                        maxbytesread = bytesread;
-                    for (j = 0; j < readlength; j++)
-                        truncateAdd(sdata[j], tdata[j]);
-                }
-                else
-                {
-                    qDebug("channel %d is closing and has only %llu bytes available", i, bytesavailable);
-                    bytesread = channel[i].read((char *)tdata, bytesavailable);
-                    if (maxbytesread < bytesread)
-                        maxbytesread = bytesread;
-                    for (j = 0; j < bytesavailable / sizeof(WPWave::WaveDataType); j++)
-                        truncateAdd(sdata[j], tdata[j]);
-                }
-            }
-            qDebug("%lld bytes read from channel %d", bytesread, i);
-        }
-        output->write((char *)sdata, maxbytesread);
-
-        timer.start(0);
+    qDebug("Mixer %X running in thread %X", (quint64)this, (quint64)QThread::currentThread());
+    qint32 i, j;
+    qint64 bytesavailable, maxbytesread, bytesread;
+    qint64 readlengthbytes = readlength * sizeof(WPWave::WaveDataType);
+    bool existopen;
+    qDebug("mixer sumUp()");
+    existopen = false;
+    for (i = 0; i < chcnt; i++)
+    {
+        if (channel[i].isOpen())
+            existopen = true;
+        if (channel[i].isOpen() && !channel[i].isClosing() &&
+            channel[i].bytesAvailable() < readlengthbytes)
+            break;
+    }
+    if (i < chcnt)
+    {
+        qDebug("mixer %X waiting", (quint64)this);
+        timer.start(waitingtime);
         return;
+    }
+    if (!existopen)
+    {
+        delete[] channel;
+        chcnt = 0;
+        emit allInputClosed();
+        quit(); //?
+        return;
+    }
+    memset(sdata, 0, readlengthbytes);
+    maxbytesread = 0;
+    for (i = 0; i < chcnt; i++)
+    {
+        bytesread = 0;
+        if (channel[i].isOpen())
+        {
+            bytesavailable = channel[i].bytesAvailable();
+            if (bytesavailable >= readlengthbytes)
+            {
+                //static int total=0;
+                bytesread = channel[i].read((char *)tdata, readlengthbytes);
+                //total+=bytesread;
+                //qDebug("MIXER: total=%d",total);
+                if (maxbytesread < bytesread)
+                    maxbytesread = bytesread;
+                for (j = 0; j < readlength; j++)
+                    truncateAdd(sdata[j], tdata[j]);
+            }
+            else
+            {
+                qDebug("channel %d is closing and has only %llu bytes available", i, bytesavailable);
+                bytesread = channel[i].read((char *)tdata, bytesavailable);
+                if (maxbytesread < bytesread)
+                    maxbytesread = bytesread;
+                for (j = 0; j < bytesavailable / sizeof(WPWave::WaveDataType); j++)
+                    truncateAdd(sdata[j], tdata[j]);
+            }
+        }
+        qDebug("%lld bytes read from channel %d", bytesread, i);
+    }
+    output->write((char *)sdata, maxbytesread);
+
+    qDebug("mixer %X looping", (quint64)this);
+    timer.start(0);
+    return;
     //}
 }
 

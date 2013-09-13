@@ -9,6 +9,8 @@
 class WPPropertyAndModifiers
 {
 public:
+    static std::string ModifierPluginDir;
+
     WPPropertyAndModifiers();
     explicit WPPropertyAndModifiers(WPProperty &_prop);
     ~WPPropertyAndModifiers();

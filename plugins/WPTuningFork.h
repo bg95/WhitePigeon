@@ -13,8 +13,8 @@ public:
     //const static WPTuningFork TuningFork;
 
     WPTuningFork();
-    WPTuningFork(int);
-    WPTuningFork(double);
+    //WPTuningFork(int);
+    //WPTuningFork(double);
     ~WPTuningFork();
     void reset();
     //WPWave *synthesize(double dur, double *amp, double *freq) const;

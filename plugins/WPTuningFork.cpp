@@ -4,10 +4,10 @@ void *(*WPTuningFork::callback)(WPCallbackManager::CallbackFunc) = 0;
 
 WPTuningFork::WPTuningFork()
 {
-	printf("WPTuningFork constructor\n");
-	fflush(stdout);
+    //printf("WPTuningFork constructor\n");
+    //fflush(stdout);
 }
-
+/*
 WPTuningFork::WPTuningFork(int i)
 {
 }
@@ -15,11 +15,11 @@ WPTuningFork::WPTuningFork(int i)
 WPTuningFork::WPTuningFork(double d)
 {
 }
-
+*/
 WPTuningFork::~WPTuningFork()
 {
-	printf("WPTuningFork destructor\n");
-	fflush(stdout);
+    //printf("WPTuningFork destructor\n");
+    //fflush(stdout);
 }
 
 void WPTuningFork::reset()
@@ -113,8 +113,8 @@ extern "C"
 	}
 	void destroy(WPTimbre *p)
 	{
-		printf("destroy called\n");
-		fflush(stdout);
+        //printf("destroy called\n");
+        //fflush(stdout);
 		if (p)
 			delete p;
 		p = 0;

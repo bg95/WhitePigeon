@@ -46,7 +46,7 @@ void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *outpu
     connect(&synthesizer[0], SIGNAL(synthesisFinished()), this, SLOT(mixerFinished()));
     synthesizer[0].start();
 */
-    mixer->setWatingTime(10);
+    mixer->setWaitingTime(100);
     mixer->setOutput(*output);
     mixer->setReadLength(8000);
     mixer->openInputChannels(partnum);
@@ -56,6 +56,7 @@ void WPSynthesisController::synthesizeAndOutput(WPScore &score, QIODevice *outpu
         //synthesizer[i].loadTimbre(dlltimbre);
         //synthesizer[i].loadTimbre(tuningfork); //load tuningfork for test
         synthesizer[i].setPart(score.getPartList()[i]);
+        synthesizer[i].setWaitingTime(100);
         connect(&synthesizer[i], SIGNAL(synthesisFinished()), this, SLOT(oneSynthesizerFinished()));
         //connect(&synthesizer[i], SIGNAL(finished()), &synthesizer[i], SLOT(deleteLater()));
         //connect(mixer->getInputChannel(i), SIGNAL(sufficientInput()), &synthesizer[i], SLOT(slowDown()));

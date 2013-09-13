@@ -9,6 +9,10 @@ WPSynthesizer::WPSynthesizer(QObject *parent) :
 {
     timer.setSingleShot(true);
     connect(&timer, SIGNAL(timeout()), this, SLOT(synthesizePartLoopBody()));
+    outputtimer.setSingleShot(true);
+    connect(&outputtimer, SIGNAL(timeout()), this, SLOT(outputNoteLoopBody()));
+
+    waitingtime = 100;
 }
 /*
 WPSynthesizer::WPSynthesizer(WPTimbre *_timbre, QObject *parent) :
@@ -62,6 +66,11 @@ void WPSynthesizer::setPart(WPPart &_part)
     part = &_part;
 }
 
+void WPSynthesizer::setWaitingTime(int msec)
+{
+    waitingtime = msec;
+}
+
 void WPSynthesizer::run()
 {
     qDebug("synthesizer run");
@@ -70,86 +79,6 @@ void WPSynthesizer::run()
     exec();
     qDebug("synthesizer returned from run");
 }
-/*
-void WPSynthesizer::synthesizePart()
-{
-    swave = new WPWave;
-
-    samplecnt = 0;
-    freq.clear();
-    amp.clear();
-    tempo.clear();
-    time.clear();
-    time0 = 0.0;
-    time1 = TimeStep;
-    propmap.clear();
-
-    defaultnotemodifier.setNotes(part->getAllNotes(), Fraction(0, 1));
-    defaultnotemodifier.reset();
-    defaulttuning.setNotes(part->getAllNotes(), Fraction(0, 1));
-    defaulttuning.reset();
-/*
-    freq.push_back(std::vector<double>(notes.size(), 0.0));
-    amp.push_back(std::vector<double>(notes.size(), 1.0));
-    tempo.push_back(0.0);
-    time.push_back(time0);
-    processAllModifiers(time0, freq[samplecnt], amp[samplecnt], notelength, tempo[samplecnt], timbrename);
-    samplecnt++;
-
-    part->lockForRead();
-    fragment = part->nextFragment();
-    part->unlock();
-    while (!(fragment.first.getLength() == Fraction(-1, 1)))
-    {
-        qDebug("start processing one fragment");
-        notes = fragment.first.getNotes();
-        sprop = fragment.second.first;
-        eprop = fragment.second.second;
-
-        //scan time
-        timeend = notes[0].getLength().toDouble() + time0;
-        for (;
-             time0 < timeend;
-             time0 = time1, time1 = std::min(time1 + TimeStep, timeend))
-        {
-            processProperties(time0, time1, sprop, eprop);
-
-            freq.push_back(std::vector<double>(notes.size(), 0.0));
-            amp.push_back(std::vector<double>(notes.size(), part->getVolume()));
-            tempo.push_back(0.0);
-            time.push_back(time1);
-            processAllModifiers(time1, freq[samplecnt], amp[samplecnt], notelength, tempo[samplecnt], timbrename);
-            samplecnt++;
-
-            if (notelength >= 0)
-            {
-                outputNote();
-                samplecnt = 0;
-                freq.clear();
-                amp.clear();
-                tempo.clear();
-                time.clear();
-            }
-        }
-        time1 = time0 + TimeStep;
-
-        part->lockForRead();
-        fragment = part->nextFragment();
-        part->unlock();
-
-    }//while
-
-    outputNote();
-    samplecnt = 0;
-    freq.clear();
-    amp.clear();
-    tempo.clear();
-    time.clear();
-
-    delete swave;
-    swave = 0;
-    emit synthesisFinished();
-}*/
 
 //private
 
@@ -199,6 +128,7 @@ void WPSynthesizer::scheduleSynthesizePartLoopBody()
 
 void WPSynthesizer::synthesizePartLoopBody()
 {
+    qDebug("Synthesizer %X running in thread %X", (quint64)this, (quint64)QThread::currentThread());
     if (time0 >= timeend)
     {
         synthesizePartLoopFinalize();
@@ -215,12 +145,8 @@ void WPSynthesizer::synthesizePartLoopBody()
 
     if (notelength >= 0)
     {
-        outputNote();
-        samplecnt = 0;
-        freq.clear();
-        amp.clear();
-        tempo.clear();
-        time.clear();
+        outputNoteInitialize();
+        return;
     }
 
     time0 = time1;
@@ -435,11 +361,8 @@ void WPSynthesizer::processAllModifiers(double time, std::vector<double> &freq, 
 
 void WPSynthesizer::outputNote()
 {
-    std::vector<double> vtime;
-    double dur;
-    int i, j;
-    std::vector<WPTimbre *> timbre;
-    WPDLLTimbreManager timbremanager;
+    int j;
+    timbremanager.clearTimbres();
     if (!timbremanager.setTimbre(timbrename))
     {
         qWarning() << "Failed to open Timbre ";
@@ -451,10 +374,10 @@ void WPSynthesizer::outputNote()
     vtime.clear();
     vtime.push_back(0.0);
     vtime.resize(samplecnt);
-    for (i = 1; i < samplecnt; i++)
+    for (samplei = 1; samplei < samplecnt; samplei++)
     {
-        vtime[i] = vtime[i - 1] + (time[i] - time[i - 1]) / ((tempo[i] + tempo[i - 1]) / 2.0 / 60.0);
-        dur += vtime[i] - vtime[i - 1];
+        vtime[samplei] = vtime[samplei - 1] + (time[samplei] - time[samplei - 1]) / ((tempo[samplei] + tempo[samplei - 1]) / 2.0 / 60.0);
+        dur += vtime[samplei] - vtime[samplei - 1];
     }
     timbre.clear();
     for (j = 0; j < notes.size(); j++)
@@ -462,31 +385,119 @@ void WPSynthesizer::outputNote()
         timbre.push_back(timbremanager.newTimbre());
         timbre[j]->reset();
     }
-    for (i = 1; i < samplecnt; i++)
+    //for (samplei = 1; samplei < samplecnt; samplei++)
+    samplei = 1;
+    while (samplei < samplecnt)
     {
-        swave->clear();
-        for (j = 0; j < notes.size(); j++)
-        {
-            twave = timbre[j]->synthesize(dur, vtime[i - 1], vtime[i], amp[i - 1][j], amp[i][j], freq[i - 1][j], freq[i][j]);
-            swave->mixWith(1.0, *twave, 1.0);
-            delete twave;
-            twave = 0;
-        }
         while (((WPPipe *)output)->isDefSuf() == 1)
         {
             qDebug("Synthesizer %X waiting", (quint64)this);
-            QThread::usleep(100000);
+            QThread::usleep(1000000);
+        }
+        swave->clear();
+        for (j = 0; j < notes.size(); j++)
+        {
+            twave = timbre[j]->synthesize(dur, vtime[samplei - 1], vtime[samplei], amp[samplei - 1][j], amp[samplei][j], freq[samplei - 1][j], freq[samplei][j]);
+            swave->mixWith(1.0, *twave, 1.0);
+            delete twave;
+            twave = 0;
         }
         if (output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType)) == -1)
         {
             qCritical() << output->errorString();
         }
-        //static int total=0;
-        //total+=swave->data.size() * sizeof(WPWave::WaveDataType);
-        //qDebug("SYNTHESIZER: total=%d",total);
-        //qDebug("Synthesizer written to output %d samples", swave->data.size());
+        ///
+        total+=swave->data.size(); //* sizeof(WPWave::WaveDataType);
+        qDebug("Synthesizer %X written to output %d samples", (quint64)this, swave->data.size());
         //QThread::usleep(100); //remember to remove
+        samplei++;
     }
+    ///
+    qDebug("SYNTHESIZER %X: total=%d time=%lf", (quint64)this, total, time1);
+}
+
+void WPSynthesizer::outputNoteInitialize()
+{
+    int j;
+    timbremanager.clearTimbres();
+    if (!timbremanager.setTimbre(timbrename))
+    {
+        qWarning() << "Failed to open Timbre ";
+        qWarning("%s", timbrename.data());
+    }
+    //Timbre
+    //calculate vtime and dur
+    dur = 0.0;
+    vtime.clear();
+    vtime.push_back(0.0);
+    vtime.resize(samplecnt);
+    for (samplei = 1; samplei < samplecnt; samplei++)
+    {
+        vtime[samplei] = vtime[samplei - 1] + (time[samplei] - time[samplei - 1]) / ((tempo[samplei] + tempo[samplei - 1]) / 2.0 / 60.0);
+        dur += vtime[samplei] - vtime[samplei - 1];
+    }
+    timbre.clear();
+    for (j = 0; j < notes.size(); j++)
+    {
+        timbre.push_back(timbremanager.newTimbre());
+        timbre[j]->reset();
+    }
+    //for (samplei = 1; samplei < samplecnt; samplei++)
+    samplei = 1;
+    scheduleOutputNoteLoopBody();
+}
+
+void WPSynthesizer::scheduleOutputNoteLoopBody()
+{
+    outputtimer.singleShot(0, this, SLOT(outputNoteLoopBody()));
+}
+
+void WPSynthesizer::outputNoteLoopBody()
+{
+    if (samplei >= samplecnt)
+        outputNoteFinalize();
+    else
+    {
+        if (((WPPipe *)output)->isDefSuf() == 1)
+        {
+            qDebug("Synthesizer %X waiting", (quint64)this);
+            outputtimer.singleShot(waitingtime, this, SLOT(outputNoteLoopBody()));
+            return;
+        }
+        swave->clear();
+        for (int j = 0; j < notes.size(); j++)
+        {
+            twave = timbre[j]->synthesize(dur, vtime[samplei - 1], vtime[samplei], amp[samplei - 1][j], amp[samplei][j], freq[samplei - 1][j], freq[samplei][j]);
+            swave->mixWith(1.0, *twave, 1.0);
+            delete twave;
+            twave = 0;
+        }
+        if (output->write((char *)swave->data.begin(), swave->data.size() * sizeof(WPWave::WaveDataType)) == -1)
+        {
+            qCritical() << output->errorString();
+        }
+        ///
+        total+=swave->data.size(); //* sizeof(WPWave::WaveDataType);
+        qDebug("Synthesizer %X written to output %d samples", (quint64)this, swave->data.size());
+        //QThread::usleep(100); //remember to remove
+        samplei++;
+        scheduleOutputNoteLoopBody();
+    }
+}
+
+void WPSynthesizer::outputNoteFinalize()
+{
+    ///
+    qDebug("SYNTHESIZER %X: total=%d time=%lf", (quint64)this, total, time1);
+    samplecnt = 0;
+    freq.clear();
+    amp.clear();
+    tempo.clear();
+    time.clear();
+
+    time0 = time1;
+    time1 = std::min(time1 + TimeStep, timeend);
+    scheduleSynthesizePartLoopBody();
 }
 
 //static

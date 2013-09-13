@@ -8,6 +8,8 @@
 class WPDLLTimbreManager
 {
 public:
+    static std::string TimbrePluginDir;
+
     WPDLLTimbreManager();
     ~WPDLLTimbreManager();
     bool setTimbre(std::string timbrenamepara);
