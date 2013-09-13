@@ -1,4 +1,5 @@
 #include "WPPropertyAndModifiers.h"
+#include <QDebug>
 
 std::string WPPropertyAndModifiers::ModifierPluginDir("/home/pt-cr/Projects/WhitePigeon/plugins/");
 
@@ -25,16 +26,21 @@ bool WPPropertyAndModifiers::setProperty(WPProperty &_prop)
     name.clear();
     para.clear();
     fname.clear();
-    while (iss >> c && c != ' ')
+
+    while ((c = iss.get()) != -1)
     {
+        if (c == ' ')
+            break;
         name.push_back(c);
     }
+    qDebug() << " WPPropertyAndModifiers::setProperty name = " << name.data();
     iss >> para;
     fname.append(ModifierPluginDir);
     fname.append("lib");
     fname.append(name);
     fname.append(".so");
-    if (!manager.openDLL(name))
+    qDebug() << "filename = \"" << fname.data() << '\"';
+    if (!manager.openDLL(fname))
         return false;
     if (!manager.sendCallbackHandle())
     {

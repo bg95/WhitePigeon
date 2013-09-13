@@ -18,8 +18,10 @@ bool WPDLLTimbreManager::setTimbre(std::string timbrenamepara)
     name.clear();
     para.clear();
     fname.clear();
-    while (iss >> c && c != ' ')
+    while ((c = iss.get()) != -1)
     {
+        if (c == ' ')
+            break;
         name.push_back(c);
     }
     iss >> para;

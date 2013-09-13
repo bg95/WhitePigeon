@@ -1,6 +1,8 @@
 #include "WPCallbackManager.h"
 #include "WPDLLManager.h"
 
+#include <cstdio>
+
 WPDLLManager::WPDLLManager() :
     handle(0)
 {
@@ -42,7 +44,11 @@ bool WPDLLManager::openDLL(const char *str)
         create = (void *(*)())getFuncAddr("create");
         destroy = (void (*)(void *))getFuncAddr("destroy");
     }
-    return handle != 0;
+
+    printf("openDLL %s %X\n", str, (unsigned long long)handle);
+    fflush(stdout);
+
+    return handle && create && destroy;
 }
 
 void *WPDLLManager::getFuncAddr(QString &name) const
@@ -94,6 +100,8 @@ bool WPDLLManager::sendCallbackHandle() const
 
 void WPDLLManager::closeDLL()
 {
+    if (!handle)
+        return;
     #ifdef Q_OS_WIN
         FreeLibrary(handle);
     #else
