@@ -96,6 +96,8 @@ void WPSynthesizer::synthesizePartLoopInitialize()
         timeend = notes[0].getLength().toDouble() + time0;
         scheduleSynthesizePartLoopBody();
     }
+    else
+        synthesizePartFinalize();
 }
 
 void WPSynthesizer::scheduleSynthesizePartLoopBody()
@@ -337,6 +339,7 @@ void WPSynthesizer::processAllModifiers(double time, std::vector<double> &freq, 
 
 void WPSynthesizer::outputNote()
 {
+    //qDebug("Final output");
     int j;
     timbremanager.clearTimbres();
     if (!timbremanager.setTimbre(timbrename))

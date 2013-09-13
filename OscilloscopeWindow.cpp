@@ -59,11 +59,11 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->lockForWrite();
     score->newPart("whitepig");
     score->newPart("white");
-    score->newPart("swing");
+    score->newPart("swine");
     score->unlock();
     score->lockForRead();
     pos = Fraction(0, 1);
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 1; i++)
     {
         score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note1));
         score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note1));
@@ -220,7 +220,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 
 
     score->lockForWrite();
-    for (int i = 0; i < 16 * 30; i++)
+    for (int i = 0; i < 16 * 3; i++)
     {
         score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i, 2)), WPMultinote((i % 8 != 7) ? notel1 : notel3));
         score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i + 1, 2)), WPMultinote(notel5));

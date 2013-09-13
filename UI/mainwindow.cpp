@@ -669,7 +669,7 @@ void MainWindow::play()
 
 void MainWindow::stopAll()
 {
-    // controller->stopAll();
+    controller->stopAll();
 }
 
 void MainWindow::updateActions()

@@ -265,7 +265,7 @@ void WPWindow::refresh()
 
 void WPWindow::play_with(WPSynthesisController *controller)
 {
-    // controller->synthesizeAndPlay(*score);
+    controller->synthesizeAndPlay(*score);
 }
 
 void WPWindow::closeEvent(QCloseEvent *closeEvent)
