@@ -96,18 +96,8 @@ void WPMixer::run()
         qCritical("Input channels not opened!");
         return;
     }
-/*
-    char filename[256];
-    //sprintf(filename, "%llX.in", (quint64)this);
-    sprintf(filename, "mixer.in");
-    filein = new QFile(filename);
-    qDebug("filein.open %d", filein->open(QIODevice::WriteOnly));
-    //sprintf(filename, "%llX.out", (quint64)this);
-    sprintf(filename, "mixer.out");
-    fileout = new QFile(filename);
-    qDebug("fileout.open %d", fileout->open(QIODevice::WriteOnly));
-*/
-    qDebug("Mixer %X in thread %X\n", (quint64)this, (quint64)QThread::currentThread());
+
+    //qDebug("Mixer %X in thread %X\n", (quint64)this, (quint64)QThread::currentThread());
     timer.start(0);
     exec();
 }
@@ -117,12 +107,12 @@ void WPMixer::sumUp()
     //assume no other threads are reading the channel
     //while (true)
     //{
-    qDebug("Mixer %X running in thread %X", (quint64)this, (quint64)QThread::currentThread());
+    //qDebug("Mixer %X running in thread %X", (quint64)this, (quint64)QThread::currentThread());
     qint32 i, j;
     qint64 bytesavailable, maxbytesread, bytesread;
     qint64 readlengthbytes = readlength * sizeof(WPWave::WaveDataType);
     bool existopen;
-    qDebug("mixer sumUp()");
+    //qDebug("mixer sumUp()");
     existopen = false;
     for (i = 0; i < chcnt; i++)
     {
@@ -134,7 +124,7 @@ void WPMixer::sumUp()
     }
     if (i < chcnt)
     {
-        qDebug("mixer %X waiting", (quint64)this);
+        //qDebug("mixer %X waiting", (quint64)this);
         timer.start(waitingtime);
         return;
     }
@@ -175,11 +165,11 @@ void WPMixer::sumUp()
                     truncateAdd(sdata[j], tdata[j]);
             }
         }
-        qDebug("%lld bytes read from channel %d", bytesread, i);
+        //qDebug("%lld bytes read from channel %d", bytesread, i);
     }
     output->write((char *)sdata, maxbytesread);
 
-    qDebug("mixer %X looping", (quint64)this);
+    //qDebug("mixer %X looping", (quint64)this);
     timer.start(0);
     return;
     //}

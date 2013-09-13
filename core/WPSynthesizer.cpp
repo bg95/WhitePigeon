@@ -14,13 +14,7 @@ WPSynthesizer::WPSynthesizer(QObject *parent) :
 
     waitingtime = 100;
 }
-/*
-WPSynthesizer::WPSynthesizer(WPTimbre *_timbre, QObject *parent) :
-    QThread(parent)
-{
-    loadTimbre(_timbre);
-}
-*/
+
 WPSynthesizer::~WPSynthesizer()
 {
     qDebug("Deleting synthesizer %X", (quint64)this);
@@ -30,29 +24,12 @@ WPSynthesizer::~WPSynthesizer()
     qDebug("Synthesizer %X waiting to stop", (quint64)this);
     wait();
 }
-/*
-void WPSynthesizer::loadTimbre(const WPTimbre *_timbre)
-{
-    timbre = _timbre;
-}
-*/
+
 void WPSynthesizer::setOutputDevice(QIODevice &_output)
 {
     output = &_output;
 }
-/*
-WPWave *WPSynthesizer::synthesize(WPNote &note)
-{
-    quint32 n = note.getTimeSpan() * WPTimbre::ControlRate, i;
-    double *amp = new double[n];
-    double *freq = new double[n];
-    for (i = 0; i < n; i++)
-        amp[i] = 0.2;
-    for (i = 0; i < n; i++)
-        freq[i] = note.getFrequency();
-    return timbre->synthesize(note.getTimeSpan(), amp, freq); //take care of overflow
-}
-*/
+
 void WPSynthesizer::startSynthesis(WPPart &_part)
 {
     part = &_part;
@@ -111,7 +88,7 @@ void WPSynthesizer::synthesizePartLoopInitialize()
 {
     if (!(fragment.first.getLength() == Fraction(-1, 1)))
     {
-        qDebug("start processing one fragment");
+        //qDebug("start processing one fragment");
         notes = fragment.first.getNotes();
         sprop = fragment.second.first;
         eprop = fragment.second.second;
@@ -128,7 +105,7 @@ void WPSynthesizer::scheduleSynthesizePartLoopBody()
 
 void WPSynthesizer::synthesizePartLoopBody()
 {
-    qDebug("Synthesizer %X running in thread %X", (quint64)this, (quint64)QThread::currentThread());
+    //qDebug("Synthesizer %X running in thread %X", (quint64)this, (quint64)QThread::currentThread());
     if (time0 >= timeend)
     {
         synthesizePartLoopFinalize();
@@ -218,7 +195,6 @@ void WPSynthesizer::processProperties(double time0, double time1, std::vector<WP
             pam = 0;
         }
 }
-
 
 int WPSynthesizer::processTuningFreqAmp(double time, std::vector<double> &freq, std::vector<double> &amp)
 {
@@ -388,12 +364,12 @@ void WPSynthesizer::outputNote()
     //for (samplei = 1; samplei < samplecnt; samplei++)
     samplei = 1;
     while (samplei < samplecnt)
-    {
+    {/*
         while (((WPPipe *)output)->isDefSuf() == 1)
         {
-            qDebug("Synthesizer %X waiting", (quint64)this);
+            //qDebug("Synthesizer %X waiting", (quint64)this);
             QThread::usleep(1000000);
-        }
+        }*/
         swave->clear();
         for (j = 0; j < notes.size(); j++)
         {
@@ -408,12 +384,12 @@ void WPSynthesizer::outputNote()
         }
         ///
         total+=swave->data.size(); //* sizeof(WPWave::WaveDataType);
-        qDebug("Synthesizer %X written to output %d samples", (quint64)this, swave->data.size());
+        //qDebug("Synthesizer %X written to output %d samples", (quint64)this, swave->data.size());
         //QThread::usleep(100); //remember to remove
         samplei++;
     }
     ///
-    qDebug("SYNTHESIZER %X: total=%d time=%lf", (quint64)this, total, time1);
+    //qDebug("SYNTHESIZER %X: total=%d time=%lf", (quint64)this, total, time1);
 }
 
 void WPSynthesizer::outputNoteInitialize()
@@ -460,7 +436,7 @@ void WPSynthesizer::outputNoteLoopBody()
     {
         if (((WPPipe *)output)->isDefSuf() == 1)
         {
-            qDebug("Synthesizer %X waiting", (quint64)this);
+            //qDebug("Synthesizer %X waiting", (quint64)this);
             outputtimer.singleShot(waitingtime, this, SLOT(outputNoteLoopBody()));
             return;
         }
@@ -478,7 +454,7 @@ void WPSynthesizer::outputNoteLoopBody()
         }
         ///
         total+=swave->data.size(); //* sizeof(WPWave::WaveDataType);
-        qDebug("Synthesizer %X written to output %d samples", (quint64)this, swave->data.size());
+        //qDebug("Synthesizer %X written to output %d samples", (quint64)this, swave->data.size());
         //QThread::usleep(100); //remember to remove
         samplei++;
         scheduleOutputNoteLoopBody();
@@ -488,12 +464,19 @@ void WPSynthesizer::outputNoteLoopBody()
 void WPSynthesizer::outputNoteFinalize()
 {
     ///
-    qDebug("SYNTHESIZER %X: total=%d time=%lf", (quint64)this, total, time1);
-    samplecnt = 0;
+    //qDebug("SYNTHESIZER %X: total=%d time=%lf", (quint64)this, total, time1);
+    std::vector<double> efreq = freq[freq.size() - 1];
     freq.clear();
+    freq.push_back(efreq);
+    std::vector<double> eamp = amp[amp.size() - 1];
     amp.clear();
+    amp.push_back(eamp);
+    double etempo = tempo[tempo.size() - 1];
     tempo.clear();
+    tempo.push_back(etempo);
     time.clear();
+    time.push_back(time1);
+    samplecnt = 1;
 
     time0 = time1;
     time1 = std::min(time1 + TimeStep, timeend);

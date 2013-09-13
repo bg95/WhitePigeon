@@ -58,7 +58,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->lockForWrite();
     score->newPart("whitepig");
     score->unlock();
-    score->lockForRead();/**/
+    score->lockForRead();
     pos = Fraction(0, 1);
     for (int i = 0; i < 10; i++)
     {

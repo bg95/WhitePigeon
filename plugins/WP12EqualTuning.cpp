@@ -16,7 +16,7 @@ void WP12EqualTuning::reset()
 {
     basefreq = 440.0;
     currentmultinoteiter = getNotes().begin();
-    qDebug("WP12EqualTuning::reset this = %X", (quint64)this);
+    //qDebug("WP12EqualTuning::reset this = %X", (quint64)this);
 }
 
 void WP12EqualTuning::set(std::string para)
