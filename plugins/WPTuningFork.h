@@ -2,7 +2,7 @@
 #define WPTUNINGFORK_H
 
 #include "core/WPTimbre.h"
-#include "core/WPTimbre.cpp"
+//#include "core/WPTimbre.cpp"
 #include "core/WPSynthesizer.h"
 #include "WPDLLManager/WPCallbackManager.h"
 

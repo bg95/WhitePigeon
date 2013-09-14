@@ -2,11 +2,12 @@
 #define WPMODIFIER_H
 
 #include <Qt>
+#include "WPModifierBase.h"
 #include "WPScore/WPNote.h"
 #include "WPScore/WPMultinote.h"
 #include "WPScore/WPLib.h"
 
-class WPModifier
+class WPModifier : public WPModifierBase
 {
 public:
     WPModifier();
@@ -18,19 +19,19 @@ public:
     }*/
     //this will be called before each call of modify* function, telling the current time (in beats)
     //call this when overwriting
-    double getTime() const;
-    double getPrevTime() const;
-    bool timePassed(double t);
+    virtual double getTime() const;
+    virtual double getPrevTime() const;
+    virtual bool timePassed(double t);
     virtual void reset(); //call this when overwriting
     //virtual void reset(double t); //call this when overwriting
 
     virtual void setNotes(const std::vector<WPMultinote> &notes, Fraction offset);
     //setNotes will be called before calling all modify* functions, telling the notes for the modifier
     //call WPModifier::setNotes when overwriting, or getNotes won't work
-    std::vector<WPMultinote> &getNotes(); //why can't be inline?
+    virtual std::vector<WPMultinote> &getNotes(); //why can't be inline?
     //virtual void setNote(const WPNote &_note); //similar to setNotes, but for isSingleNote() == true
     //WPNote &getNote();
-    Fraction getNotesOffset();
+    virtual Fraction getNotesOffset();
 
     virtual bool isGlobal(); //true if the modifier applies to all parts
     //virtual bool isSingleNote();

@@ -45,7 +45,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 */
     WPNote note1(0-9, Fraction(1, 1)), note2(2-9, Fraction(1, 1)), note3(4-9, Fraction(1, 1)), note4(5-9, Fraction(1, 1)), note5(7-9, Fraction(1, 1)), note6(9-9, Fraction(1, 1));
     WPNote note11(0-9, Fraction(2, 1)), note22(2-9, Fraction(2, 1)), note33(4-9, Fraction(2, 1)), note44(5-9, Fraction(2, 1)), note55(7-9, Fraction(2, 1));
-    WPNote notel1(-12 + 12-9, Fraction(1, 2)), notel5(-17 + 12-9, Fraction(1, 2)), notel3(-20 + 12-9, Fraction(1, 2));
+    WPNote notel1(-12 -9, Fraction(1, 2)), notel5(-17 -9, Fraction(1, 2)), notel3(-20 -9, Fraction(1, 2));
     WPNote notel77(-1-9, Fraction(2, 1));
     WPNote notet1(0-9, Fraction(1, 3)), notet2(2-9, Fraction(1, 3)), notet3(4-9, Fraction(1, 3)), notet4(5-9, Fraction(1, 3)), notet5(7-9, Fraction(1, 3)), notet6(9-9, Fraction(1, 3));
     Fraction pos;
@@ -221,7 +221,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
         score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note11));
         pos += Fraction(2, 1);
     }
-    //score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(48, 1))), "WPTempoModifier 120.0"));
+    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(48, 1))), "WPTempoModifier 120.0"));
     score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(8, 1))), "WPSlur"));
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
     score->unlock();

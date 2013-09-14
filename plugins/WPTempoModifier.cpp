@@ -1,7 +1,5 @@
 #include "WPTempoModifier.h"
 
-void *(*WPTempoModifier::callback)(WPCallbackManager::CallbackFunc) = 0;
-
 
 WPTempoModifier::WPTempoModifier()
 {
@@ -37,21 +35,17 @@ double WPTempoModifier::modifyTempo(double, double)
 
 extern "C"
 {
-    WPModifier *create()
+    WPModifierPlugin *create()
     {
         return new WPTempoModifier();
     }
-    void destroy(WPModifier *p)
+    void destroy(WPModifierPlugin *p)
     {
         printf("destroy called\n");
         fflush(stdout);
         if (p)
             delete p;
         p = 0;
-    }
-    void setCallback(void *_callback)
-    {
-        WPTempoModifier::callback = (void *(*)(WPCallbackManager::CallbackFunc))_callback;
     }
 }
 

@@ -1,10 +1,10 @@
 #ifndef WPTEMPOMODIFIER_H
 #define WPTEMPOMODIFIER_H
 
-#include "core/WPModifier.h"
-#include "WPDLLManager/WPCallbackManager.h"
+//#include "core/WPModifier.h"
+#include "WPModifierPlugin.h"
 
-class WPTempoModifier : public WPModifier
+class WPTempoModifier : public WPModifierPlugin
 {
 public:
     WPTempoModifier();
@@ -14,8 +14,6 @@ public:
     void reset();
     void set(std::string para);
     double modifyTempo(double, double);
-
-    static void *(*callback)(WPCallbackManager::CallbackFunc);
 
 private:
     double tempo;

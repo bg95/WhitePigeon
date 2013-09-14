@@ -263,7 +263,7 @@ int WPSynthesizer::processTempo(double time, double &tempo)
     if (tempocnt == 0)
     {
         tempocnt++;
-        tempo = 100.0;
+        tempo = 144.0; //100.0;
     }
     return tempocnt;
 }

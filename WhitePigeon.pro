@@ -15,6 +15,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = WhitePigeon
 TEMPLATE = app
 LIBS += -ldl
+QMAKE_CXXFLAGS += -rdynamic
 
 
 SOURCES += main.cpp\
@@ -121,7 +122,8 @@ HEADERS  += \
     UI/versiondialog.h \
     WPImage/Parallel_Lines.h \
     WPImage/Image_Processing.h \
-    WPImage/Image.h
+    WPImage/Image.h \
+    core/WPModifierBase.h
 
 TRANSLATIONS += Chinese.ts
 
