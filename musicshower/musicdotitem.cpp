@@ -21,28 +21,16 @@ musicDotItem::musicDotItem()
 
 musicDotItem::~musicDotItem()
 {
-    /*
-    if (dotPos == upper)
-    {
-        parentNumber->removeUpperDot(this);
-    }
-    else
-    {
-        parentNumber->removeLowerDot(this);
-    }
-    */
 }
 
 void musicDotItem::setColor(const QColor &color)
 {
     dotColor = color;
-    update();
 }
 
 void musicDotItem::setRadius(const qreal radius)
 {
     dotRadius = radius;
-    update();
 }
 
 QRectF musicDotItem::boundingRect() const

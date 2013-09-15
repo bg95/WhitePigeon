@@ -98,24 +98,26 @@ void musicScene::display() //unsave
             }
             numbers[i].push_back(thisText);
             Fraction thisfrac = thisNote.getLength();
-            if (thisfrac > Fraction(1,1))
+            qDebug() << thisfrac.X << " " << thisfrac.Y;
+            if (thisfrac > Fraction(1,4))
             {
-	      if (thisfrac * 1.5 - Fraction(1, 1) < 0.01) {
-		thisText->setDotted(true);
-	      }
-                int length = int(thisfrac.toDouble() - 1);
-                for (int j = 0; j < length; ++j)
+                if ((thisfrac - Fraction(1, 4) * 1.5) < 0.01 && (thisfrac - Fraction(1, 4) * 1.5) > 0.01)
+                {
+                    thisText->setDotted(true);
+                }
+                int length = int(4 * (thisfrac.toDouble() + 0.01) - 1);
+                for (int j = 0; j < length; j++)
                 {
                     numbers[i].push_back(new musicTextItem('-'));
                 }
             }
             int lines = 0;
-            while (thisfrac < Fraction(1,1))
+            while (thisfrac < Fraction(1,4))
             {
                 thisfrac = thisfrac + thisfrac;
                 lines++;
             }
-	    if (thisfrac * 1.5 - Fraction(1, 1) < 0.01) {
+            if ((thisfrac - Fraction(1, 4) * 1.5) < 0.01 && (thisfrac - Fraction(1, 4) * 1.5) > -0.01) {
 	      thisText->setDotted(true);
 	    }
             thisText->setLines(lines);
@@ -128,8 +130,9 @@ void musicScene::display() //unsave
       int lastpos = 0;
       for (int j = 0; j < numbers[i].count(); ++j) {
         qreal tmplength = numbers[i][j]->length();
+        qDebug() << "tmplength " << tmplength;
         tmpsum += tmplength;
-        if (tmpsum - 4 < 0.04 && tmpsum - 4 > -0.04) {
+        if (tmpsum - 4 < 0.01 && tmpsum - 4 > -0.01) {
           QVector<musicTextItem *> textsegment;
           for (int k = lastpos; k <= j; ++k)
           {
@@ -208,11 +211,12 @@ void musicScene::display() //unsave
             addItem(thistext);
             foreach (musicDotItem *thisdot, thistext->upperDots)
             {
-                thisdot->setRadius(2);
+                thisdot->setRadius(1);
                 addItem((QGraphicsItem *)thisdot);
             }
             foreach (musicDotItem *thisdot, thistext->lowerDots)
             {
+                thisdot->setRadius(1);
                 addItem((QGraphicsItem *)thisdot);
             }
         }
