@@ -27,3 +27,7 @@ void musicBracketItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     painter->drawLine(0, height / 2, 4, height / 2 + 4);
     //painter->drawLine(0, lineWidth * lineNumber, 3, lineWidth * lineNumber + 3);
 }
+
+musicBracketItem::~musicBracketItem()
+{
+}

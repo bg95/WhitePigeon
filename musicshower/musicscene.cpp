@@ -1,20 +1,21 @@
 #include "musicscene.h"
-#include "musictextitem.h"
+#include "musictextitem.h" 
 #include "musicbaritem.h"
 #include "musicbracketitem.h"
 #include "WPScore/WPScore.h"
 #include "musicrowitem.h"
 #include "musicwholeitem.h"
+#include "musicdotitem.h"
 #include <QtWidgets>
 
 const int musicScene::musicHeight[12] = {6, -1, 7, 1, -1, 2, -1, 3, 4, -1, 5, -1};
 
 musicScene::musicScene(QWidget *parent)
-    : QGraphicsScene(parent),
-      partNumber(0),
-      rowNumber(0),
-      widget(NULL),
-      music(NULL)
+  : QGraphicsScene(parent),
+    partNumber(0),
+    rowNumber(0),
+    widget(NULL),   
+    music(NULL)
 {
     setSceneRect(0, 0, 2000, 2000);
 }
@@ -30,13 +31,35 @@ void musicScene::setRect(QRectF rect)
     setSceneRect(rect);
 }
 
-void musicScene::display()
+void musicScene::display() //unsave
 {
+  foreach (QVector<musicTextItem *> textvector, numbers) {
+    foreach (musicTextItem *thistext, textvector) {
+      delete thistext;
+    }
+    textvector.clear();
+  }
+  numbers.clear();
+  foreach (QVector<musicBarItem *> barvector, bars) {
+    foreach (musicBarItem *thisbar, barvector) {
+      delete thisbar;
+    }
+    barvector.clear();
+  }
+  bars.clear();
+  foreach (musicRowItem * thisrows, rows) {
+    delete thisrows;
+  }
+  rows.clear();
+    music->lockForRead();
     partNumber = music->countPartNumber();
+    music->unlock();
     numbers.resize(partNumber);
     for (int i = 0; i < partNumber; ++i)
     {
-        std::vector <WPMultinote> multiNote = music->getPartByOrder(i)->getAllNotes();
+      music->lockForRead();
+      std::vector <WPMultinote> multiNote = music->getPartByOrder(i)->getAllNotes();
+      music->unlock();
         std::vector<WPMultinote>::iterator iter;
         numbers[i].clear();
         for (iter = multiNote.begin(); iter != multiNote.end(); iter++)
@@ -70,13 +93,16 @@ void musicScene::display()
                 }
                 if (dots < 0)
                 {
-                    thisText->addLowerDot(dots);
-                }
+                    thisText->addLowerDot(- dots);
+	        }
             }
             numbers[i].push_back(thisText);
             Fraction thisfrac = thisNote.getLength();
             if (thisfrac > Fraction(1,1))
             {
+	      if (thisfrac * 1.5 - Fraction(1, 1) < 0.01) {
+		thisText->setDotted(true);
+	      }
                 int length = int(thisfrac.toDouble() - 1);
                 for (int j = 0; j < length; ++j)
                 {
@@ -89,67 +115,78 @@ void musicScene::display()
                 thisfrac = thisfrac + thisfrac;
                 lines++;
             }
+	    if (thisfrac * 1.5 - Fraction(1, 1) < 0.01) {
+	      thisText->setDotted(true);
+	    }
             thisText->setLines(lines);
         }
     }
     bars.resize(partNumber);
     for (int i = 0; i < partNumber; ++i)
     {
-        musicBarItem *thisbar = new musicBarItem(numbers[i]);
-        bars[i].push_back(thisbar);
+      qreal tmpsum = 0;
+      int lastpos = 0;
+      for (int j = 0; j < numbers[i].count(); ++j) {
+        qreal tmplength = numbers[i][j]->length();
+        tmpsum += tmplength;
+        if (tmpsum - 4 < 0.04 && tmpsum - 4 > -0.04) {
+          QVector<musicTextItem *> textsegment;
+          for (int k = lastpos; k <= j; ++k)
+          {
+              textsegment.push_back(numbers[i][k]);
+          }
+          //qDebug() << "create a " << j + 1 - lastpos << "bar";
+          musicBarItem *thisbar = new musicBarItem(textsegment);
+          qDebug() << "textsegment " << textsegment.count();
+          lastpos = j + 1;
+          tmpsum = 0;
+          bars[i].push_back(thisbar);
+        }
+      }
     }
-
     int barsNumber;
-    if (bars.size())
+    //qDebug() << "parts" << bars.count();
+    if (bars.count())
     {
-        barsNumber = bars[0].count();
+      int maxbarnumber = bars[0].count();
+      for (int i = 0; i < bars.count(); ++i) {
+          //qDebug() << "bars[" << i << "]=" << bars[i].count();
+    if (bars[i].count() > maxbarnumber) {
+      maxbarnumber = bars[i].count();
+	}
+    barsNumber = maxbarnumber;
+      }
     }
     else
     {
         barsNumber = 0;
     }
-
     rowNumber = barsNumber / 4 + (barsNumber % 4 != 0);
     rows.resize(rowNumber);
 
     for (int i = 0; i < rowNumber; ++i)
     {
-        //qDebug() << "Hi";
         rows[i] = new musicRowItem(partNumber, 4);
-        //qDebug() << partNumber;
-        //qDebug() << "Hie";
     }
-
     for (int i = 0; i < partNumber; ++i)
     {
         for (int j = 0; j < barsNumber; ++j)
         {
-            //qDebug("%d %d %d\n", rows.size(), i, j);
-            rows[j / 4]->insertMusic(bars[i][j], i + 1, j % 4 + 1);
+            if (j < bars[i].count()) {
+            rows[j / 4]->insertMusic(bars[i][j], i, j % 4);
+            }
         }
     }
-
     widget = new musicWholeItem;
     widget->setPos(sceneRect().width() / 2, sceneRect().height() / 2);
     for (int i = 0; i < rowNumber; ++i)
     {
         widget->addRow(rows[i]);
     }
-    //qDebug() << widget->pos().x() << " " << widget->pos().y();
-    //addItem(widget);
-    //qDebug() << rowNumber;
-    //numbers[0][0]->setPos(900, 5000);
     for (int i = 0; i < rowNumber; ++i)
     {
-        //qDebug() << rows[i]->pos().x() << " " << rows[i]->pos().y();
-        //qDebug() << (rows[i]->bracket)->pos();
-        //qDebug() << (rows[i]->bracket)->boundingRect();
-        //addItem(rows[i]);
-        //qDebug() << rows[i]->bars.count();
-        qDebug() << rows[i]->pos();
         foreach (musicLineItem *thisline, rows[i]->bars)
         {
-            //qDebug() << thisline->pos();
             addItem((QGraphicsItem *)(thisline));
         }
         addItem((QGraphicsItem *)(rows[i]->bracket));
@@ -158,7 +195,6 @@ void musicScene::display()
     {
         foreach (musicBarItem *thisbar, bars[i])
         {
-            //addItem(thisbar);
             foreach (musicLineItem *thisline, thisbar->lines)
             {
                 addItem((QGraphicsItem *)thisline);
@@ -172,14 +208,36 @@ void musicScene::display()
             addItem(thistext);
             foreach (musicDotItem *thisdot, thistext->upperDots)
             {
-                addItem((musicTextItem *)thisdot);
+                thisdot->setRadius(2);
+                addItem((QGraphicsItem *)thisdot);
             }
             foreach (musicDotItem *thisdot, thistext->lowerDots)
             {
-                addItem((musicTextItem *)thisdot);
+                addItem((QGraphicsItem *)thisdot);
             }
         }
     }
+    //qDebug() << "rownumber" << rowNumber;
+    widget->arrangeRow();
+    foreach (musicRowItem *thisline, rows) {
+      thisline->arrangeBar();
+      thisline->arrangeMusic();
+    }
+    for (int i = 0; i < bars.count() ; ++i) {
+      foreach (musicBarItem* thisbar, bars[i]) {
+        thisbar->fillText();
+        thisbar->arrangeLines();
+        foreach (musicLineItem *thisline, thisbar->lines)
+        {
+            addItem((QGraphicsItem *)thisline);
+        }
+      }
+    }
+    for (int i = 0; i < numbers.count(); ++i) {
+      foreach (musicTextItem *thistext, numbers[i]) {
+        thistext->arrangeDots();
+      }
+    }    
 }
 
 musicScene::~musicScene()
@@ -210,25 +268,10 @@ musicScene::~musicScene()
     delete widget;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void musicScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+  musicTextItem *newtext = new musicTextItem(0);
+  newtext->create(event);
+  QGraphicsScene::mouseDoubleClickEvent(event);
+}
 
 

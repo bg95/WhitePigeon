@@ -3,13 +3,19 @@
 
 #include <QGraphicsPathItem>
 
-class musicArcItem : public QGraphicsPathItem
+class musicArcItem : public QGraphicsItem
 {
     //Q_OBJECT
-
-public:
-    musicArcItem(QPointF start, QPointF end, QGraphicsItem *parent = 0);
-
+ public:
+  musicArcItem(qreal span);
+  ~musicArcItem();
+  QRectF boundingRect() const;
+  void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+	     QWidget *widget);
+  QPainterPath shape() const;
+ private:
+  qreal arcSpan;
+ 
 };
 
 #endif // MUSICARCITEM_H

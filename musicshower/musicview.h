@@ -3,19 +3,12 @@
 
 #include <QGraphicsView>
 
-class musicView : public QGraphicsView
-{
-    Q_OBJECT
-
-public:
-    musicView(QWidget *parent = 0);
-    ~musicView();
-
-protected:
-    void wheelEvent(QWheelEvent *event);
-
-private:
-    double zoomFactor;
+class musicView : public QGraphicsView {
+  Q_OBJECT
+ public:
+  musicView(QWidget *parent = 0);
+ protected:
+  void wheelEvent(QWheelEvent *event);
 };
 
-#endif // MUSICVIEW_H
+#endif 

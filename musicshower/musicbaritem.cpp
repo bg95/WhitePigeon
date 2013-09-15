@@ -1,36 +1,27 @@
 #include "musicbaritem.h"
 #include "musictextitem.h"
 #include "musiclineitem.h"
+#include "musicarcitem.h"
 #include <QtWidgets>
 
-/*
-musicBarItem::musicBarItem(QList<musicTextItem *> tune) 
-    : numbers(tune), clapLength(1), textWidth(50)
-{
-	fillText();
-    arrangeLines();
+void musicBarItem::setText(const QString &Text) {
+  QVector<musicTextItem *> tune(Text.size());
+  for (int i = 0; i < Text.size(); ++i) {
+    musicTextItem *thisText = new musicTextItem(Text[i]);
+    tune.push_back(thisText);
+  }
+  reset(tune);
 }
-*/
 
 musicBarItem::musicBarItem(QVector<musicTextItem *> tune)
-    : numbers(tune), clapLength(1), textWidth(50), Pos(QPointF(0, 0))
+    : numbers(tune), clapLength(1), textWidth(30), Pos(QPointF(0, 0))
 {
-    fillText();
-    arrangeLines();
 }
 
 void musicBarItem::reset(QVector<musicTextItem *> tune)
 {
     numbers = tune;
-    fillText();
-
 }
-/*
-void musicBarItem::paint(QPainter *painter,
-                         const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-}
-*/
 
 QRectF musicBarItem::boundingRect() const
 {
@@ -127,11 +118,9 @@ void musicBarItem::arrangeLines()
                 {
                     if (found)
                     {
-                        qDebug() << "prepos: " << prepos << "now: " << k;
                         int l;
                         for (l = prepos; l < k; ++l)
                         {
-                            qDebug() << "l:" << l << "k:" << k << "cnt" << cnt;
                             if (numbers[l]->lines() < cnt)
                             {
                                 break;
@@ -139,15 +128,11 @@ void musicBarItem::arrangeLines()
                         }
                         if (l == k)
                         {
-                            qDebug() << "haha";
-                            //musicLineItem *newline =
-                                    //drawLine(numbers[prepos], numbers[k-1], i);
                             for (int m = 1; m <= i; ++m)
                             {
                                 if (numbers[prepos]->thisLine(m - 1) !=
                                         numbers[k - 1]->thisLine(m - 1))
                                 {
-                                	arrangeText(prepos, k);
                                     musicLineItem *newline =
                                             drawLine(numbers[prepos], numbers[k - 1], m - 1);
                                     for (l = prepos; l < k; ++l)
@@ -157,17 +142,6 @@ void musicBarItem::arrangeLines()
                                     }
                                 }
                             }
-                            /*
-                            for (int l = prepos; l < k; ++l)
-                            {
-                                for (int m = 1; m <= i; ++m)
-                                {
-                                    if
-                                }
-                                removeLine(numbers[l]->thisLine(i - 1));
-                                numbers[l]->pushLines(newline, i - 1);
-                            }
-                            */
                         }
                     }
                     prepos = k;
@@ -181,20 +155,6 @@ void musicBarItem::arrangeLines()
                 }
 
             }
-
-            /*
-            if (qFind(partialsum.begin(), partialsum.end(), qreal(i)) != partialsum.end())
-            {
-                if (prefind)
-                {
-
-                }
-            }
-            else
-            {
-                prefind = false;
-            }
-            */
         }
         length /= 2;
         cnt++;
@@ -237,19 +197,16 @@ void musicBarItem::fillText()
 {
     qreal oriposx = pos().x();
     qreal oriposy = pos().y();
-    //qDebug() << oriposx;
-    //qDebug() << oriposy;
-	int count = numbers.count();
-    //qDebug() << count;
-	for (int i = 0; i < count; ++i) 
-	{
-        numbers[i]->setPos(oriposx - count * textWidth / 2 + textWidth / 2+ i * textWidth, oriposy);
-	}
+    int count = numbers.count();
+    for (int i = 0; i < count; ++i) 
+    {
+      numbers[i]->setPos(oriposx - count * textWidth / 2 + textWidth / 2+ i * textWidth, oriposy);
+    }
 }
 
 void musicBarItem::setWidth(qreal width)
 {
-	textWidth = width;
+    textWidth = width;
 }
 
 /*
@@ -274,7 +231,6 @@ void musicBarItem::setPos(qreal x, qreal y)
     Pos = QPointF(x, y);
     fillText();
     arrangeLines();
-
 }
 
 musicBarItem::~musicBarItem()
@@ -284,8 +240,71 @@ musicBarItem::~musicBarItem()
         delete thisline;
     }
     lines.clear();
+    foreach (musicArcItem *thisArc, arcs) {
+      delete thisArc;
+    }
+    arcs.clear();
+    for (int i = 0; i < arcPairs.count(); ++i)
+    {
+        QPair<musicTextItem *, musicTextItem *> thispair = arcPairs[i];
+        delete thispair.first;
+        delete thispair.second;
+    }
+    arcPairs.clear();
 }
 
+void musicBarItem::addArcPairs(musicTextItem *front, musicTextItem *end)
+{
+  QPair<musicTextItem *, musicTextItem *> thispair(front, end);
+  arcPairs.push_back(thispair);
+  arrangeArcs(); 
+}
+
+void musicBarItem::removePairs() {
+  foreach (musicArcItem *thisArc, arcs) {
+    delete thisArc;
+  }
+  arcs.clear();
+  for (int i = 0; i < arcPairs.count(); ++i)
+  {
+      QPair<musicTextItem *, musicTextItem *> thispair = arcPairs[i];
+      delete thispair.first;
+      delete thispair.second;
+  }
+  arcPairs.clear();
+}
+
+void musicBarItem::arrangeArcs() {
+  foreach (musicArcItem *thisarcitem, arcs) {
+    delete thisarcitem;
+  }
+  arcs.clear();
+  for (int i = 0; i < arcPairs.count(); ++i) {
+      QPair<musicTextItem *, musicTextItem *> thispair = arcPairs[i];
+    qreal startx = thispair.first->pos().x();
+    qreal endx = thispair.second->pos().x();
+    qreal lengthx = endx - startx;
+    musicArcItem *thisarcitem = new musicArcItem(lengthx);
+    arcs.insert(thisarcitem);
+    int firstdots = thispair.first->upperDots.count();
+    int seconddots = thispair.second->upperDots.count();
+    qreal firstheight = thispair.first->pos().y() -
+            (thispair.first)->boundingRect().height() / 2 -
+      firstdots * thispair.first->interval();
+    qreal secondheight = thispair.second->pos().y() -
+            (thispair.second)->boundingRect().height() / 2 -
+      seconddots * thispair.second->interval();
+    qreal realheight = firstheight > secondheight ? secondheight : firstheight;
+    qreal xpos = (startx + endx) / 2;
+    qreal ypos = realheight - lengthx / 8;
+    thisarcitem->setPos(xpos, ypos);
+  }
+}
+    
+     
+
+
+    
 
 
 

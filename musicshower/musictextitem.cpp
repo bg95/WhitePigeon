@@ -1,7 +1,6 @@
 #include "musictextitem.h"
 #include "musicdotitem.h"
 #include "musiclineitem.h"
-
 #include <QtWidgets>
 
 
@@ -9,11 +8,12 @@ musicTextItem::musicTextItem(const QChar &number)
     : musicHeight(number), numberFont("Times", 20, QFont::Bold),
       numberColor(Qt::black), Interval(4), dotted(false)
 {
-    //setFlag(QGraphicsItem::ItemIsSelectable)
+  setFlags(ItemIsMovable);
 }
 
 void musicTextItem::setFont(const QFont &font)
 {
+  prepareGeometryChange();
     numberFont = font;
     update();
 }
@@ -24,30 +24,10 @@ void musicTextItem::setColor(const QColor &color)
     update();
 }
 
-/*
-void musicTextItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
-    //qDebug() << "why not";
-    if (textInteractionFlags() == Qt::NoTextInteraction)
-    {
-        setTextInteractionFlags(Qt::TextEditable);
-    }
-    QGraphicsTextItem::mouseDoubleClickEvent(event);
-}
-
-void musicTextItem::focusOutEvent(QFocusEvent *event)
-{
-    setTextInteractionFlags(Qt::NoTextInteraction);
-    QGraphicsTextItem::focusOutEvent(event);
-}
-*/
-
 QRectF musicTextItem::boundingRect() const
 {
-
     QFontMetricsF metrics(numberFont);
     QRectF rect = metrics.boundingRect(musicHeight);
-    //rect.moveCenter(QPointF(rect.width() / 2, rect.height() / 2));
     if (dotted)
     {
         return QRectF(-3 * rect.width() / 4, -rect.height() / 2,
@@ -55,25 +35,19 @@ QRectF musicTextItem::boundingRect() const
     }
     return QRectF(-rect.width() / 2, -rect.height() / 2,
                  rect.width(), rect.height());
-    //return (1, 1, 1, 1);
-
-    //return QRectF(-15, -15, 30, 30);
 }
 
 void musicTextItem::paint(QPainter *painter,
-                          const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
+                          const QStyleOptionGraphicsItem */*option*/, 
+			  QWidget */*widget*/)
 {
     painter->setFont(numberFont);
     painter->setPen(numberColor);
     qreal length = boundingRect().width();
     qreal height = boundingRect().height();
     QRectF rect = QRectF(-length / 2, (-height - 10) / 2, length, height + 10);
-    //QRectF(-length / 2, -100, length, 200);//QRectF(-15, -15, 30, 30);
-    //qDebug() << rect << " " << musicHeight;
-    //QRectF rect(-length / 2, -height / 2 - 5, length, height + 10);
     if (dotted)
     {
-        qDebug() << musicHeight << "was dotted";
         rect = QRectF(-rect.width() / 2, -rect.height() / 2,
                       2 * rect.width() / 3, rect.height());
         painter->drawText(rect, musicHeight);
@@ -92,7 +66,6 @@ void musicTextItem::addUpperDot(const int number)
         upperDots.insert(new musicDotItem);
     }
     //upperDots.insert(new musicDotItem);
-    arrangeDots();
 }
 
 void musicTextItem::addLowerDot(const int number)
@@ -101,20 +74,7 @@ void musicTextItem::addLowerDot(const int number)
     {
         lowerDots.insert(new musicDotItem);
     }
-    //lowerDots.insert(new musicDotItem);
-    arrangeDots();
-    //lowerDots++;
 }
-
-/*
-
-void musicTextItem::addLine(musicLineItem *line)
-{
-    lines.insert(line);
-    //lines++;
-}
-
-*/
 
 void musicTextItem::removeUpperDot()
 {
@@ -123,19 +83,8 @@ void musicTextItem::removeUpperDot()
         delete item;
     }
     upperDots.clear();
-
-    /*
-    QSet <musicDotItem *>::iterater iter = upperDots.begin();
-    for (int i = 0; i < number; ++i)
-    {
-        delete *iter;
-        iter = upperDots.erase(iter);
-    }
-    */
-    //upperDots.remove(dot);
-    //arrangeDots();
-    //upperDots--;
 }
+
 
 void musicTextItem::removeLowerDot()
 {
@@ -144,29 +93,7 @@ void musicTextItem::removeLowerDot()
         delete item;
     }
     lowerDots.clear();
-
-    /*
-    QSet <musicDotItem *>::iterater iter = lowerDots.begin();
-    for (int i = 0; i < number; ++i)
-    {
-        delete *iter;
-        iter = lowerDots.erase(iter);
-    }
-    */
-    //lowerDots.remove(dot);
-    //arrangeDots();
-    //lowerDots--;
 }
-
-/*
-
-void musicTextItem::removeLine(musicLineItem *line)
-{
-    lines.remove(line);
-    //lines--;
-}
-
-*/
 
 void musicTextItem::arrangeDots()
 {
@@ -174,43 +101,21 @@ void musicTextItem::arrangeDots()
     qreal inter = - Interval / 2;
     foreach (musicDotItem *thisDot, upperDots)
     {
-        thisDot->setPos(pos().x(), pos().y() - boundingRect().height() / 2 - inter);
+        thisDot->setPos(pos().x(), pos().y() - (boundingRect().height() + 12)/ 2 - inter);
         inter += Interval;
     }
     inter = Interval * (2 * numberLines - 1) / 2;
     foreach (musicDotItem *thisDot, lowerDots)
     {
-        thisDot->setPos(pos().x(), pos().y() + boundingRect().height() / 2 + inter);
+        thisDot->setPos(pos().x(), pos().y() + (boundingRect().height() + 10)/ 2 + inter);
+        thisDot->setRadius(2);
         inter += Interval;
     }
 }
 
-/*
-
-int musicTextItem::upperDots()
-{
-    return upperDots;
-}
-
-int musicTextItem::lowerDots()
-{
-    return lowerDots;
-}
-
-int musicTextItem::lines()
-{
-    return lines;
-}
-
-*/
 
 musicTextItem::~musicTextItem()
 {
-    /*
-    foreach (musicLineItem *thisLine, lines) {
-        delete thisLine;
-    }
-    */
     foreach (musicDotItem *thisDot, upperDots) {
         delete thisDot;
     }
@@ -225,11 +130,15 @@ void musicTextItem::setInterval(const qreal inter)
     arrangeDots();
 }
 
+void musicTextItem::setPos(qreal x, qreal y)
+{
+    QGraphicsItem::setPos(x, y);
+    arrangeDots();
+}
+
 void musicTextItem::setLines(const int line)
 {
-    //numberLines = line;
     Lines.resize(line);
-    arrangeDots();
 }
 
 QVariant musicTextItem::itemChange(GraphicsItemChange change, const QVariant &value)
@@ -291,8 +200,26 @@ musicLineItem *musicTextItem::thisLine(int level)
     return Lines[level];
 }
 
+void musicTextItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+  QString text = QInputDialog::getText(event->widget(),
+                       QObject::tr("Edit music height"),
+                       QObject::tr("Enter new music height:"),
+				       QLineEdit::Normal, QString(musicHeight));
+  if (text.size() == 1) {
+    musicHeight = text.at(0);
+  }
+  /*
+  int retadd = QMessageBox::question(this, QObject::tr())
+  */
+}
 
-
-
-
-
+void musicTextItem::create(QGraphicsSceneMouseEvent *event) {
+    setPos(event->scenePos().x(), event->scenePos().y());
+  QString text = QInputDialog::getText(event->widget(),
+                       QObject::tr("Edit music height"),
+                       QObject::tr("Enter new music height:"),
+				       QLineEdit::Normal, QString(musicHeight));
+  if (text.size() == 1) {
+    musicHeight = text.at(0);
+  }
+}

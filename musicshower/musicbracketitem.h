@@ -7,6 +7,7 @@ class musicBracketItem : public QGraphicsItem
 {
 public:
     musicBracketItem(int lines);
+    ~musicBracketItem();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget);

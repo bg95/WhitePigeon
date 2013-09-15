@@ -15,3 +15,5 @@ class musicRepeatItem : public QGraphicsItem
  private:
   qreal repeatHeight;
 };
+
+#endif

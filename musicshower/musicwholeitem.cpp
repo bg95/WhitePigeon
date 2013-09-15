@@ -9,7 +9,6 @@ musicWholeItem::musicWholeItem()
 void musicWholeItem::addRow(musicRowItem *row)
 {
     lines.append(row);
-    arrangeRow();
     //update();
 }
 
@@ -19,18 +18,6 @@ QRectF musicWholeItem::boundingRect() const
     return QRectF(-pageWidth / 2, -height / 2, pageWidth, height);
 }
 
-/*
-void musicWholeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-
-}
-
-QPainterPath musicWholeItem::shape() const
-{
-    QPainterPath painterpath;
-    return painterpath;
-}
-*/
 
 void musicWholeItem::setRowHeight(qreal height)
 {

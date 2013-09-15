@@ -55,22 +55,3 @@ void musicLineItem::setColor(const QColor &color)
 	lineColor = color;
 	update();
 }
-
-/*
-musicLineItem::~musicLineItem()
-{
-}
-*/
-    /*
-    foreach (musicTextItem *item, parents)
-    {
-        item->removeLine(this);
-    }
-    */
-
-/*
-void musicLineItem::trackNodes()
-{
-    QPointF leftparent->pos
-}
-*/

@@ -1,18 +1,21 @@
+#include <QtWidgets>
+#include "musicrepeatitem.h"
+
 musicRepeatItem::musicRepeatItem() : repeatHeight(30) {
 }
 
 musicRepeatItem::~musicRepeatItem() {
 }
 
-void setHeight(qreal height) {
-  repeatHeight = height;
+void musicRepeatItem::setHeight(qreal height) {
+    repeatHeight = height;
 }
 
-QRectF boundingRect() const {
+QRectF musicRepeatItem::boundingRect() const {
   return QRectF(-4, -repeatHeight/ 2, 8, repeatHeight);
 }
 
-QRectF paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+void musicRepeatItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 	     QWidget *widget) {
   QPen pen;
   pen.setWidth(3);

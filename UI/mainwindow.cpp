@@ -28,7 +28,7 @@ MainWindow::MainWindow()
 
     /* MainWindow settings */
     setWindowTitle(tr("WhitePigeon"));
-    // setWindowIcon(QIcon(":/images/WhitePigeon.jpg"));
+    setWindowIcon(QIcon(":/images/whitepigeon.png"));
     setContextMenuPolicy(Qt::ActionsContextMenu);
 
     /* UI settings */
@@ -499,7 +499,7 @@ void MainWindow::loadFile(const QString& file)
     {
         if (url.isValid())
         {
-			if (url.scheme() == "http")
+            if (url.scheme() == "http" || url.scheme() == "https")
 			{
                 WPWindow *window = createNewChildWebMode();
 				window->loadFile(url.url());
@@ -509,7 +509,7 @@ void MainWindow::loadFile(const QString& file)
             else
             {
                 QMessageBox::warning(this, tr("White Pigeon"),
-                        tr("Url must begin with \"http://\""),
+                        tr("Url must begin with \"http://\" or \"https://\""),
                         QMessageBox::Ok);
             }
         }

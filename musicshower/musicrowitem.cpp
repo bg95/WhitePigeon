@@ -10,21 +10,17 @@ musicRowItem::musicRowItem(int row, int collumn)
 {
     bars.resize(row * collumn);
     drawBar();
-    arrangeBar();
     musics.resize(row * collumn);
-    //arrangeMusic();
 }
 
 void musicRowItem::setBarDistance(qreal distance)
 {
     collumnWidth = distance;
-    //update();
 }
 
 void musicRowItem::setRowDistance(qreal distance)
 {
     rowWidth = distance;
-    //update();
 }
 
 QRectF musicRowItem::boundingRect() const
@@ -34,23 +30,8 @@ QRectF musicRowItem::boundingRect() const
     return QRectF(-collumnWidth * collumnNumber / 2 - 14, -height / 2, width, height);
 }
 
-/*
-void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-}
-
-
-QPainterPath musicRowItem::shape() const
-{
-    QPainterPath painterpath;
-    return painterpath;
-}
-*/
-
-
 void musicRowItem::drawBar()
 {
-    //qreal height = musics[0]->boundingRect().height() + 5;
     for (int i = 0; i < rowNumber; ++i)
     {
         for (int j = 0; j < collumnNumber; ++j)
@@ -82,30 +63,24 @@ void musicRowItem::insertMusic(musicBarItem *barItem, int row, int collumn)
 {
     if (row <= rowNumber && collumn <= collumnNumber)
     {
-        //qDebug("Here! %d %d", (row - 1) * collumnNumber + (collumn - 1), musics.size());
-        musics[(row - 1) * collumnNumber + (collumn - 1)] = barItem;
+        musics[row * collumnNumber + collumn] = barItem;
     }
-    //qDebug("There!");
-    arrangeMusic();
-    //qDebug("Over!");
 }
 
 
 void musicRowItem::arrangeMusic()
 {
-    qreal originx = pos().x() - collumnWidth * collumnNumber / 2;
+    qreal originx = pos().x() - collumnWidth * collumnNumber / 2 + collumnWidth / 2;
     qreal originy = pos().y() - rowNumber * rowWidth / 2 + rowWidth / 2;
     for (int i = 0; i < rowNumber; ++i)
     {
         for (int j = 0; j < collumnNumber; ++j)
         {
-            //qDebug("Wu %d %d", i, j);
             if (musics[i * collumnNumber + j])
             {
-                musics[i * collumnNumber + j]->setPos(originx + collumnWidth * (j + 0.5), originy + rowWidth * i);
-                //qDebug() << musics[i * collumnNumber + j]->pos();
+                qDebug() << "i " << i << "j " << j << "cnt " << musics[i * collumnNumber + j]->numbers.count();
+                musics[i * collumnNumber + j]->setPos(originx + collumnWidth * j, originy + rowWidth * i);
             }
-            //qDebug("Zhelun");
         }
     }
 }

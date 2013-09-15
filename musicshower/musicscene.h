@@ -21,6 +21,18 @@ public:
     void display();
     void setScore(WPScore *);
     ~musicScene();
+    
+    private slots:
+    /*
+      void addNumber();
+      void deleteNumber();
+      void cut();
+      void copy();
+      void paste();
+      */
+
+protected:
+      void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
 private:
     WPScore *music;

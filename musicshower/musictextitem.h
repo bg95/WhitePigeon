@@ -34,18 +34,14 @@ public:
     qreal length();
     qreal interval();
     void setDotted(bool dot);
-    //QVector <musicLineItem *> lines;
-    //static qreal radius();
-    //int lowerDots();
-    //int lines();
-    //int upperDots();
-    //void addUpperDot(musicDotItem *upperDot);
+    void setPos(qreal x, qreal y);
+    void create(QGraphicsSceneMouseEvent *event);
     QSet <musicDotItem *> upperDots;
     QSet <musicDotItem *> lowerDots;
     QChar musicHeight;
 
 protected:
-    //void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
     //void focusOutEvent(QFocusEvent *event);
 
 private:

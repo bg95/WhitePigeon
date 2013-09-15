@@ -67,7 +67,8 @@ SOURCES += main.cpp\
     WPImage/Parallel_Lines.cpp \
     WPImage/Image_Processing.cpp \
     WPImage/Image.cpp \
-    core/WPTimbre.cpp
+    core/WPTimbre.cpp \
+    musicshower/musicrepeatitem.cpp
 
 HEADERS  += \
             myglwidget.h \
@@ -123,7 +124,8 @@ HEADERS  += \
     WPImage/Parallel_Lines.h \
     WPImage/Image_Processing.h \
     WPImage/Image.h \
-    core/WPModifierBase.h
+    core/WPModifierBase.h \
+    musicshower/musicrepeatitem.h
 
 TRANSLATIONS += Chinese.ts
 
