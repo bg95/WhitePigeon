@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/close.gif</file>
+        <file>images/closeall.gif</file>
+        <file>images/copy.gif</file>
+        <file>images/cut.gif</file>
+        <file>images/delete.gif</file>
+        <file>images/exit.png</file>
+        <file>images/go.gif</file>
+        <file>images/music.gif</file>
+        <file>images/new.gif</file>
+        <file>images/open.gif</file>
+        <file>images/oscilloscope.png</file>
+        <file>images/pause.gif</file>
+        <file>images/play.gif</file>
+        <file>images/recent.png</file>
+        <file>images/redo.png</file>
+        <file>images/refresh.png</file>
+        <file>images/save.gif</file>
+        <file>images/saveas.gif</file>
+        <file>images/stop.gif</file>
+        <file>images/undo.png</file>
+        <file>images/web.gif</file>
+        <file>images/image.png</file>
+    </qresource>
+</RCC>
