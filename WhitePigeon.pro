@@ -14,6 +14,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+        myglwidget.cpp \
     WPScore/WPScore.cpp \
     WPScore/WPProperty.cpp \
     WPScore/WPPosition.cpp \
@@ -65,6 +66,30 @@ SOURCES += main.cpp\
 
 HEADERS  +=\
     WPScore/WPSPosition.h \
+    core/WPOscilloscope.cpp \
+    core/WPSynthesizer.cpp \
+    core/WPWave.cpp \
+    OscilloscopeWindow.cpp \
+    mainwindow.cpp \
+    core/WPPipe.cpp \
+    core/WPMixer.cpp \
+    WPScore/WPPersistentTree.cpp \
+    musictextitem.cpp \
+    musicscene.cpp \
+    musicarcitem.cpp \
+    getmusicinfodialog.cpp \
+    musicbracketitem.cpp \
+    musicdotitem.cpp \
+    musiclineitem.cpp \
+    musicbaritem.cpp \
+    musicrowitem.cpp \
+    musicwholeitem.cpp \
+    core/WPSynthesisController.cpp \
+    QRecentFilesMenu.cpp \
+    WPWindow.cpp
+
+HEADERS  +=\
+            myglwidget.h \
     WPScore/WPScore.h \
     WPScore/WPProperty.h \
     WPScore/WPPosition.h \

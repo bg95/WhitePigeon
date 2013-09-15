@@ -13,7 +13,6 @@
 template <class T> T checkmax(T &, T);
 template <class T> T checkmin(T &, T);
 template <class T> T GCD(T, T);
-
 template <class T> T checkmax(T &a, T b)
 {
 	return (a > b) ? a : a = b;

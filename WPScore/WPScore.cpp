@@ -95,7 +95,7 @@ int WPScore::load(const std::string &FileName)
 		AnalysisScore0a(Rest);
 	}
 	return 0;
-}
+		}
 
 void WPScore::close()
 {
@@ -118,7 +118,7 @@ WPPart *WPScore::newPart()
 }
 
 WPPart *WPScore::newPart(std::string S)
-{
+    {
 	int Number = countPartNumber();
 	PartList.push_back(WPPart (this, S));
 	PartList[PartList.size() - 1].setOrder(Number);
