@@ -95,7 +95,7 @@ int WPScore::load(const std::string &FileName)
 		AnalysisScore0a(Rest);
 	}
 	return 0;
-		}
+}
 
 void WPScore::close()
 {

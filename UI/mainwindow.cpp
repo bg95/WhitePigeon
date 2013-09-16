@@ -3,9 +3,9 @@
 #include "QRecentFilesMenu.h"
 #include "QRecentWebsitesMenu.h"
 #include "versiondialog.h"
-//#include "core/WPSynthesisController.h"
+#include "core/WPSynthesisController.h"
 #include "WPImage/Image_Processing.h"
-//#include "OscilloscopeWindow.h"
+#include "OscilloscopeWindow.h"
 #include "WPWindow.h"
 #include "musicshower/musicscene.h"
 
@@ -14,9 +14,10 @@
 MainWindow::MainWindow()
 {
     /* Private widget settings */
-    //controller = new WPSynthesisController(this);
+        controller = new WPSynthesisController(this);
     oscilloscopeWindow = 0;
     countNumber = 0;
+
     mdiArea = new QMdiArea;
     mdiArea->setParent(this);
     mdiArea->setViewMode(QMdiArea::TabbedView);
@@ -167,7 +168,7 @@ void MainWindow::createActions()
             this, SLOT(stopAll()));
 
     fileToolViewAction = new QAction(this);
-    fileToolViewAction->setText(tr("Tool Bar"));
+    fileToolViewAction->setText(tr("File Tool Bar"));
     fileToolViewAction->setCheckable(true);
     fileToolViewAction->setStatusTip(tr("Show file tool bar or not"));
     fileToolViewAction->setToolTip(tr("Show file tool bar or not"));
@@ -663,12 +664,12 @@ void MainWindow::refresh()
 void MainWindow::play()
 {
     WPWindow *window = dynamic_cast<WPWindow *>(mdiArea->activeSubWindow());
-    window->play_with();
+    window->play_with(controller);
 }
 
 void MainWindow::stopAll()
 {
-    // controller->stopAll();
+    controller->stopAll();
 }
 
 void MainWindow::updateActions()
@@ -762,13 +763,6 @@ void MainWindow::showStatusBarMessage(const QString &msg)
 
 void MainWindow::showOscilloscope()
 {
-    /*
-    if (!oscilloscopeWindow)
-    {
-        oscilloscopeWindow = new OscilloscopeWindow(this);
-    }
-    oscilloscopeWindow->show();
-    */
 }
 
 void MainWindow::recongiseImage()

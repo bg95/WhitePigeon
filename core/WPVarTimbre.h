@@ -19,5 +19,7 @@ public:
  * WPVowel, WPConsonantVowel : WPTimbre
  * WPVoice : WPVarTimbre
  * WPVoiceAnalyzer
- * WPMixer, WPBranchedPipe : QIODevice
+ * WPBranchedPipe : QIODevice
+ * WPEffect: WPNoteModifier, WPFreqModifier, WPDurModifier, WPAmpModifier, WPTimbre
+ * WPPropertyApplicator
  */

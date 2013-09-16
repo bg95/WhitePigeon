@@ -7,14 +7,20 @@
 QT       += core gui opengl multimedia webkit webkitwidgets network
 CONFIG += opengl
 
+#to compile a plug-in
+#g++ WPTuningFork.cpp -o  libWPTuningFork.so -fPIC -shared -I /usr/include/qt5/QtCore -I /usr/include/qt5/QtMultimedia -I /usr/include/qt5 -I ./.. -g
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = WhitePigeon
 TEMPLATE = app
+LIBS += -ldl
+QMAKE_CXXFLAGS += -rdynamic
 
 
 SOURCES += main.cpp\
-        myglwidget.cpp \
+    OscilloscopeWindow.cpp \
+    myglwidget.cpp \
     WPScore/WPScore.cpp \
     WPScore/WPProperty.cpp \
     WPScore/WPPosition.cpp \
@@ -24,11 +30,11 @@ SOURCES += main.cpp\
     WPScore/WPLib.cpp \
     WPScore/WPInterval.cpp \
     WPScore/WPPersistentTree.cpp \
-#    core/WPSynthesizer.cpp \
-#    core/WPWave.cpp \
-#    core/WPPipe.cpp \
-#    core/WPMixer.cpp \
-#    core/WPSynthesisController.cpp \
+    core/WPSynthesizer.cpp \
+    core/WPWave.cpp \
+    core/WPPipe.cpp \
+    core/WPMixer.cpp \
+    core/WPSynthesisController.cpp \
     UI/WPWindow.cpp \
     UI/QRecentFilesMenu.cpp \
     UI/mainwindow.cpp \
@@ -41,25 +47,24 @@ SOURCES += main.cpp\
     musicshower/musicbracketitem.cpp \
     musicshower/musicbaritem.cpp \
     musicshower/musicarcitem.cpp \
-#    musicshower/getmusicinfodialog.cpp \
     musicshower/musicview.cpp \
     musicshower/musicrepeatitem.cpp \
-#    core/WPPropertyAndModifiers.cpp \
-#    core/WPOscilloscope.cpp \
-#    core/WPModifier.cpp \
-#    WPDLLManager/WPDLLTimbreManager.cpp \
-#    WPDLLManager/WPDLLTimbre.cpp \
-#    WPDLLManager/WPDLLModifier.cpp \
-#    WPDLLManager/WPDLLManager.cpp \
-#    WPDLLManager/WPCallbackManager.cpp \
-#    plugins/WPDefaultNoteModifier.cpp \
-#    plugins/WP12EqualTuning.cpp \
-#    OscilloscopeWindow.cpp \
+    core/WPPropertyAndModifiers.cpp \
+    core/WPOscilloscope.cpp \
+    core/WPModifier.cpp \
+    WPDLLManager/WPDLLTimbreManager.cpp \
+    WPDLLManager/WPDLLTimbre.cpp \
+    WPDLLManager/WPDLLModifier.cpp \
+    WPDLLManager/WPDLLManager.cpp \
+    WPDLLManager/WPCallbackManager.cpp \
+    plugins/WPDefaultNoteModifier.cpp \
+    plugins/WP12EqualTuning.cpp \
+    OscilloscopeWindow.cpp \
     myglwidget.cpp \
     UI/QRecentWebsitesMenu.cpp \
     UI/versiondialog.cpp \
-#    plugins/WPTempoModifier.cpp \
-#    plugins/WPAmpModifier.cpp \
+    plugins/WPTempoModifier.cpp \
+    plugins/WPAmpModifier.cpp \
     WPImage/Parallel_Lines.cpp \
     WPImage/Image_Processing.cpp \
     WPImage/Image.cpp
@@ -69,27 +74,45 @@ HEADERS  +=\
     core/WPOscilloscope.cpp \
     core/WPSynthesizer.cpp \
     core/WPWave.cpp \
-    OscilloscopeWindow.cpp \
-    mainwindow.cpp \
     core/WPPipe.cpp \
     core/WPMixer.cpp \
-    WPScore/WPPersistentTree.cpp \
-    musictextitem.cpp \
-    musicscene.cpp \
-    musicarcitem.cpp \
-    getmusicinfodialog.cpp \
-    musicbracketitem.cpp \
-    musicdotitem.cpp \
-    musiclineitem.cpp \
-    musicbaritem.cpp \
-    musicrowitem.cpp \
-    musicwholeitem.cpp \
     core/WPSynthesisController.cpp \
-    QRecentFilesMenu.cpp \
-    WPWindow.cpp
+    core/WPModifier.cpp \
+    core/WPPropertyAndModifiers.cpp \
+    core/WPTuningFork.cpp \
+    core/WPStaccatissimo.cpp \
+    WPDLLManager/WPDLLManager.cpp \
+    WPDLLManager/WPDLLTimbre.cpp \
+    WPDLLManager/WPCallbackManager.cpp \
+    WPDLLManager/WPDLLModifier.cpp \
+    WPDLLManager/WPDLLTimbreManager.cpp \
+    plugins/WPDefaultNoteModifier.cpp \
+    plugins/WP12EqualTuning.cpp \
+    UI/WPWindow.cpp \
+    UI/QRecentFilesMenu.cpp \
+    UI/mainwindow.cpp \
+    musicshower/musicwholeitem.cpp \
+    musicshower/musictextitem.cpp \
+    musicshower/musicscene.cpp \
+    musicshower/musicrowitem.cpp \
+    musicshower/musiclineitem.cpp \
+    musicshower/musicdotitem.cpp \
+    musicshower/musicbracketitem.cpp \
+    musicshower/musicbaritem.cpp \
+    musicshower/musicarcitem.cpp \
+    musicshower/getmusicinfodialog.cpp \
+    musicshower/musicview.cpp \
+    UI/QRecentWebsitesMenu.cpp \
+    UI/versiondialog.cpp \
+    WPImage/Parallel_Lines.cpp \
+    WPImage/Image_Processing.cpp \
+    WPImage/Image.cpp \
+    core/WPTimbre.cpp
 
-HEADERS  +=\
+HEADERS  += \
             myglwidget.h \
+    OscilloscopeWindow.h \
+    WPScore/WPSPosition.h \
     WPScore/WPScore.h \
     WPScore/WPProperty.h \
     WPScore/WPPosition.h \
@@ -98,15 +121,36 @@ HEADERS  +=\
     WPScore/WPMultinote.h \
     WPScore/WPLib.h \
     WPScore/WPInterval.h \
-#    core/WPSynthesizer.h \
-#    core/WPWave.h \
-#    core/WPTimbre.h \
-#    core/WPVarTimbre.h \
-#    core/WPPipe.h \
-#    core/WPMixer.h \
+    core/WPSynthesizer.h \
+    core/WPWave.h \
+    core/WPTimbre.h \
+    core/WPVarTimbre.h \
+    core/WPPipe.h \
+    core/WPMixer.h \
     WPScore/WPPersistentTree.h \
     WPScore/WPAllocator.h \
-#    core/WPSynthesisController.h \
+    core/WPSynthesisController.h \
+    core/WPOscilloscope.h \
+    core/WPSynthesizer.h \
+    core/WPWave.h \
+    core/WPTimbre.h \
+    core/WPTuningFork.h \
+    core/WPVarTimbre.h \
+    core/WPPipe.h \
+    core/WPMixer.h \
+    core/WPSynthesisController.h \
+    core/WPPropertyAndModifiers.h \
+    core/WPModifier.h \
+    core/WPStaccatissimo.h \
+    WPScore/WPPersistentTree.h \
+    WPScore/WPAllocator.h \
+    WPDLLManager/WPDLLManager.h \
+    WPDLLManager/WPDLLTimbre.h \
+    WPDLLManager/WPCallbackManager.h \
+    WPDLLManager/WPDLLModifier.h \
+    WPDLLManager/WPDLLTimbreManager.h \
+    plugins/WPDefaultNoteModifier.h \
+    plugins/WP12EqualTuning.h \
     UI/WPWindow.h \
     UI/QRecentFilesMenu.h \
     UI/mainwindow.h \
@@ -122,25 +166,35 @@ HEADERS  +=\
     musicshower/musicrepeatitem.h \
     musicshower/getmusicinfodialog.h \
     musicshower/musicview.h \
-#    core/WPPropertyAndModifiers.h \
-#    core/WPOscilloscope.h \
-#    core/WPModifier.h \
-#    WPDLLManager/WPDLLTimbreManager.h \
-#    WPDLLManager/WPDLLTimbre.h \
-#    WPDLLManager/WPDLLModifier.h \
-#    WPDLLManager/WPDLLManager.h \
-#    WPDLLManager/WPCallbackManager.h \
-#    plugins/WPDefaultNoteModifier.h \
-#    plugins/WP12EqualTuning.h \
-#    OscilloscopeWindow.h \
+    core/WPPropertyAndModifiers.h \
+    core/WPOscilloscope.h \
+    core/WPModifier.h \
+    WPDLLManager/WPDLLTimbreManager.h \
+    WPDLLManager/WPDLLTimbre.h \
+    WPDLLManager/WPDLLModifier.h \
+    WPDLLManager/WPDLLManager.h \
+    WPDLLManager/WPCallbackManager.h \
+    plugins/WPDefaultNoteModifier.h \
+    plugins/WP12EqualTuning.h \
+    OscilloscopeWindow.h \
     myglwidget.h \
     UI/QRecentWebsitesMenu.h \
     UI/versiondialog.h \
-#    plugins/WPTempoModifier.h \
-#    plugins/WPAmpModifier.h \
+    plugins/WPTempoModifier.h \
+    plugins/WPAmpModifier.h \
     WPImage/Parallel_Lines.h \
     WPImage/Image_Processing.h \
     WPImage/Image.h
+    musicshower/getmusicinfodialog.h \
+    musicshower/musicview.h \
+    OscilloscopeWindow.h \
+    myglwidget.h \
+    UI/QRecentWebsitesMenu.h \
+    UI/versiondialog.h \
+    WPImage/Parallel_Lines.h \
+    WPImage/Image_Processing.h \
+    WPImage/Image.h \
+    core/WPModifierBase.h
 
 TRANSLATIONS += Chinese.ts
 

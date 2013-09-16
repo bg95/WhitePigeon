@@ -20,50 +20,7 @@ musicBarItem::musicBarItem(QVector<musicTextItem *> tune)
 
 void musicBarItem::reset(QVector<musicTextItem *> tune)
 {
-    numbers = tune;
-}
-
-QRectF musicBarItem::boundingRect() const
-{
-	musicTextItem *fir = numbers.first();
-	musicTextItem *bac = numbers.back();
-	QPointF firpos = fir->pos();
-	qreal firwidth = fir->boundingRect().width();
-	qreal firheight = fir->boundingRect().height();
-	QPointF bacpos = bac->pos();
-	qreal bacwidth = bac->boundingRect().width();
-	//qreal bacheight = bac->boundingRect().height();
-	qreal width = bacpos.x() - firpos.x() + firwidth / 2 + bacwidth / 2;
-	qreal height = firheight;
-	//QPointF leftup = QPointF(firpos.x() - firwidth / 2, firpos.y() - firlength / 2);
-    return QRectF(-width / 2, -height / 2, width, height);
-}
-
-
-
-musicLineItem *musicBarItem::drawLine(musicTextItem *left, musicTextItem *right, int level)
-{
-    //for (int i = 0; i < level; ++i)
-    //{
-    //musicLineItem *thisline = new musicLineItem;
-    qreal floor = left->pos().y() + left->boundingRect().height() / 2;
-    qreal x1 = left->pos().x() - left->boundingRect().width() / 2;
-    qreal x2 = right->pos().x() + right->boundingRect().width() / 2;
-    qreal interval = left->interval();
-    musicLineItem *thisline = new musicLineItem(x2 - x1, musicLineItem::horizontal);
-    thisline->setPos((x1 + x2) / 2, floor + level * interval);
-    lines.insert(thisline);
-    return thisline;
-    //}
-}
-
-void musicBarItem::setClap(const qreal length)
-{
-    clapLength = length;
-    //update();
-}
-
-void musicBarItem::removeLines()
+    numbvoid musicBarItem::removeLines()
 {
     foreach(musicLineItem * line, lines)
     {
@@ -127,7 +84,7 @@ void musicBarItem::arrangeLines()
                         }
                         if (l == k)
                         {
-                            for (int m = 1; m <= i; ++m)
+                                                        for (int m = 1; m <= i; ++m)
                             {
                                 if (numbers[prepos]->thisLine(m - 1) !=
                                         numbers[k - 1]->thisLine(m - 1))
@@ -141,7 +98,7 @@ void musicBarItem::arrangeLines()
                                     }
                                 }
                             }
-                        }
+                                                    }
                     }
                     prepos = k;
                     found = true;
@@ -289,13 +246,6 @@ void musicBarItem::arrangeArcs() {
 
 
     
-
-
-
-
-
-
-
 
 
 
