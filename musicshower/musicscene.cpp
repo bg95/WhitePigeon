@@ -112,7 +112,7 @@ void musicScene::display() //unsave
                 }
                 int length = int(4 * (thisfrac.toDouble() + 0.01) - 1);
                 for (int j = 0; j < length; j++)
-               {
+                {
                     numbers[i].push_back(new musicTextItem('-'));
                 }
             }
@@ -169,7 +169,6 @@ void musicScene::display() //unsave
     {
         barsNumber = 0;
     }
-
     rowNumber = barsNumber / 4 + (barsNumber % 4 != 0);
     rows.resize(rowNumber);
 
@@ -177,7 +176,7 @@ void musicScene::display() //unsave
     {
         rows[i] = new musicRowItem(partNumber, 4);
     }
-   for (int i = 0; i < partNumber; ++i)
+    for (int i = 0; i < partNumber; ++i)
     {
         for (int j = 0; j < barsNumber; ++j)
         {
@@ -284,3 +283,5 @@ void musicScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
   newtext->create(event);
   QGraphicsScene::mouseDoubleClickEvent(event);
 }
+
+

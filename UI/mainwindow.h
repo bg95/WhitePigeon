@@ -10,7 +10,7 @@ class QRecentWebsitesMenu;
 class QMdiArea;
 class QMdiSubWindow;
 class WPWindow;
-class WPSynthesisController;
+//class WPSynthesisController;
 class QLineEdit;
 class QPushButton;
 class QHBoxLayout;
@@ -119,7 +119,7 @@ private:
     QMdiArea *mdiArea;
     QVBoxLayout *mainLayout;
     QWidget *widget;
-    WPSynthesisController *controller;
+    //WPSynthesisController *controller;
     OscilloscopeWindow *oscilloscopeWindow;
     int countNumber;
 };

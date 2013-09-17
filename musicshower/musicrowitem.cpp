@@ -109,3 +109,13 @@ void musicRowItem::setBarHeight(qreal height)
 {
     barHeight = height;
 }
+
+
+
+
+
+
+
+
+
+

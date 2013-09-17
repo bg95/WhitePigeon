@@ -21,7 +21,7 @@ musicDotItem::musicDotItem()
 
 musicDotItem::~musicDotItem()
 {
-    }
+}
 
 void musicDotItem::setColor(const QColor &color)
 {
@@ -45,6 +45,18 @@ void musicDotItem::paint(QPainter *painter,
     QRectF rect = boundingRect();
     painter->drawEllipse(rect);
 }
+
+/*
+void musicDotItem::track()
+{
+    if (dotPos == upper)
+    {
+        int upperDots = parentNumber->upperDots();
+        int height = parentNumber
+    }
+
+}
+*/
 
 qreal musicDotItem::radius()
 {

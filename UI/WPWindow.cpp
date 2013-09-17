@@ -4,7 +4,7 @@
 #include "musicshower/musicscene.h"
 #include "musicshower/musicview.h"
 #include "WPScore/WPScore.h"
-#include "core/WPSynthesisController.h"
+//#include "core/WPSynthesisController.h"
 
 #include "WPWindow.h"
 
@@ -263,10 +263,11 @@ void WPWindow::refresh()
     }
 }
 
-void WPWindow::play_with(WPSynthesisController *controller)
+void WPWindow::play_with()
 {
-    controller->synthesizeAndPlay(*score);
+    // controller->synthesizeAndPlay(*score);
 }
+
 
 void WPWindow::closeEvent(QCloseEvent *closeEvent)
 {

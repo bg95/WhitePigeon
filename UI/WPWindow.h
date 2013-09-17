@@ -5,7 +5,7 @@
 
 class musicScene;
 class musicView;
-class WPSynthesisController;
+//class WPSynthesisController;
 class WPScore;
 class QWebView;
 class QVersionMenu;
@@ -36,7 +36,7 @@ public:
     void redo();
     void switchVersion(int version);
     void refresh();
-    void play_with(WPSynthesisController *controller);
+    void play_with();
 
 protected:
     void closeEvent(QCloseEvent *closeEvent);

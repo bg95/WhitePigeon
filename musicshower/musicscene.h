@@ -34,6 +34,7 @@ public:
 
 protected:
       void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
+
 private:
     WPScore *music;
     QString address;

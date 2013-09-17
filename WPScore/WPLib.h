@@ -107,7 +107,7 @@ template <class T> TrieNode <T> *TrieNode <T>::go(const T &Ch, const TrieNode::O
 		if (it->first == Ch)
 		{
 			Result = it->second;
-			break;
+            break;
 		}
 	if (Mode == TrieNode::EDIT && !Result)
 		Result = new TrieNode;

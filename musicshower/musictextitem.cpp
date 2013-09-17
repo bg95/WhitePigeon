@@ -98,6 +98,7 @@ void musicTextItem::removeUpperDot()
     upperDots.clear();
 }
 
+
 void musicTextItem::removeLowerDot()
 {
     foreach (musicDotItem *item, lowerDots)
@@ -124,6 +125,7 @@ void musicTextItem::arrangeDots()
         inter += Interval;
     }
 }
+
 
 musicTextItem::~musicTextItem()
 {
@@ -242,3 +244,4 @@ void musicTextItem::setGoDown(bool go)
 {
     isBack = go;
 }
+
