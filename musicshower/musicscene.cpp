@@ -69,7 +69,7 @@ void musicScene::display() //unsave
             musicTextItem *thisText;
             if (height == WPNote::Rest)
             {
-                thisText = new musicTextItem(0);
+                thisText = new musicTextItem('0');
             }
             else
             {
@@ -186,7 +186,6 @@ void musicScene::display() //unsave
         }
     }
     widget = new musicWholeItem;
-    //widget->setPos(sceneRect().width() / 2, sceneRect().height() / 2);
     for (int i = 0; i < rowNumber; ++i)
     {
         widget->addRow(rows[i]);
@@ -242,12 +241,13 @@ void musicScene::display() //unsave
         }
       }
     }
-
+    /*
     for (int i = 0; i < numbers.count(); ++i) {
       foreach (musicTextItem *thistext, numbers[i]) {
         thistext->arrangeDots();
       }
     }
+    */
 }
 
 musicScene::~musicScene()

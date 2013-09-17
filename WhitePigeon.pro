@@ -40,7 +40,6 @@ SOURCES += main.cpp\
     musicshower/musicbracketitem.cpp \
     musicshower/musicbaritem.cpp \
     musicshower/musicarcitem.cpp \
-#    musicshower/getmusicinfodialog.cpp \
     musicshower/musicview.cpp \
     musicshower/musicrepeatitem.cpp \
 #    core/WPPropertyAndModifiers.cpp \

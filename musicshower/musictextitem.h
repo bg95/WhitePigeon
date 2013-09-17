@@ -59,7 +59,8 @@ private:
     qreal calculate(int x);
     bool isGo;
     bool isBack;
-
+    int uDot;
+    int lDot;
 };
 
 #endif // MUSICTEXTITEM_H
