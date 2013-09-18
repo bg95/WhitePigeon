@@ -252,7 +252,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     controller = new WPSynthesisController;
     //connect(controller, SIGNAL(synthesisFinished()), this, SLOT(waveDecodeFinished()));
     //controller->synthesizeAndOutput(*score, file);
-    //controller->synthesizeAndPlay(*score);
+    controller->synthesizeAndPlay(*score);
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     audioinput->setVolume(0.1);

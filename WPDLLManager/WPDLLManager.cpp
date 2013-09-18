@@ -36,7 +36,7 @@ bool WPDLLManager::openDLL(const char *str)
         handle = LoadLibrary(WStream.str().data());
     #else
         #ifdef Q_OS_LINUX
-            handle = dlopen(str, RTLD_NOW);
+            handle = dlopen(str, RTLD_NOW | RTLD_GLOBAL | RTLD_DEEPBIND);
         #else
             #error "OS not supported"
         #endif
