@@ -8,7 +8,7 @@
 #include "musicdotitem.h"
 #include <QtWidgets>
 
-const int musicScene::musicHeight[12] = {6, -1, 7, 1, -1, 2, -1, 3, 4, -1, 5, -1};
+const int musicScene::musicHeight[12] = {6, 13, 7, 1, 8, 2, 9, 3, 4, 11, 5, 12};
 
 musicScene::musicScene(QWidget *parent)
   : QGraphicsScene(parent),
@@ -17,7 +17,7 @@ musicScene::musicScene(QWidget *parent)
     widget(NULL),   
     music(NULL)
 {
-    setSceneRect(0, 0, 2000, 2000);
+    //setSceneRect(0, 0, 2000, 2000);
 }
 
 void musicScene::setScore(WPScore *score)
@@ -69,7 +69,7 @@ void musicScene::display() //unsave
             musicTextItem *thisText;
             if (height == WPNote::Rest)
             {
-                thisText = new musicTextItem(0);
+                thisText = new musicTextItem('0');
             }
             else
             {
@@ -85,8 +85,13 @@ void musicScene::display() //unsave
                     -- dots;
                 }
                 dots += height > 2;
-                thisText = new musicTextItem(
-                            char(musicHeight[height] + '0'));
+                int mheight = musicHeight[height];
+                if (mheight > 7)
+                {
+                    thisText->setGoUp(true);
+                    mheight -= 7;
+                }
+                thisText = new musicTextItem(char(mheight + '0'));
                 if (dots > 0)
                 {
                     thisText->addUpperDot(dots);
@@ -98,7 +103,6 @@ void musicScene::display() //unsave
             }
             numbers[i].push_back(thisText);
             Fraction thisfrac = thisNote.getLength();
-            qDebug() << thisfrac.X << " " << thisfrac.Y;
             if (thisfrac > Fraction(1,4))
             {
                 if ((thisfrac - Fraction(1, 4) * 1.5) < 0.01 && (thisfrac - Fraction(1, 4) * 1.5) > 0.01)
@@ -130,7 +134,7 @@ void musicScene::display() //unsave
       int lastpos = 0;
       for (int j = 0; j < numbers[i].count(); ++j) {
         qreal tmplength = numbers[i][j]->length();
-        qDebug() << "tmplength " << tmplength;
+        //qDebug() << "tmplength " << tmplength;
         tmpsum += tmplength;
         if (tmpsum - 4 < 0.01 && tmpsum - 4 > -0.01) {
           QVector<musicTextItem *> textsegment;
@@ -140,7 +144,7 @@ void musicScene::display() //unsave
           }
           //qDebug() << "create a " << j + 1 - lastpos << "bar";
           musicBarItem *thisbar = new musicBarItem(textsegment);
-          qDebug() << "textsegment " << textsegment.count();
+          //qDebug() << "textsegment " << textsegment.count();
           lastpos = j + 1;
           tmpsum = 0;
           bars[i].push_back(thisbar);
@@ -181,7 +185,6 @@ void musicScene::display() //unsave
         }
     }
     widget = new musicWholeItem;
-    widget->setPos(sceneRect().width() / 2, sceneRect().height() / 2);
     for (int i = 0; i < rowNumber; ++i)
     {
         widget->addRow(rows[i]);
@@ -211,12 +214,12 @@ void musicScene::display() //unsave
             addItem(thistext);
             foreach (musicDotItem *thisdot, thistext->upperDots)
             {
-                thisdot->setRadius(1);
+                //thisdot->setRadius(100);
                 addItem((QGraphicsItem *)thisdot);
             }
             foreach (musicDotItem *thisdot, thistext->lowerDots)
             {
-                thisdot->setRadius(1);
+                //thisdot->setRadius(100);
                 addItem((QGraphicsItem *)thisdot);
             }
         }
@@ -227,7 +230,7 @@ void musicScene::display() //unsave
       thisline->arrangeBar();
       thisline->arrangeMusic();
     }
-    for (int i = 0; i < bars.count() ; ++i) {
+    for (int i = 0; i < bars.count(); ++i) {
       foreach (musicBarItem* thisbar, bars[i]) {
         thisbar->fillText();
         thisbar->arrangeLines();
@@ -237,11 +240,13 @@ void musicScene::display() //unsave
         }
       }
     }
+    /*
     for (int i = 0; i < numbers.count(); ++i) {
       foreach (musicTextItem *thistext, numbers[i]) {
         thistext->arrangeDots();
       }
-    }    
+    }
+    */
 }
 
 musicScene::~musicScene()

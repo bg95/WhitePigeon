@@ -6,15 +6,6 @@
 musicLineItem::musicLineItem(qreal length, position pos) 
 	: Length(length), Pos(pos), lineColor(Qt::black)
 {
-
-    //setZValue(-1);
-    /*
-    foreach (musicTextItem *item, parents)
-    {
-        item->addLine(this);
-    }
-    */
-    //trackNodes();
 }
 
 musicLineItem::~musicLineItem()

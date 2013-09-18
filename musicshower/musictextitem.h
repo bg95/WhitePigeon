@@ -34,6 +34,8 @@ public:
     qreal length();
     qreal interval();
     void setDotted(bool dot);
+    void setGoUp(bool go);
+    void setGoDown(bool go);
     void setPos(qreal x, qreal y);
     void create(QGraphicsSceneMouseEvent *event);
     QSet <musicDotItem *> upperDots;
@@ -55,13 +57,10 @@ private:
     QVector <musicLineItem *> Lines;
     //int numberLines;
     qreal calculate(int x);
-    //QSet <musicLineItem *> lines;
-    //int lowerDots;
-    //int lines;
-    //int upperDots;
-    //QVector <musicDotItem *> upperDots;
-    //QVector <musicArcItem *> upperarc;
-
+    bool isGo;
+    bool isBack;
+    int uDot;
+    int lDot;
 };
 
 #endif // MUSICTEXTITEM_H

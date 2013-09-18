@@ -268,6 +268,7 @@ void WPWindow::play_with(WPSynthesisController *controller)
     controller->synthesizeAndPlay(*score);
 }
 
+
 void WPWindow::closeEvent(QCloseEvent *closeEvent)
 {
     if (mode == Web)

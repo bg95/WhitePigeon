@@ -78,7 +78,7 @@ void musicRowItem::arrangeMusic()
         {
             if (musics[i * collumnNumber + j])
             {
-                qDebug() << "i " << i << "j " << j << "cnt " << musics[i * collumnNumber + j]->numbers.count();
+                //qDebug() << "i " << i << "j " << j << "cnt " << musics[i * collumnNumber + j]->numbers.count();
                 musics[i * collumnNumber + j]->setPos(originx + collumnWidth * j, originy + rowWidth * i);
             }
         }
@@ -95,24 +95,9 @@ musicRowItem::~musicRowItem()
     bars.clear();
 }
 
-
-/*
-QVariant musicRowItem::itemChange(GraphicsItemChange change, const QVariant &value)
-{
-    if (change == ItemPositionHasChanged)
-    {
-        arrangeBar();
-        arrangeMusic();
-    }
-    return QGraphicsItem::itemChange(change, value);
-}
-*/
-
 void musicRowItem::setPos(qreal x, qreal y)
 {
     Pos = QPointF(x, y);
-    arrangeBar();
-    arrangeMusic();
 }
 
 QPointF musicRowItem::pos()

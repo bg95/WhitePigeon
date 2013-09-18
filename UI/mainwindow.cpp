@@ -15,9 +15,8 @@ MainWindow::MainWindow()
 {
     /* Private widget settings */
     controller = new WPSynthesisController(this);
-    oscilloscopeWindow = 0;
+    oscilloscopeWindow = new OscilloscopeWindow;
     countNumber = 0;
-
     mdiArea = new QMdiArea;
     mdiArea->setParent(this);
     mdiArea->setViewMode(QMdiArea::TabbedView);
@@ -168,7 +167,7 @@ void MainWindow::createActions()
             this, SLOT(stopAll()));
 
     fileToolViewAction = new QAction(this);
-    fileToolViewAction->setText(tr("File Tool Bar"));
+    fileToolViewAction->setText(tr("Tool Bar"));
     fileToolViewAction->setCheckable(true);
     fileToolViewAction->setStatusTip(tr("Show file tool bar or not"));
     fileToolViewAction->setToolTip(tr("Show file tool bar or not"));

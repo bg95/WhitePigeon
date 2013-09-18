@@ -48,7 +48,6 @@ musicWholeItem::~musicWholeItem()
 void musicWholeItem::setPos(qreal x, qreal y)
 {
     Pos = QPointF(x, y);
-    arrangeRow();
 }
 
 QPointF musicWholeItem::pos()

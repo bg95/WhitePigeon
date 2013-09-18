@@ -14,11 +14,11 @@ class Qset;
 class musicBarItem
 {
 public:
-  void setText(const QString &Text);
+  //void setText(const QString &Text);
     musicBarItem(QVector<musicTextItem *> tune);
     //musicBarItem(QList<musicTextItem *> tune);
     ~musicBarItem();
-    void reset(QVector <musicTextItem *> tune);
+    //void reset(QVector <musicTextItem *> tune);
     QRectF boundingRect() const;
     void arrangeLines();
     void arrangeArcs();

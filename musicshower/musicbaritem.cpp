@@ -4,23 +4,9 @@
 #include "musicarcitem.h"
 #include <QtWidgets>
 
-void musicBarItem::setText(const QString &Text) {
-  QVector<musicTextItem *> tune(Text.size());
-  for (int i = 0; i < Text.size(); ++i) {
-    musicTextItem *thisText = new musicTextItem(Text[i]);
-    tune.push_back(thisText);
-  }
-  reset(tune);
-}
-
 musicBarItem::musicBarItem(QVector<musicTextItem *> tune)
     : numbers(tune), clapLength(1), textWidth(30), Pos(QPointF(0, 0))
 {
-}
-
-void musicBarItem::reset(QVector<musicTextItem *> tune)
-{
-    numbers = tune;
 }
 
 QRectF musicBarItem::boundingRect() const
@@ -46,7 +32,9 @@ musicLineItem *musicBarItem::drawLine(musicTextItem *left, musicTextItem *right,
     //for (int i = 0; i < level; ++i)
     //{
     //musicLineItem *thisline = new musicLineItem;
-    qreal floor = left->pos().y() + left->boundingRect().height() / 2;
+    qreal floor1 = left->pos().y() + left->boundingRect().height() / 2;
+    qreal floor2 = right->pos().y() + right->boundingRect().height() / 2;
+    qreal floor = (floor2 > floor1 ? floor2 : floor1);
     qreal x1 = left->pos().x() - left->boundingRect().width() / 2;
     qreal x2 = right->pos().x() + right->boundingRect().width() / 2;
     qreal interval = left->interval();
@@ -60,7 +48,6 @@ musicLineItem *musicBarItem::drawLine(musicTextItem *left, musicTextItem *right,
 void musicBarItem::setClap(const qreal length)
 {
     clapLength = length;
-    arrangeLines();
     //update();
 }
 
@@ -198,6 +185,10 @@ void musicBarItem::fillText()
     qreal oriposx = pos().x();
     qreal oriposy = pos().y();
     int count = numbers.count();
+    while (count * textWidth > 250)
+    {
+        textWidth /= 2;
+    }
     for (int i = 0; i < count; ++i) 
     {
       numbers[i]->setPos(oriposx - count * textWidth / 2 + textWidth / 2+ i * textWidth, oriposy);
@@ -209,18 +200,6 @@ void musicBarItem::setWidth(qreal width)
     textWidth = width;
 }
 
-/*
-QVariant musicBarItem::itemChange(GraphicsItemChange change, const QVariant &value)
-{
-    if (change == ItemPositionHasChanged)
-    {
-        fillText();
-        arrangeLines();
-    }
-    return QGraphicsItem::itemChange(change, value);
-}
-*/
-
 QPointF musicBarItem::pos()
 {
     return Pos;
@@ -229,8 +208,6 @@ QPointF musicBarItem::pos()
 void musicBarItem::setPos(qreal x, qreal y)
 {
     Pos = QPointF(x, y);
-    fillText();
-    arrangeLines();
 }
 
 musicBarItem::~musicBarItem()
@@ -256,8 +233,7 @@ musicBarItem::~musicBarItem()
 void musicBarItem::addArcPairs(musicTextItem *front, musicTextItem *end)
 {
   QPair<musicTextItem *, musicTextItem *> thispair(front, end);
-  arcPairs.push_back(thispair);
-  arrangeArcs(); 
+  arcPairs.push_back(thispair); 
 }
 
 void musicBarItem::removePairs() {

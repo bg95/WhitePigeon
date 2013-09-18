@@ -6,7 +6,13 @@
 class musicRepeatItem : public QGraphicsItem
 {
  public:
-  musicRepeatItem();
+    enum direction
+    {
+        positive,
+        negetive
+    };
+
+  musicRepeatItem(direction dir);
   ~musicRepeatItem();
   void setHeight(qreal height);
   QRectF boundingRect() const;
@@ -14,6 +20,7 @@ class musicRepeatItem : public QGraphicsItem
 	     QWidget *widget);
  private:
   qreal repeatHeight;
+  direction Dir;
 };
 
 #endif

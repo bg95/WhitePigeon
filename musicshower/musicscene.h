@@ -21,6 +21,7 @@ public:
     void display();
     void setScore(WPScore *);
     ~musicScene();
+    musicWholeItem *widget;
     
     private slots:
     /*
@@ -42,7 +43,7 @@ private:
     QVector< QVector<musicBarItem *> > bars;
     QVector<musicRowItem *> rows;
     int rowNumber;
-    musicWholeItem *widget;
+    //musicWholeItem *widget;
     static const int musicHeight[12];
 };
 
