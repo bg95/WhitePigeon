@@ -65,186 +65,38 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 
     score->lockForWrite();
     score->newPart("whitepig");
-    score->newPart("white");
+    //score->newPart("white");
     //score->newPart("swine");
     score->unlock();
     score->lockForRead();
     pos = Fraction(0, 1);
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 10; i++)
     {
         score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note1));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note1));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note1));/*
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet1));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet1));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet1));*/
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note5));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));/*
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet5));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet5));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet5));*/
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note6));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note6));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note6));/*
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet6));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet6));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet6));*/
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note55));/*
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet5));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet5));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet5));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet5));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet5));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet5));*/
-        pos += Fraction(2, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note4));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));/*
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet4));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet4));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet4));*/
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));/*
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet3));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet3));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet3));*/
-        pos += Fraction(1, 1);
+        pos += note1.getLength();
         score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note2));/*
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet2));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet2));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet2));*/
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note11));/*
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet1));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet1));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet1));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet1));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet1));
-        score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notet1));*/
-        pos += Fraction(2, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note1));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note1));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        pos += Fraction(1, 1);
+        pos += note2.getLength();
         score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note5));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note5));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note22));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note44));
-        pos += Fraction(2, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note6));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note6));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note5));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note4));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note22));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(notel77));
-        pos += Fraction(2, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note1));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note1));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note1));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note5));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note1));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note6));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note6));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note55));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note11));
-        pos += Fraction(2, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note4));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note1));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note1));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note2));
-        pos += Fraction(1, 1);
-        score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note11));
-        //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note11));
-        pos += Fraction(2, 1);
+        pos += note3.getLength();
     }
-    //score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(48, 1))), "WPTempoModifier 120.0"));
-    //score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(2, 4))), "WPSlur"));
+    pos = Fraction(0, 1);
+    for (int i = 0; i < 10; i++)
+    {
+        Fraction l = note1.getLength() + note2.getLength() + note2.getLength();
+        score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(pos), WPPosition(pos + l)), "WPSlur"));
+        score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(pos), WPPosition(pos + l)), "WPTempoModifier 140"));
+        pos += l;
+    }
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
     score->unlock();
 
-
-    score->lockForWrite();
-    for (int i = 0; i < 16 * 3; i++)
-    {
-        score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i, 8)), WPMultinote((i % 8 != 7) ? notel1 : notel3));
-        score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i + 1, 8)), WPMultinote(notel5));
-        score->getPartList()[1].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(2 * i, 8)), WPPosition(Fraction(2 * i + 2, 8))), "WPSlur"));
-    }
-    score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
-    //score->getPartList()[1].setToBeMuted();
-    score->unlock();
-
 	score->lockForWrite();
-    score->save("pi2.wps");
+    score->save("pi3.wps");
 	score->close();
     score->unlock();
 
     score->lockForWrite();
-    score->load("pi2.wps");
+    score->load("pi3.wps");
     score->unlock();
 
     file = new QFile("wave.out");
