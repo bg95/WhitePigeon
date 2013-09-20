@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-void *(*WP12EqualTuning::callback)(WPCallbackManager::CallbackFunc) = 0;
+void *(*WP12EqualTuning::callback)(WPCallbackManager::CallbackFuncStatic) = 0;
 
 WP12EqualTuning::WP12EqualTuning()
 {
@@ -14,8 +14,9 @@ WP12EqualTuning::~WP12EqualTuning()
 
 void WP12EqualTuning::reset()
 {
+    WPModifierInternal::reset();
     basefreq = 440.0;
-    currentmultinoteiter = getNotes().begin();
+    //currentmultinoteiter = getNotes().begin();
     //qDebug("WP12EqualTuning::reset this = %X", (quint64)this);
 }
 
@@ -28,19 +29,23 @@ void WP12EqualTuning::set(std::string para)
 
 std::vector<double> WP12EqualTuning::modifyFreq(double time, std::vector<double> freq)
 {
-    //WPMultinote cmnote = getCurrentMultinote();
-    std::vector<WPNote> notes = getCurrentMultinote().getNotes();
+    WPMultinote *cmnote = getCurrentMultinote();
+    if (cmnote == 0)
+    {
+        qCritical("No current note found! this = %lX", (quint64)this);
+    }
+    std::vector<WPNote> notes = getCurrentMultinote()->getNotes();
     std::vector<WPNote>::iterator iter;
     freq.clear();
     for (iter = notes.begin(); iter != notes.end(); iter++)
         freq.push_back(cal12EqualTuning(*iter));
     return freq;
 }
-
+/*
 WPMultinote WP12EqualTuning::getCurrentMultinote()
 {
     double time = getTime();
-    double stime = (-getNotesOffset()).toDouble();
+    double stime = (-getNotesOffset());//.toDouble();
     std::vector<WPMultinote> &notes = getNotes();
     bool frombegin = false;
     //qDebug("WP12EqualTuning::getCurrentMultinote this = %X notes.begin = %X", (quint64)this, (quint64)&*(notes.begin()));
@@ -60,7 +65,7 @@ WPMultinote WP12EqualTuning::getCurrentMultinote()
     }
     return WPMultinote();
 }
-
+*/
 double WP12EqualTuning::cal12EqualTuning(WPNote note)
 {
     return basefreq * pow(2.0, (double)note.getPitch() / 12.0);

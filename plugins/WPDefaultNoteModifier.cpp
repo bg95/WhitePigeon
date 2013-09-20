@@ -1,6 +1,6 @@
 #include "WPDefaultNoteModifier.h"
 
-void *(*WPDefaultNoteModifier::callback)(WPCallbackManager::CallbackFunc) = 0;
+void *(*WPDefaultNoteModifier::callback)(WPCallbackManager::CallbackFuncStatic) = 0;
 
 WPDefaultNoteModifier::WPDefaultNoteModifier()
 {
@@ -10,18 +10,20 @@ WPDefaultNoteModifier::~WPDefaultNoteModifier()
 {
 }
 
-void WPDefaultNoteModifier::setNotes(const std::vector<WPMultinote> &notes, Fraction offset)
+//void WPDefaultNoteModifier::setNotes(const std::vector<WPMultinote> &notes, double offset)
+void WPDefaultNoteModifier::setNotes(WPMultinote *notes, int num, double offset)
 {
-    std::vector<WPMultinote>::iterator iter;
+    WPMultinote *iter, *end;
     int i;
-	WPModifier::setNotes(notes, offset);
+    WPModifierInternal::setNotes(notes, num, offset);
     //...
     notestarts.clear();
-    notestarts.push_back(-offset.toDouble());
+    notestarts.push_back(-offset/*.toDouble()*/);
     i = notestarts.size();
-    for (iter = getNotes().begin(); iter != getNotes().end(); iter++)
+    end = getNotes() + getNotesNumber();
+    for (iter = getNotes(); iter != end; iter++)
     {
-        notestarts.push_back(notestarts[i - 1] + (*iter).getNotes()[0].getLength().toDouble());
+        notestarts.push_back(notestarts[i - 1] + (*iter).getLength().toDouble());
         i++;
     }
     notestarts.pop_back();
@@ -30,7 +32,7 @@ void WPDefaultNoteModifier::setNotes(const std::vector<WPMultinote> &notes, Frac
 
 double WPDefaultNoteModifier::modifyNote(double time)
 {
-    std::vector<WPMultinote> &multinotes = getNotes();
+    WPMultinote *multinotes = getNotes();
     for (; notestarts[notei] <= getTime() && notei < notestarts.size(); notei++)
         if (timePassed(notestarts[notei]))
             return multinotes[notei].getNotes()[0].getLength().toDouble();

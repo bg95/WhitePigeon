@@ -7,7 +7,7 @@
 #include "WPDLLManager/WPCallbackManager.h"
 
 #include "WPScore/WPLib.h"
-#include "WPScore/WPLib.cpp"
+//#include "WPScore/WPLib.cpp"
 
 #include <cstdlib>
 
@@ -23,7 +23,7 @@ public:
     WPWave *synthesize(double dur, double time0, double time1, double amp0, double amp1, double freq0, double freq1);
     //void set2(Fraction g);
     
-    static void *(*callback)(WPCallbackManager::CallbackFunc);
+    static void *(*callback)(WPCallbackManager::CallbackFuncStatic);
     
 private:
 	double time, phi, phi2;

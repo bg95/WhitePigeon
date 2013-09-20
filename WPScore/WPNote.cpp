@@ -38,7 +38,7 @@ double WPNote::getFrequency(double *TuningFunction(int, int), int Base) const
 
 Fraction WPNote::getLength() const
 {
-	return Length;
+    return Length;
 }
 
 double WPNote::getTimeSpan() const

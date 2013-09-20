@@ -57,6 +57,8 @@ private:
     void scheduleOutputNoteLoopBody();
 
     void processProperties(double time0, double time1, std::vector<WPProperty> &sprop, std::vector<WPProperty> &eprop);
+    void insertProperty(WPProperty prop);
+    void removeProperty(WPProperty prop);
     int processTuningFreqAmp(double time, std::vector<double> &freq, std::vector<double> &amp);
     int processNote(double time, double &notelength);
     int processTimbre(double time, std::string &timbrename);
@@ -64,7 +66,7 @@ private:
     void processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo, std::string &timbre);
     //freq should be filled with 0's
     void outputNote();
-    std::map<WPProperty, WPPropertyAndModifiers> propmap;
+    std::map<WPProperty, WPPropertyAndModifiers *> propmap;
     QIODevice *output;
     WPPart *part;
     WP12EqualTuning defaulttuning;

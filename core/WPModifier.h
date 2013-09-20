@@ -1,66 +1,48 @@
 #ifndef WPMODIFIER_H
 #define WPMODIFIER_H
 
-#include <Qt>
-#include "WPModifierBase.h"
-#include "WPScore/WPNote.h"
 #include "WPScore/WPMultinote.h"
-#include "WPScore/WPLib.h"
 
-class WPModifier : public WPModifierBase
+class WPModifier
 {
 public:
-    WPModifier();
-    virtual ~WPModifier();
-    virtual void setTime(double t);/*
-    {
-        wpmodifier_prevtime = wpmodifier_time;
-        wpmodifier_time = t;
-    }*/
+    WPModifier() {}
+    virtual ~WPModifier() {}
+    virtual void setTime(double t) = 0;
     //this will be called before each call of modify* function, telling the current time (in beats)
     //call this when overwriting
-    virtual double getTime() const;
-    virtual double getPrevTime() const;
-    virtual bool timePassed(double t);
-    virtual void reset(); //call this when overwriting
-    //virtual void reset(double t); //call this when overwriting
+    virtual double getTime() const = 0;
+    virtual double getPrevTime() const = 0;
+    virtual bool timePassed(double t) = 0;
+    virtual void reset() = 0; //call this when overwriting
 
-    virtual void setNotes(const std::vector<WPMultinote> &notes, Fraction offset);
+    //virtual void setNotes(const std::vector<WPMultinote> &notes, double offset) = 0;
+    virtual void setNotes(WPMultinote *notes, int num, double offset) = 0;
     //setNotes will be called before calling all modify* functions, telling the notes for the modifier
     //call WPModifier::setNotes when overwriting, or getNotes won't work
-    virtual std::vector<WPMultinote> &getNotes(); //why can't be inline?
-    //virtual void setNote(const WPNote &_note); //similar to setNotes, but for isSingleNote() == true
-    //WPNote &getNote();
-    virtual Fraction getNotesOffset();
+    //virtual std::vector<WPMultinote> &getNotes() = 0; //why can't be inline?
+    virtual WPMultinote *getNotes() = 0;
+    virtual int getNotesNumber() = 0;
+    virtual double getNotesOffset() = 0;
 
-    virtual bool isGlobal(); //true if the modifier applies to all parts
-    //virtual bool isSingleNote();
-    //true if the modifier applies to single notes, or application between notes does not interrelate
-    //if true, setNote() will always pass a single note, isGlobal must be false
+    virtual bool isGlobal() = 0; //true if the modifier applies to all parts
 
-    virtual bool isTuning(); //if true, isFreqModifier must be true
-    virtual bool isTimbreModifier();
-    virtual bool isTempoModifier();
-    virtual bool isNoteModifier();
-    virtual bool isFreqModifier();
-    virtual bool isAmpModifier();
+    virtual bool isTuning() = 0; //if true, isFreqModifier must be true
+    virtual bool isTimbreModifier() = 0;
+    virtual bool isTempoModifier() = 0;
+    virtual bool isNoteModifier() = 0;
+    virtual bool isFreqModifier() = 0;
+    virtual bool isAmpModifier() = 0;
 
-    virtual void set(std::string para); //set parameters
+    virtual void set(std::string para) = 0; //set parameters
 
     //time is in the unit of beats
     //length is the total duration of the property
-    virtual std::string modifyTimbre();
-    virtual double modifyTempo(double time, double tempo);
-    virtual double modifyNote(double time); //if a note starts at (near) time, returns the length, otherwise returns a negative
-    virtual std::vector<double> modifyFreq(double time, std::vector<double> freq);
-    virtual std::vector<double> modifyAmp(double time, std::vector<double> amp);
-
-private:
-    double wpmodifier_time, wpmodifier_prevtime;
-    std::vector<WPMultinote> wpmodifier_notes;
-    Fraction wpmodifier_notesoffset;
-    //WPNote wpmodifier_note;
-
+    virtual std::string modifyTimbre() = 0;
+    virtual double modifyTempo(double time, double tempo) = 0;
+    virtual double modifyNote(double time) = 0; //if a note starts at (near) time, returns the length, otherwise returns a negative
+    virtual std::vector<double> modifyFreq(double time, std::vector<double> freq) = 0;
+    virtual std::vector<double> modifyAmp(double time, std::vector<double> amp) = 0;
 };
 
 #endif // WPMODIFIER_H

@@ -221,8 +221,8 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
         //score->getPartList()[2].insertMultinote(WPPosition(pos), WPMultinote(note11));
         pos += Fraction(2, 1);
     }
-    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(48, 1))), "WPTempoModifier 120.0"));
-    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(8, 1))), "WPSlur"));
+    //score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(48, 1))), "WPTempoModifier 120.0"));
+    //score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(2, 4))), "WPSlur"));
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
     score->unlock();
 
@@ -230,8 +230,9 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->lockForWrite();
     for (int i = 0; i < 16 * 3; i++)
     {
-        score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i, 2)), WPMultinote((i % 8 != 7) ? notel1 : notel3));
-        score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i + 1, 2)), WPMultinote(notel5));
+        score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i, 8)), WPMultinote((i % 8 != 7) ? notel1 : notel3));
+        score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i + 1, 8)), WPMultinote(notel5));
+        score->getPartList()[1].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(2 * i, 8)), WPPosition(Fraction(2 * i + 2, 8))), "WPSlur"));
     }
     score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
     //score->getPartList()[1].setToBeMuted();
@@ -252,7 +253,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     controller = new WPSynthesisController;
     //connect(controller, SIGNAL(synthesisFinished()), this, SLOT(waveDecodeFinished()));
     //controller->synthesizeAndOutput(*score, file);
-    //controller->synthesizeAndPlay(*score);
+    controller->synthesizeAndPlay(*score);
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     audioinput->setVolume(0.1);

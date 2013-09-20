@@ -18,8 +18,8 @@ class WPNote
 		bool operator == (const WPNote &) const;
 		int getPitch() const;
 		double getFrequency() const;
-		double getFrequency(double *(int, int), int) const;
-		Fraction getLength() const;
+        double getFrequency(double *(int, int), int) const;
+        Fraction getLength() const;
 		double getTimeSpan() const;
 		void setLength(const Fraction &);
 	private:

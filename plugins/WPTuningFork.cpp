@@ -1,6 +1,6 @@
 #include "WPTuningFork.h"
 
-void *(*WPTuningFork::callback)(WPCallbackManager::CallbackFunc) = 0;
+void *(*WPTuningFork::callback)(WPCallbackManager::CallbackFuncStatic) = 0;
 
 WPTuningFork::WPTuningFork()
 {
@@ -116,8 +116,12 @@ extern "C"
 			delete p;
 		p = 0;
 	}
-	void setCallback(void *_callback)
+	void setCallbackStatic(void *_callback)
     {
-        WPTuningFork::callback = (void *(*)(WPCallbackManager::CallbackFunc))_callback;
+        WPTuningFork::callback = (void *(*)(WPCallbackManager::CallbackFuncStatic))_callback;
+    }
+	void setCallbackMember(MembFuncPtr _callback)
+    {
+        
     }
 }

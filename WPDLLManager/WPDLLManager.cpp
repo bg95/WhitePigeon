@@ -4,7 +4,9 @@
 #include <cstdio>
 
 WPDLLManager::WPDLLManager() :
-    handle(0)
+    handle(0),
+    create(0),
+    destroy(0)
 {
 }
 
@@ -36,7 +38,7 @@ bool WPDLLManager::openDLL(const char *str)
         handle = LoadLibrary(WStream.str().data());
     #else
         #ifdef Q_OS_LINUX
-            handle = dlopen(str, RTLD_NOW | RTLD_GLOBAL | RTLD_DEEPBIND);
+            handle = dlopen(str, RTLD_NOW);
         #else
             #error "OS not supported"
         #endif
@@ -93,13 +95,15 @@ bool WPDLLManager::deleteObject(void *obj) const
 
 bool WPDLLManager::sendCallbackHandle() const
 {
-    void (*setCallback)(void *) = (void (*)(void *))getFuncAddr("setCallback");
-    if (setCallback)
-    {
-        setCallback((void *)WPCallbackManager::call);
-        return true;
-    }
-    return false;
+    void (*setCallbackStatic)(void *) = (void (*)(void *))getFuncAddr("setCallbackStatic");
+    if (!setCallbackStatic)
+        return false;
+    setCallbackStatic((void *)WPCallbackManager::callStatic);
+    void (*setCallbackMember)(typeof WPCallbackManager::callMember) = (typeof setCallbackMember)getFuncAddr("setCallbackMember");
+    if (!setCallbackMember)
+        return false;
+    setCallbackMember(WPCallbackManager::callMember);
+    return true;
 }
 
 void WPDLLManager::closeDLL()

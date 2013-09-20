@@ -45,9 +45,16 @@ std::vector <WPNote> WPMultinote::getNotes()
 
 Fraction WPMultinote::getLength() const
 {
-	if (List.empty())
-		return Fraction (0, 1);
-	return List.back().getLength();
+    if (List.empty())
+        return Fraction (0, 1);
+    return List.back().getLength();
+}
+
+double WPMultinote::getLengthDouble() const
+{
+    if (List.empty())
+        return 0.0;
+    return List.back().getLength().toDouble();
 }
 
 void WPMultinote::setLength(const Fraction &L)

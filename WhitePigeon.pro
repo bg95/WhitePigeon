@@ -46,10 +46,9 @@ SOURCES += main.cpp\
     musicshower/musicrepeatitem.cpp \
     core/WPPropertyAndModifiers.cpp \
     core/WPOscilloscope.cpp \
-    core/WPModifier.cpp \
     WPDLLManager/WPDLLTimbreManager.cpp \
-    WPDLLManager/WPDLLTimbre.cpp \
-    WPDLLManager/WPDLLModifier.cpp \
+#    WPDLLManager/WPDLLTimbre.cpp \
+#    WPDLLManager/WPDLLModifier.cpp \
     WPDLLManager/WPDLLManager.cpp \
     WPDLLManager/WPCallbackManager.cpp \
     plugins/WPDefaultNoteModifier.cpp \
@@ -64,6 +63,7 @@ SOURCES += main.cpp\
     WPImage/Image_Processing.cpp \
     WPImage/Image.cpp \
     core/WPTimbre.cpp \
+    core/WPModifierInternal.cpp
 
 HEADERS  +=\
     WPScore/WPSPosition.h \
@@ -101,10 +101,9 @@ HEADERS  +=\
     musicshower/musicview.h \
     core/WPPropertyAndModifiers.h \
     core/WPOscilloscope.h \
-    core/WPModifier.h \
     WPDLLManager/WPDLLTimbreManager.h \
-    WPDLLManager/WPDLLTimbre.h \
-    WPDLLManager/WPDLLModifier.h \
+#    WPDLLManager/WPDLLTimbre.h \
+#    WPDLLManager/WPDLLModifier.h \
     WPDLLManager/WPDLLManager.h \
     WPDLLManager/WPCallbackManager.h \
     plugins/WPDefaultNoteModifier.h \
@@ -118,7 +117,8 @@ HEADERS  +=\
     WPImage/Parallel_Lines.h \
     WPImage/Image_Processing.h \
     WPImage/Image.h \
-    core/WPModifierBase.h \
+    core/WPModifierInternal.h \
+    core/WPModifier.h
 
 TRANSLATIONS += Chinese.ts
 

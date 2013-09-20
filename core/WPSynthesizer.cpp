@@ -72,10 +72,20 @@ void WPSynthesizer::synthesizePartInitialize()
     time1 = TimeStep;
     propmap.clear();
 
-    defaultnotemodifier.setNotes(part->getAllNotes(), Fraction(0, 1));
+    WPMultinote *notes;
+    std::vector<WPMultinote> notesvector = part->getAllNotes();
+    int num = notesvector.size();
+    notes = new WPMultinote[num];
+    for (int i = 0; i < num; i++)
+        notes[i] = notesvector[i];
+    defaultnotemodifier.setNotes(notes, num, /*Fraction(0, 1)*/0.0);
     defaultnotemodifier.reset();
-    defaulttuning.setNotes(part->getAllNotes(), Fraction(0, 1));
+    notes = new WPMultinote[num];
+    for (int i = 0; i < num; i++)
+        notes[i] = notesvector[i];
+    defaulttuning.setNotes(notes, num, /*Fraction(0, 1)*/0.0);
     defaulttuning.reset();
+    //memory released in synthesizerPartFinalize()
 
     part->lockForRead();
     fragment = part->nextFragment();
@@ -88,7 +98,7 @@ void WPSynthesizer::synthesizePartLoopInitialize()
 {
     if (!(fragment.first.getLength() == Fraction(-1, 1)))
     {
-        //qDebug("start processing one fragment");
+        qDebug("start processing one fragment");
         notes = fragment.first.getNotes();
         sprop = fragment.second.first;
         eprop = fragment.second.second;
@@ -155,6 +165,11 @@ void WPSynthesizer::synthesizePartFinalize()
 
     delete swave;
     swave = 0;
+
+    delete[] defaultnotemodifier.getNotes();
+    delete[] defaulttuning.getNotes();
+    //resolving memory leak in synthesizePartInitialize
+
     emit synthesisFinished();
 }
 
@@ -165,47 +180,84 @@ void WPSynthesizer::processProperties(double time0, double time1, std::vector<WP
     //process properties
     //delete ended
     for (propiter = eprop.begin(); propiter != eprop.end(); propiter++)
+    {
+        qDebug("Property %s,  %lf, %lf,  current time = %lf, %lf", (*propiter).getArg().data(), (*propiter).getInterval().begin().getValue().toDouble(), (*propiter).getInterval().end().getValue().toDouble(), time0, time1);
         if (/*already ended*/t = (*propiter).getInterval().end().getValue().toDouble(), time0 <= t && t < time1)
         {
-            propmap.erase(*propiter);
+            removeProperty(*propiter);
         }
+    }
+    if (time1 == timeend)
+    {
+        for (propiter = eprop.begin(); propiter != eprop.end(); propiter++)
+        {
+            removeProperty(*propiter);
+        }
+    }
     //insert starting
     for (propiter = sprop.begin(); propiter != sprop.end(); propiter++)
         if (/*already begun*/t = (*propiter).getInterval().begin().getValue().toDouble(), time0 <= t && t < time1)
         {
-            pam = new WPPropertyAndModifiers;
-            if (pam->setProperty(*propiter))
-            {
-                WPInterval propinterval = (*propiter).getInterval();
-
-                part->lockForRead();
-                WPInterval propexinterval = part->getExtendedInterval(propinterval);
-                pam->sampleModifier()->setNotes(part->getNotesByInterval(propinterval), propinterval.begin().getValue() - propexinterval.begin().getValue());
-                part->unlock();
-
-                pam->sampleModifier()->reset();
-                //propmap.insert(*propiter, *pam);
-                propmap[*propiter] = *pam;
-                //pam->sampleModifier()->set();
-            }
-            else
-            {
-                qWarning() << "No plug-in ";
-                qWarning("%s", pam->getName().data());
-            }
-            delete pam;
-            pam = 0;
+            insertProperty(*propiter);
         }
+    if (time1 == timeend)
+    {
+        for (propiter = sprop.begin(); propiter != sprop.end(); propiter++)
+        {
+            insertProperty(*propiter);
+        }
+    }
+}
+
+void WPSynthesizer::insertProperty(WPProperty prop)
+{
+    pam = new WPPropertyAndModifiers;
+    if (pam->setProperty(prop))
+    {
+        WPInterval propinterval = (prop).getInterval();
+
+        part->lockForRead();
+        WPInterval propexinterval = part->getExtendedInterval(propinterval);
+        std::vector<WPMultinote> notesvector = part->getNotesByInterval(propexinterval);
+        part->unlock();
+
+        int num = notesvector.size();
+        WPMultinote *notes = new WPMultinote[num];
+        //memory released at line 185
+        pam->sampleModifier()->setNotes(notes, num, (propinterval.begin().getValue() - propexinterval.begin().getValue()).toDouble());
+        pam->sampleModifier()->reset();
+        //propmap.insert(prop, pam);
+        propmap[prop] = pam;
+        qDebug("propmap modifier %lX", (quint64)pam->sampleModifier());
+        //pam->sampleModifier()->set();
+    }
+    else
+    {
+        qWarning() << "No plug-in ";
+        qWarning("%s", pam->getName().data());
+    }
+    //delete pam;
+    //pam = 0;
+}
+
+void WPSynthesizer::removeProperty(WPProperty prop)
+{
+    qDebug("delete property %s", (prop).getArg().data());
+    delete[] propmap[prop]->sampleModifier()->getNotes();
+    delete propmap[prop];
+    qDebug("propmap.size = %d", propmap.size());
+    propmap.erase(prop);
+    qDebug("propmap.size = %d", propmap.size());
 }
 
 int WPSynthesizer::processTuningFreqAmp(double time, std::vector<double> &freq, std::vector<double> &amp)
 {
-    std::map<WPProperty, WPPropertyAndModifiers>::iterator propmapiter;
+    std::map<WPProperty, WPPropertyAndModifiers *>::iterator propmapiter;
     int tuned = 0;
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
-        if ((*propmapiter).second.sampleModifier()->isTuning())
+        if ((*propmapiter).second->sampleModifier()->isTuning())
         {
-            freq = (*propmapiter).second.sampleModifier()->modifyFreq(time, freq);
+            freq = (*propmapiter).second->sampleModifier()->modifyFreq(time, freq);
             tuned++;
         }
     if (tuned == 0)
@@ -214,15 +266,15 @@ int WPSynthesizer::processTuningFreqAmp(double time, std::vector<double> &freq, 
         freq = defaulttuning.modifyFreq(time, freq);
     }
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
-        if ((*propmapiter).second.sampleModifier()->isFreqModifier() &&
-            !(*propmapiter).second.sampleModifier()->isTuning())
+        if ((*propmapiter).second->sampleModifier()->isFreqModifier() &&
+            !(*propmapiter).second->sampleModifier()->isTuning())
         {
-            freq = (*propmapiter).second.sampleModifier()->modifyFreq(time, freq);
+            freq = (*propmapiter).second->sampleModifier()->modifyFreq(time, freq);
         }
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
-        if ((*propmapiter).second.sampleModifier()->isAmpModifier())
+        if ((*propmapiter).second->sampleModifier()->isAmpModifier())
         {
-            amp = (*propmapiter).second.sampleModifier()->modifyAmp(time, amp);
+            amp = (*propmapiter).second->sampleModifier()->modifyAmp(time, amp);
         }
     return tuned;
 }
@@ -230,19 +282,21 @@ int WPSynthesizer::processTuningFreqAmp(double time, std::vector<double> &freq, 
 int WPSynthesizer::processNote(double time, double &notelength)
 {
     double tmp;
-    std::map<WPProperty, WPPropertyAndModifiers>::iterator propmapiter;
+    std::map<WPProperty, WPPropertyAndModifiers *>::iterator propmapiter;
     int notemodicnt = 0;
     notelength = -1.0;
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
-        if ((*propmapiter).second.sampleModifier()->isNoteModifier())
+        if ((*propmapiter).second->sampleModifier()->isNoteModifier())
         {
-            tmp = (*propmapiter).second.sampleModifier()->modifyNote(time);
+            qDebug("using note modifier %s", (*propmapiter).first.getArg().data());
+            tmp = (*propmapiter).second->sampleModifier()->modifyNote(time);
             if (tmp > 0)
                 notelength = tmp;
             notemodicnt++;
         }
     if (notemodicnt == 0)
     {
+        qDebug("default note modifier used");
         notemodicnt++;
         notelength = defaultnotemodifier.modifyNote(time);
         return notemodicnt;
@@ -253,11 +307,11 @@ int WPSynthesizer::processNote(double time, double &notelength)
 int WPSynthesizer::processTempo(double time, double &tempo)
 {
     int tempocnt = 0;
-    std::map<WPProperty, WPPropertyAndModifiers>::iterator propmapiter;
+    std::map<WPProperty, WPPropertyAndModifiers *>::iterator propmapiter;
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
-        if ((*propmapiter).second.sampleModifier()->isTempoModifier())
+        if ((*propmapiter).second->sampleModifier()->isTempoModifier())
         {
-            tempo = (*propmapiter).second.sampleModifier()->modifyTempo(time, tempo);
+            tempo = (*propmapiter).second->sampleModifier()->modifyTempo(time, tempo);
             tempocnt++;
         }
     if (tempocnt == 0)
@@ -271,11 +325,11 @@ int WPSynthesizer::processTempo(double time, double &tempo)
 int WPSynthesizer::processTimbre(double time, std::string &timbrename)
 {
     int timbrecnt = 0;
-    std::map<WPProperty, WPPropertyAndModifiers>::iterator propmapiter;
+    std::map<WPProperty, WPPropertyAndModifiers *>::iterator propmapiter;
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
-        if ((*propmapiter).second.sampleModifier()->isTimbreModifier())
+        if ((*propmapiter).second->sampleModifier()->isTimbreModifier())
         {
-            timbrename = (*propmapiter).second.sampleModifier()->modifyTimbre();
+            timbrename = (*propmapiter).second->sampleModifier()->modifyTimbre();
             timbrecnt++;
         }
     if (timbrecnt == 0)
@@ -288,9 +342,24 @@ int WPSynthesizer::processTimbre(double time, std::string &timbrename)
 
 void WPSynthesizer::processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo, std::string &timbrename)
 {
-    std::map<WPProperty, WPPropertyAndModifiers>::iterator propmapiter;
+    std::map<WPProperty, WPPropertyAndModifiers *>::iterator propmapiter;
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
-        (*propmapiter).second.sampleModifier()->setTime(time - (*propmapiter).first.getInterval().begin().getValue().toDouble());
+    {
+        double ttime = 0.0;
+        double rtime = time - (*propmapiter).first.getInterval().begin().getValue().toDouble();/*
+        //WPProperty prop = (*propmapiter).first;
+        qDebug("Modifier: %lX", (quint64)(*propmapiter).second->sampleModifier());
+        qDebug("Modifier: %lX", (quint64)(*propmapiter).second->sampleModifier());*/
+        WPModifier *modifier = (*propmapiter).second->sampleModifier();
+        //qDebug("relative time = %lf", rtime);
+        /*qDebug("abcdefghijklmno %lf", ttime);
+        qDebug("Modifier: %lX", (quint64)(*propmapiter).second->sampleModifier());
+        qDebug("Modifier: %lX", (quint64)(*propmapiter).second->sampleModifier());
+        qDebug("relative time = %lf", rtime);
+        qDebug("Modifier: %lX", (quint64)(*propmapiter).second->sampleModifier());
+        qDebug("Modifier: %lX", (quint64)modifier);*/
+        modifier->setTime(rtime);
+    }
     //Tuning
     //Freq
     //Amp

@@ -15,6 +15,7 @@ WPPropertyAndModifiers::WPPropertyAndModifiers(WPProperty &_prop)
 WPPropertyAndModifiers::~WPPropertyAndModifiers()
 {
     clearModifiers();
+    manager.deleteObject(samplemodifier);
 }
 
 bool WPPropertyAndModifiers::setProperty(WPProperty &_prop)
@@ -62,7 +63,7 @@ void WPPropertyAndModifiers::setNumModifiers(int n)
     {
         modi = (WPModifier *)manager.newObject();
         modi->set(para);
-        modifiers.push_back((WPModifier *)manager.newObject());
+        modifiers.push_back(modi);
 
     }
 }
