@@ -1,7 +1,6 @@
 #ifndef WPTEMPOMODIFIER_H
 #define WPTEMPOMODIFIER_H
 
-//#include "core/WPModifier.h"
 #include "WPModifierPlugin.h"
 
 class WPTempoModifier : public WPModifierPlugin

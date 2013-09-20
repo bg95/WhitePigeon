@@ -1,7 +1,5 @@
 #include "WPSlur.h"
 
-//void *(*WPSlur::callback)(WPCallbackManager::CallbackFunc) = 0;
-
 WPSlur::WPSlur()
 {
 }
@@ -42,11 +40,6 @@ extern "C"
 		fflush(stdout);
 		if (p)
             delete p;
-		p = 0;
-	}/*
-	void setCallback(void *_callback)
-    {
-        WPSlur::callback = (void *(*)(WPCallbackManager::CallbackFunc))_callback;
-    }*/
+	}
 }
 

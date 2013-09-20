@@ -228,8 +228,8 @@ void WPSynthesizer::insertProperty(WPProperty prop)
         int num = notesvector.size();
         WPMultinote *notes = new WPMultinote[num];
         //memory released in removeProperty()
-        pam->sampleModifier()->setNotes(notes, num, (propinterval.begin().getValue() - propexinterval.begin().getValue()).toDouble());
         pam->sampleModifier()->reset();
+        pam->sampleModifier()->setNotes(notes, num, (propinterval.begin().getValue() - propexinterval.begin().getValue()).toDouble());
         //propmap.insert(prop, pam);
         propmap[prop] = pam;
         qDebug("propmap modifier %lX", (quint64)pam->sampleModifier());
@@ -239,6 +239,7 @@ void WPSynthesizer::insertProperty(WPProperty prop)
     {
         qWarning() << "No plug-in ";
         qWarning("%s", pam->getName().data());
+        delete pam;
     }
     //delete pam;
     //pam = 0;
@@ -246,12 +247,17 @@ void WPSynthesizer::insertProperty(WPProperty prop)
 
 void WPSynthesizer::removeProperty(WPProperty prop)
 {
+    if (!propmap[prop])
+    {
+        propmap.erase(prop);
+        return;
+    }
     qDebug("delete property %s [%lf,%lf]", prop.getArg().data(), prop.getInterval().begin().getValue().toDouble(), prop.getInterval().end().getValue().toDouble());
     delete[] propmap[prop]->sampleModifier()->getNotes();
     delete propmap[prop];
-    qDebug("propmap.size = %d", propmap.size());
+    //qDebug("propmap.size = %d", propmap.size());
     propmap.erase(prop);
-    qDebug("propmap.size = %d", propmap.size());
+    //qDebug("propmap.size = %d", propmap.size());
 }
 
 int WPSynthesizer::processTuningFreqAmp(double time, std::vector<double> &freq, std::vector<double> &amp)
@@ -323,6 +329,7 @@ int WPSynthesizer::processTempo(double time, double &tempo)
         tempocnt++;
         tempo = 144.0; //100.0;
     }
+    //qDebug("##### process tempo = %lf", tempo);
     return tempocnt;
 }
 
@@ -426,6 +433,7 @@ void WPSynthesizer::outputNote()
     vtime.clear();
     vtime.push_back(0.0);
     vtime.resize(samplecnt);
+    //qDebug("##### tempo = %lf %lf", tempo[0], tempo[1]);
     for (samplei = 1; samplei < samplecnt; samplei++)
     {
         vtime[samplei] = vtime[samplei - 1] + (time[samplei] - time[samplei - 1]) / ((tempo[samplei] + tempo[samplei - 1]) / 2.0 / 4.0 / 60.0);

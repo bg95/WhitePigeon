@@ -51,6 +51,7 @@ bool WPPropertyAndModifiers::setProperty(WPProperty &_prop)
     samplemodifier = (WPModifier *)manager.newObject();
     if (!samplemodifier)
         return false;
+    qDebug("samplemodifier setpara %s", para.data());
     samplemodifier->set(para);
     return true;
 }

@@ -83,8 +83,8 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     for (int i = 0; i < 10; i++)
     {
         Fraction l = note1.getLength() + note2.getLength() + note2.getLength();
+        score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(pos), WPPosition(pos + l)), "WPTempoModifier 600"));
         score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(pos), WPPosition(pos + l)), "WPSlur"));
-        score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(pos), WPPosition(pos + l)), "WPTempoModifier 140"));
         pos += l;
     }
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
