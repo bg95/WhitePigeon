@@ -22,7 +22,7 @@ public:
         WPNote_getLength,
 
         WPMultinote_getLength,
-        WPMultinote_getLengthDouble,
+		//WPMultinote_getLengthDouble,
 
         Fraction_toDouble
     };

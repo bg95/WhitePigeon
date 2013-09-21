@@ -15,11 +15,11 @@ void WPSlur::setNotes(WPMultinote *notes, int num, double offset)
     WPMultinote *iter;
 	WPModifierPlugin::setNotes(notes, num, offset);
 
-    double (WPMultinote::*getLengthDouble)() = (typeof getLengthDouble)callMember(WPCallbackManager::WPMultinote_getLengthDouble);
+    //double (WPMultinote::*getLengthDouble)() = (typeof getLengthDouble)callMember(WPCallbackManager::WPMultinote_getLengthDouble);
     sumlength = 0.0;
     for (iter = getNotes(); iter != getNotes() + num; iter++)
     {
-        sumlength += ((*iter).*getLengthDouble)();
+        sumlength += (*iter).getLength().toDouble();
     }
 }
 

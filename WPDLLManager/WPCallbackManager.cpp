@@ -22,7 +22,7 @@ void (WPCallbackManager::*WPCallbackManager::CallbackFuncListMember[])() =
         (MembFuncPtr)&WPNote::getLength,
 
         (MembFuncPtr)&WPMultinote::getLength,
-		//(MembFuncPtr)&WPMultinote::getLengthDouble,
+		//(MembFuncPtr)&WPMultinote::getLengthDouble,///......
 
         (MembFuncPtr)&Fraction::toDouble
 };

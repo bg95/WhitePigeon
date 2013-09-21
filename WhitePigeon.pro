@@ -14,13 +14,12 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = WhitePigeon
 TEMPLATE = app
 
+
 SOURCES += main.cpp\
-		myglwidget.cpp \
-	core/WPOscilloscope.cpp \
     core/WPSynthesizer.cpp \
     core/WPWave.cpp \
-	core/WPPipe.cpp \
-	core/WPMixer.cpp \
+    core/WPPipe.cpp \
+    core/WPMixer.cpp \
     core/WPSynthesisController.cpp \
     UI/WPWindow.cpp \
     UI/QRecentFilesMenu.cpp \
@@ -36,7 +35,8 @@ SOURCES += main.cpp\
     musicshower/musicarcitem.cpp \
     musicshower/musicview.cpp \
     musicshower/musicrepeatitem.cpp \
-	core/WPPropertyAndModifiers.cpp \
+    core/WPPropertyAndModifiers.cpp \
+    core/WPOscilloscope.cpp \
     WPDLLManager/WPDLLTimbreManager.cpp \
 #    WPDLLManager/WPDLLTimbre.cpp \
 #    WPDLLManager/WPDLLModifier.cpp \
@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     WPDLLManager/WPCallbackManager.cpp \
     plugins/WPDefaultNoteModifier.cpp \
     plugins/WP12EqualTuning.cpp \
-	OscilloscopeWindow.cpp \
+    OscilloscopeWindow.cpp \
+    myglwidget.cpp \
     UI/QRecentWebsitesMenu.cpp \
     UI/versiondialog.cpp \
 #    plugins/WPTempoModifier.cpp \
@@ -56,8 +57,6 @@ SOURCES += main.cpp\
     core/WPModifierInternal.cpp
 
 HEADERS  +=\
-			myglwidget.h \
-	core/WPOscilloscope.h \
     core/WPSynthesizer.h \
     core/WPWave.h \
     core/WPTimbre.h \
@@ -80,7 +79,8 @@ HEADERS  +=\
     musicshower/musicrepeatitem.h \
     musicshower/getmusicinfodialog.h \
     musicshower/musicview.h \
-	core/WPPropertyAndModifiers.h \
+    core/WPPropertyAndModifiers.h \
+    core/WPOscilloscope.h \
     WPDLLManager/WPDLLTimbreManager.h \
 #    WPDLLManager/WPDLLTimbre.h \
 #    WPDLLManager/WPDLLModifier.h \
@@ -88,7 +88,8 @@ HEADERS  +=\
     WPDLLManager/WPCallbackManager.h \
     plugins/WPDefaultNoteModifier.h \
     plugins/WP12EqualTuning.h \
-	OscilloscopeWindow.h \
+    OscilloscopeWindow.h \
+    myglwidget.h \
     UI/QRecentWebsitesMenu.h \
     UI/versiondialog.h \
 #    plugins/WPTempoModifier.h \
@@ -101,16 +102,15 @@ HEADERS  +=\
 
 TRANSLATIONS += Chinese.ts
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/release/ -lWPScore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/debug/ -lWPScore
-else:unix: LIBS += -L$$PWD/lib/ -lWPScore
-
-INCLUDEPATH += $$PWD/include
-DEPENDPATH += $$PWD/include
-
 RESOURCES += \
     whitepigeon.qrc
 
 FORMS += \
     UI/versiondialog.ui
 
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/release/ -lWPScore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/debug/ -lWPScore
+else:unix: LIBS += -L$$PWD/lib/ -lWPScore
+
+INCLUDEPATH += $$PWD/include/
+DEPENDPATH += $$PWD/include/

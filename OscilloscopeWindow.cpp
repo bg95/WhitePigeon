@@ -68,7 +68,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->newPart("white");
     //score->newPart("swine");
     score->unlock();
-    score->lockForRead();
+	score->lockForWrite();
     pos = Fraction(0, 1);
     for (int i = 0; i < 1; i++)
     {
@@ -223,8 +223,8 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     }
     //score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(48, 1))), "WPTempoModifier 120.0"));
     //score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(2, 4))), "WPSlur"));
-    score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
-    score->unlock();
+	score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
+	score->unlock();
 
 
     score->lockForWrite();
@@ -232,20 +232,20 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     {
         score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i, 8)), WPMultinote((i % 8 != 7) ? notel1 : notel3));
         score->getPartList()[1].insertMultinote(WPPosition(Fraction(2 * i + 1, 8)), WPMultinote(notel5));
-        score->getPartList()[1].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(2 * i, 8)), WPPosition(Fraction(2 * i + 2, 8))), "WPSlur"));
+		score->getPartList()[1].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(2 * i, 8)), WPPosition(Fraction(2 * i + 2, 8))), "WPSlur "));
     }
     score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
     //score->getPartList()[1].setToBeMuted();
-    score->unlock();
+	score->unlock();
 
-	score->lockForWrite();
+	/*score->lockForWrite();
     score->save("pi2.wps");
 	score->close();
     score->unlock();
 
     score->lockForWrite();
     score->load("pi2.wps");
-    score->unlock();
+	score->unlock();*/
 
     file = new QFile("wave.out");
     file->open(QIODevice::WriteOnly);
