@@ -2,7 +2,8 @@
 #include "WPWave.h"
 
 WPWave::WPWave(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    decoder(0)
 {
     //isdecoded = false;
     //isFFTed = false;
@@ -11,14 +12,16 @@ WPWave::WPWave(QObject *parent) :
 
 WPWave::WPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format, QObject *parent) :
     QObject(parent),
-    format(_format)
+    format(_format),
+    decoder(0)
 {
     setData(_data);
 }
 
 WPWave::WPWave(const QByteArray &bytearray, const QAudioFormat &_format, QObject *parent) :
     QObject(parent),
-    format(_format)
+    format(_format),
+    decoder(0)
 {
     setData(bytearray);
 }
@@ -29,7 +32,7 @@ WPWave::WPWave(WPWave &b) :
     FFTdata(b.FFTdata),
     STFTdata(b.STFTdata),
     format(b.format),
-    decoder()
+    decoder(0)
     //isdecoded(b.isdecoded),
     //isFFTed(b.isFFTed)
 {
@@ -47,12 +50,13 @@ void WPWave::readFile(QString filename)
     format.setSampleSize(8 * sizeof(WaveDataType));
 */
     format = defaultAudioFormat();
-    decoder.setAudioFormat(format);
-    decoder.setSourceFilename(filename);
+    decoder = new QAudioDecoder(this);
+    decoder->setAudioFormat(format);
+    decoder->setSourceFilename(filename);
 
-    connect(&decoder, SIGNAL(bufferReady()), this, SLOT(readBuffer()));
-    connect(&decoder, SIGNAL(finished()), this, SLOT(decodeFinished()));
-    decoder.start();
+    connect(decoder, SIGNAL(bufferReady()), this, SLOT(readBuffer()));
+    connect(decoder, SIGNAL(finished()), this, SLOT(decodeFinished()));
+    decoder->start();
 }
 
 void WPWave::clear()
@@ -225,7 +229,7 @@ void WPWave::audiooutputStateChanged(QAudio::State state)
 
 void WPWave::readBuffer()
 {
-    QAudioBuffer audiobuffer = decoder.read();
+    QAudioBuffer audiobuffer = decoder->read();
     int n = audiobuffer.sampleCount();
     WaveDataType *buf = audiobuffer.data<WaveDataType>();
     int i;
@@ -237,6 +241,7 @@ void WPWave::decodeFinished()
 {
     //isdecoded = true;
     finished();
+    delete decoder;
 }
 
 //static
@@ -434,7 +439,12 @@ QAudioFormat WPWave::defaultAudioFormat()
     f.setChannelCount(1);
     f.setCodec("audio/x-raw");
     f.setSampleType(QAudioFormat::SignedInt);
-    f.setSampleRate(48000);
+    f.setSampleRate(SamplingRate);
     f.setSampleSize(8 * sizeof(WaveDataType));
     return f;
+}
+
+WPWave *WPWave::newWPWave(const QVector<WaveDataType> &_data, const QAudioFormat &_format)
+{
+    return new WPWave(_data, _format);
 }

@@ -4,6 +4,7 @@
 WPOscilloscope::WPOscilloscope(QWidget *parent) :
     QGLWidget(parent)
 {
+    length = 0;
     timer = new QTimer();
     inputdevice = 0;
     connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
@@ -26,6 +27,7 @@ void WPOscilloscope::start(quint32 _period, quint32 _length)
     period = _period;
     length = _length;
     timer->start(period);
+    qDebug("oscilloscope started");
 }
 
 void WPOscilloscope::refresh()
@@ -42,7 +44,7 @@ void WPOscilloscope::refresh()
     }
 
     wave.setData(data);
-    //printf("oscilloscope: input length = %d\n", wave.data.size());
+    //qDebug("oscilloscope: input length = %d", wave.data.size());
     wave.FFT();
     repaint();
 }
@@ -54,6 +56,7 @@ void WPOscilloscope::initializeGL()
 
 void WPOscilloscope::paintGL()
 {
+    //qDebug("Oscilloscope paint");
     int i;
     glLoadIdentity();
     glOrtho(0.0, length, -1.0, 1.0, -1.0, 1.0);

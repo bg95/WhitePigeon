@@ -2,6 +2,8 @@
 #define OSCILLOSCOPEWINDOW_H
 
 #include <QMainWindow>
+#include <QCoreApplication>
+#include <QEventLoop>
 #include <QGLWidget>
 #include <QAudioInput>
 #include "core/WPWave.h"
@@ -9,6 +11,7 @@
 #include "core/WPPipe.h"
 #include "core/WPSynthesisController.h"
 #include "WPScore/WPScore.h"
+#include "WPDLLManager/WPCallbackManager.h"
 #include "myglwidget.h"
 
 namespace Ui {
@@ -25,11 +28,12 @@ public:
 
 public slots:
     void waveDecodeFinished();
+    //virtual void hideEvent(QHideEvent *);
 
 private:
-    Ui::OscilloscopeWindow *ui;
+    //Ui::OscilloscopeWindow *ui;
     //MyGLWidget glwidget, glwidgetR, glwidgetI, glwidgetSTFT;
-    WPOscilloscope oscilloscope;
+    WPOscilloscope *oscilloscope;
     WPWave wave;
     QAudioInput *audioinput;
     WPPipe *pipe;

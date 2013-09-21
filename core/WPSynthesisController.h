@@ -8,8 +8,8 @@
 #include "WPSynthesizer.h"
 #include "WPPipe.h"
 #include "WPMixer.h"
-#include "WPTuningFork.h"
-#include "../WPScore/WPScore.h"
+#include "WPScore/WPScore.h"
+#include "../WPDLLManager/WPDLLTimbre.h"
 
 class WPSynthesisController : public QObject
 {
@@ -22,9 +22,13 @@ public:
     QIODevice *synthesize(WPScore &score);
     void synthesizeAndPlay(WPScore &score);
     void stopPlaying();
+    void stopAll();
+    ///void pause();
+    ///void unpause();
     
 signals:
     void synthesisFinished();
+    void playingStopped();
     
 private slots:
     void oneSynthesizerFinished();
@@ -37,11 +41,12 @@ private:
     WPMixer *mixer;
     WPPipe *outpipe;
     QAudioOutput *audiooutput;
-    QFile *file;
+    //QFile *file;
     QMutex lock;
     int partnum;
 
-    WPTuningFork *tuningfork; //for test
+    //WPTuningFork *tuningfork; //for test
+    //WPDLLTimbre *dlltimbre; //for test
     
 };
 
