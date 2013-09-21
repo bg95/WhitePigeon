@@ -5,8 +5,8 @@
 #include <QTimer>
 #include "WPWave.h"
 #include "WPTimbre.h"
-#include "../WPScore/WPNote.h"
-#include "../WPScore/WPPart.h"
+#include "WPScore/WPNote.h"
+#include "WPScore/WPPart.h"
 
 class WPSynthesizer : public QObject
 {
