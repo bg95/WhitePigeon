@@ -9,6 +9,10 @@ WPModifierPlugin::~WPModifierPlugin()
 {
 }
 
+void WPModifierPlugin::set(std::string para)
+{
+}
+
 void WPModifierPlugin::setTime(double t)
 {
     wpmodifier_prevtime = wpmodifier_time;
@@ -59,10 +63,6 @@ int WPModifierPlugin::getNotesNumber()
 double WPModifierPlugin::getNotesOffset()
 {
     return wpmodifier_notesoffset;
-}
-
-void WPModifierPlugin::set(std::string para)
-{
 }
 
 bool WPModifierPlugin::isGlobal()

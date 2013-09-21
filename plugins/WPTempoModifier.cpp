@@ -27,15 +27,10 @@ void WPTempoModifier::set(std::string para)
     {
         tempo = 100.0;
     }
-    printf("tempo set %s %lf\n", para.data(), tempo);
-    fflush(stdout);
-    modifyTempo(0, 0);
 }
 
 double WPTempoModifier::modifyTempo(double, double)
 {
-	printf("tempo return %lf\n", tempo);
-	fflush(stdout);
     return tempo;
 }
 

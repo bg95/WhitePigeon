@@ -12,6 +12,9 @@ class WPModifierPlugin : public WPModifier
 public:
     WPModifierPlugin();
     virtual ~WPModifierPlugin();
+
+    virtual void set(std::string para); //set parameters
+
     virtual void setTime(double t);
     //this will be called before each call of modify* function, telling the current time (in beats)
     //call this when overwriting
@@ -42,9 +45,7 @@ public:
     virtual bool isNoteModifier();
     virtual bool isFreqModifier();
     virtual bool isAmpModifier();
-
-    virtual void set(std::string para); //set parameters
-
+    
     //time is in the unit of beats
     //length is the total duration of the property
     virtual std::string modifyTimbre();

@@ -83,10 +83,11 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     for (int i = 0; i < 10; i++)
     {
         Fraction l = note1.getLength() + note2.getLength() + note2.getLength();
-        score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(pos), WPPosition(pos + l)), "WPTempoModifier 600"));
+        score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(pos), WPPosition(pos + l)), "WPTempoModifier 60"));
         score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(pos), WPPosition(pos + l)), "WPSlur"));
         pos += l;
     }
+    //score->getPartList()[0].setVolume(0.5);
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
     score->unlock();
 
@@ -94,18 +95,20 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->save("pi3.wps");
 	score->close();
     score->unlock();
-
+/*
     score->lockForWrite();
     score->load("pi3.wps");
     score->unlock();
-
+*/
     file = new QFile("wave.out");
     file->open(QIODevice::WriteOnly);
     qDebug("part num = %d\n", (int)score->getPartList().size());
     controller = new WPSynthesisController;
     //connect(controller, SIGNAL(synthesisFinished()), this, SLOT(waveDecodeFinished()));
     //controller->synthesizeAndOutput(*score, file);
+    qDebug("part volume = %lf", score->getPartList()[0].getVolume());
     controller->synthesizeAndPlay(*score);
+    qDebug("part volume = %lf", score->getPartList()[0].getVolume());
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
     audioinput->setVolume(0.1);
