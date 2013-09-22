@@ -10,8 +10,8 @@
 #include "WPTimbre.h"
 #include "WPModifier.h"
 #include "WPPropertyAndModifiers.h"
-#include "../WPScore/WPNote.h"
-#include "../WPScore/WPPart.h"
+#include "WPScore/WPNote.h"
+#include "WPScore/WPPart.h"
 class WPSynthesizer;
 #include "WPDLLManager/WPDLLModifier.h"
 #include "WPDLLManager/WPDLLTimbreManager.h"

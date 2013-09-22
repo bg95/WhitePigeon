@@ -8,7 +8,7 @@
 #include "WPSynthesizer.h"
 #include "WPPipe.h"
 #include "WPMixer.h"
-#include "../WPScore/WPScore.h"
+#include "WPScore/WPScore.h"
 #include "../WPDLLManager/WPDLLTimbre.h"
 
 class WPSynthesisController : public QObject

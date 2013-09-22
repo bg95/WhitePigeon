@@ -1,6 +1,6 @@
 #include "WPDLLTimbreManager.h"
 
-std::string WPDLLTimbreManager::TimbrePluginDir("/home/pt-cr/Projects/WhitePigeon/plugins/");
+std::string WPDLLTimbreManager::TimbrePluginDir("/home/token/Documents/WhitePigeon/plugins/");
 
 WPDLLTimbreManager::WPDLLTimbreManager()
 {

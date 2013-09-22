@@ -10,7 +10,7 @@ WPSynthesisController::WPSynthesisController(QObject *parent) :
     lock(QMutex::NonRecursive)//,
     //dlltimbre(new WPDLLTimbre)
 {/*
-    if (!dlltimbre->loadDLL("/home/pt-cr/Projects/build-WhitePigeon-Desktop-Debug/plugins/WPTimbre/libWPTuningFork.so"))
+	if (!dlltimbre->loadDLL("/home/token/Documents/build-WhitePigeon-Desktop-Debug/plugins/WPTimbre/libWPTuningFork.so"))
         qWarning("unable to open dlltimbre");*/
 }
 

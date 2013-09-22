@@ -127,7 +127,7 @@ std::vector<double> WPModifierPlugin::modifyAmp(double time, std::vector<double>
 
 WPMultinote *WPModifierPlugin::getCurrentMultinote()
 {
-    double (WPMultinote::*getLengthDouble)() = (typeof getLengthDouble)callMember(WPCallbackManager::WPMultinote_getLengthDouble);
+    //double (WPMultinote::*getLengthDouble)() = (typeof getLengthDouble)callMember(WPCallbackManager::WPMultinote_getLengthDouble);
     
     double time = getTime();
     double dtime;
@@ -148,7 +148,7 @@ WPMultinote *WPModifierPlugin::getCurrentMultinote()
         }
         for (; currentmultinoteiter != notes + n; currentmultinoteiter++)
         {
-		    dtime = ((*currentmultinoteiter).*getLengthDouble)();
+		    dtime = (*currentmultinoteiter).getLength().toDouble();
             if (time >= wpmodifier_stime && time < wpmodifier_stime + dtime)
             {
                 //qDebug("WPModifier::getCurrentMultinote found %lX", (quint64)currentmultinoteiter);

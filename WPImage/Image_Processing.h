@@ -4,7 +4,7 @@
 #include "Parallel_Lines.h"
 #include <QDebug>
 #include <vector>
-#include "../WPScore/WPScore.h"
+#include "WPScore/WPScore.h"
 #include <QString>
 //#include <iostream>
 

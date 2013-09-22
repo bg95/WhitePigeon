@@ -16,15 +16,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-    WPScore/WPScore.cpp \
-    WPScore/WPProperty.cpp \
-    WPScore/WPPosition.cpp \
-    WPScore/WPPart.cpp \
-    WPScore/WPNote.cpp \
-    WPScore/WPMultinote.cpp \
-    WPScore/WPLib.cpp \
-    WPScore/WPInterval.cpp \
-    WPScore/WPPersistentTree.cpp \
     core/WPSynthesizer.cpp \
     core/WPWave.cpp \
     core/WPPipe.cpp \
@@ -66,23 +57,12 @@ SOURCES += main.cpp\
     core/WPModifierInternal.cpp
 
 HEADERS  +=\
-    WPScore/WPSPosition.h \
-    WPScore/WPScore.h \
-    WPScore/WPProperty.h \
-    WPScore/WPPosition.h \
-    WPScore/WPPart.h \
-    WPScore/WPNote.h \
-    WPScore/WPMultinote.h \
-    WPScore/WPLib.h \
-    WPScore/WPInterval.h \
     core/WPSynthesizer.h \
     core/WPWave.h \
     core/WPTimbre.h \
     core/WPVarTimbre.h \
     core/WPPipe.h \
-    core/WPMixer.h \
-    WPScore/WPPersistentTree.h \
-    WPScore/WPAllocator.h \
+	core/WPMixer.h \
     core/WPSynthesisController.h \
     UI/WPWindow.h \
     UI/QRecentFilesMenu.h \
@@ -127,3 +107,10 @@ RESOURCES += \
 
 FORMS += \
     UI/versiondialog.ui
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/release/ -lWPScore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/debug/ -lWPScore
+else:unix: LIBS += -L$$PWD/lib/ -lWPScore
+
+INCLUDEPATH += $$PWD/include/
+DEPENDPATH += $$PWD/include/
