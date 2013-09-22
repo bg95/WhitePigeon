@@ -4,13 +4,19 @@ WPStaccatissimo::WPStaccatissimo()
 {
 }
 
-void WPStaccatissimo::setNotes(const std::vector<WPNote> &_notes)
+WPStaccatissimo::~WPStaccatissimo()
 {
-    std::vector<WPNote>::iterator iter;
-    WPModifier::setNotes(_notes);
-    length = 0;
-    for (iter = getNotes().begin(); iter != getNotes().end(); iter++)
-        length += (*iter).getLength().toDouble();
+}
+
+void WPStaccatissimo::setNotes(WPMultinote *notes, int num, double offset)
+{
+    WPModifier::setNotes(notes, num, offset);
+    int i;
+    notestart.clear();
+    notestart.push_back(0.0);
+    for (i = 0; i < num; i++)
+    	notestart.push_back(((notes + i)->*getLengthDouble)() + notestart[i]);
+    notestart.pop_back();
 }
 
 double WPStaccatissimo::modifyNote(double time)
@@ -21,11 +27,11 @@ double WPStaccatissimo::modifyNote(double time)
         return length * (1.0 - Shortened);
 }
 
-double WPStaccatissimo::modifyAmp(double time, double amp)
+std::vector<double> WPStaccatissimo::modifyAmp(double time, std::vector<double> amp)
 {
     if (time < length * Shortened)
     {
-        return std::exp(time / (length * Shortened));
+        return amp * std::exp(time / (length * Shortened));
     }
     return 0;
 }

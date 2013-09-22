@@ -1,21 +1,14 @@
 #ifndef WPSTACCATISSIMO_H
 #define WPSTACCATISSIMO_H
 
-#include "WPModifier.h"
+#include "WPModifierPlugin.h"
 
-class WPStaccatissimo : public WPModifier
+class WPStaccatissimo : public WPModifierPlugin
 {
 public:
     WPStaccatissimo();
+    ~WPStaccatissimo();
 
-    bool isGlobal()
-    {
-        return false;
-    }
-    bool isSingleNote()
-    {
-        return true;
-    }
     bool isNoteModifier()
     {
         return true;
@@ -25,14 +18,14 @@ public:
         return true;
     }
 
-    void setNote(const WPNote&_note);
+    void setNotes(WPMultinote *notes, int num, double offset);
 
-    double modifyNote(double time);
-    double modifyAmp(double time, double amp);
+    double modifyNote(double time); //if a note starts at (near) time, returns the length, otherwise returns a negative
+    std::vector<double> modifyAmp(double time, std::vector<double> amp);
 
 private:
     const double Shortened = 0.25;
-    double length;
+    std::vector<double> notestart;
 
 };
 
