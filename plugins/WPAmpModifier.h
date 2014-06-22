@@ -11,11 +11,8 @@ public:
     ~WPAmpModifier();
 
     bool isAmpModifier();
-    void reset();
     void set(std::string para);
-    double modifyAmp(double, double);
-
-    static void *(*callback)(typename WPCallbackManager::CallbackFunc);
+    std::vector<double> modifyAmp(double time, std::vector<double> amp);
 
 private:
     double amp;

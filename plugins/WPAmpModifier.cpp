@@ -1,7 +1,7 @@
+#include <cstdio>
 #include "WPAmpModifier.h"
 
-void *(*WPAmpModifier::callback)(WPCallbackManager::CallbackFunc) = 0;
-
+//void *(*WPAmpModifier::callback)(WPCallbackManager::CallbackFunc) = 0;
 
 WPAmpModifier::WPAmpModifier()
 {
@@ -16,11 +16,6 @@ bool WPAmpModifier::isAmpModifier()
     return true;
 }
 
-void WPAmpModifier::reset()
-{
-    amp = 1.0;
-}
-
 void WPAmpModifier::set(std::string para)
 {
     para.push_back(' ');
@@ -28,19 +23,29 @@ void WPAmpModifier::set(std::string para)
     {
         amp = 1.0;
     }
+    printf("WPAmpModifier %llX amp = %lf\n", (long long unsigned)this, this->amp);
+    fflush(stdout);
 }
 
-double WPAmpModifier::modifyAmp(double, double)
+std::vector<double> WPAmpModifier::modifyAmp(double time, std::vector<double> amp)
 {
+    printf("WPAmpModifier plugin modifies amp!\n");
+    printf("WPAmpModifier %llX amp = %lf\n", (long long unsigned)this, this->amp);
+    for (std::vector<double>::iterator iter = amp.begin(); iter != amp.end(); iter++)
+    {
+    	printf("from %lf to ", *iter);
+        (*iter) *= this->amp;
+        printf("%lf\n", *iter);
+    }
+    fflush(stdout);
     return amp;
 }
 
-/*
 extern "C"
 {
     WPModifier *create()
     {
-        return new WPDefaultNoteModifier();
+        return new WPAmpModifier();
     }
     void destroy(WPModifier *p)
     {
@@ -48,11 +53,9 @@ extern "C"
         fflush(stdout);
         if (p)
             delete p;
-        p = 0;
     }
-    void setCallback(void *_callback)
-    {
-        WPDefaultNoteModifier::callback = (void *(*)(WPCallbackManager::CallbackFunc))_callback;
-    }
+    void setCallbackStatic(void *)
+    {}
+    void setCallbackMember(typeof WPCallbackManager::callMember)
+    {}
 }
-*/
