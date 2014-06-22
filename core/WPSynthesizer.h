@@ -6,9 +6,9 @@
 #include <QObject>
 #include <QTimer>
 #include <QThread>
-#include "WPWave.h"
-#include "WPTimbre.h"
-#include "WPModifier.h"
+#include "include/core/WPWave.h"
+#include "include/core/WPTimbre.h"
+#include "include/core/WPModifier.h"
 #include "WPPropertyAndModifiers.h"
 #include "WPScore/WPNote.h"
 #include "WPScore/WPPart.h"

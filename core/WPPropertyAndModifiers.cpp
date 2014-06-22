@@ -1,7 +1,7 @@
 #include "WPPropertyAndModifiers.h"
 #include <QDebug>
 
-std::string WPPropertyAndModifiers::ModifierPluginDir("/home/token/Documents/WhitePigeon/plugins/");
+std::string WPPropertyAndModifiers::ModifierPluginDir("/home/pt-cr/Projects/WhitePigeon/WhitePigeon/plugins/");
 
 WPPropertyAndModifiers::WPPropertyAndModifiers()
 {

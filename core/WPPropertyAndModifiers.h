@@ -4,7 +4,7 @@
 #include <sstream>
 #include "WPDLLManager/WPDLLManager.h"
 #include "WPScore/WPProperty.h"
-#include "WPModifier.h"
+#include "include/core/WPModifier.h"
 
 class WPPropertyAndModifiers
 {

@@ -15,7 +15,7 @@ void WPDefaultNoteModifier::setNotes(WPMultinote *notes, int num, double offset)
 {
     WPMultinote *iter, *end;
     int i;
-    WPModifierInternal::setNotes(notes, num, offset);
+    WPModifier::setNotes(notes, num, offset);
     //...
     notestarts.clear();
     notestarts.push_back(-offset/*.toDouble()*/);

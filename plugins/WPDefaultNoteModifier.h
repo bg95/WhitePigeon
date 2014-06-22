@@ -1,13 +1,13 @@
 #ifndef WPDEFAULTNOTEMODIFIER_H
 #define WPDEFAULTNOTEMODIFIER_H
 
-#include "core/WPModifierInternal.h"
+#include "core/WPModifier.h"
 #include "WPScore/WPNote.h"
 #include "WPScore/WPMultinote.h"
 class WPDefaultNoteModifier;
 #include "WPDLLManager/WPCallbackManager.h"
 
-class WPDefaultNoteModifier : public WPModifierInternal
+class WPDefaultNoteModifier : public WPModifier
 {
 public:
     WPDefaultNoteModifier();

@@ -3,47 +3,69 @@
 
 #include "WPScore/WPMultinote.h"
 
+#include "WPScore/WPNote.h"
+#include "WPScore/WPMultinote.h"
+#include "WPScore/WPLib.h"
+
 class WPModifier
 {
 public:
-    WPModifier() {}
-    virtual ~WPModifier() {}
-
-    virtual void set(std::string para) = 0; //set parameters
-
-    virtual void setTime(double t) = 0;
+    WPModifier();
+    virtual ~WPModifier();
+    virtual void setTime(double t);
     //this will be called before each call of modify* function, telling the current time (in beats)
     //call this when overwriting
-    virtual double getTime() const = 0;
-    virtual double getPrevTime() const = 0;
-    virtual bool timePassed(double t) = 0;
-    virtual void reset() = 0; //call this when overwriting
+    virtual double getTime() const;
+    virtual double getPrevTime() const;
+    virtual bool timePassed(double t);
+    virtual void reset(); //call this when overwriting
+    //virtual void reset(double t); //call this when overwriting
 
-    //virtual void setNotes(const std::vector<WPMultinote> &notes, double offset) = 0;
-    virtual void setNotes(WPMultinote *notes, int num, double offset) = 0;
+    //virtual void setNotes(const std::vector<WPMultinote> &notes, double offset);
+    virtual void setNotes(WPMultinote *notes, int num, double offset);
     //setNotes will be called before calling all modify* functions, telling the notes for the modifier
     //call WPModifier::setNotes when overwriting, or getNotes won't work
-    //virtual std::vector<WPMultinote> &getNotes() = 0; //why can't be inline?
-    virtual WPMultinote *getNotes() = 0;
-    virtual int getNotesNumber() = 0;
-    virtual double getNotesOffset() = 0;
+    //virtual std::vector<WPMultinote> &getNotes(); //why can't be inline?
+    //virtual double getNotesOffset();
+    virtual WPMultinote *getNotes();
+    virtual int getNotesNumber();
+    virtual double getNotesOffset();
 
-    virtual bool isGlobal() = 0; //true if the modifier applies to all parts
+    virtual bool isGlobal(); //true if the modifier applies to all parts
+    //virtual bool isSingleNote();
+    //true if the modifier applies to single notes, or application between notes does not interrelate
+    //if true, setNote() will always pass a single note, isGlobal must be false
 
-    virtual bool isTuning() = 0; //if true, isFreqModifier must be true
-    virtual bool isTimbreModifier() = 0;
-    virtual bool isTempoModifier() = 0;
-    virtual bool isNoteModifier() = 0;
-    virtual bool isFreqModifier() = 0;
-    virtual bool isAmpModifier() = 0;
+    virtual bool isTuning(); //if true, isFreqModifier must be true
+    virtual bool isTimbreModifier();
+    virtual bool isTempoModifier();
+    virtual bool isNoteModifier();
+    virtual bool isFreqModifier();
+    virtual bool isAmpModifier();
+
+    virtual void set(std::string para); //set parameters
 
     //time is in the unit of beats
     //length is the total duration of the property
-    virtual std::string modifyTimbre() = 0;
-    virtual double modifyTempo(double time, double tempo) = 0;
-    virtual double modifyNote(double time) = 0; //if a note starts at (near) time, returns the length, otherwise returns a negative
-    virtual std::vector<double> modifyFreq(double time, std::vector<double> freq) = 0;
-    virtual std::vector<double> modifyAmp(double time, std::vector<double> amp) = 0;
+    virtual std::string modifyTimbre();
+    virtual double modifyTempo(double time, double tempo);
+    virtual double modifyNote(double time); //if a note starts at (near) time, returns the length, otherwise returns a negative
+    virtual std::vector<double> modifyFreq(double time, std::vector<double> freq);
+    virtual std::vector<double> modifyAmp(double time, std::vector<double> amp);
+
+    virtual WPMultinote *getCurrentMultinote();
+
+private:
+    double wpmodifier_time, wpmodifier_prevtime;
+    //std::vector<WPMultinote> wpmodifier_notes;
+    WPMultinote *wpmodifier_notes;
+    int wpmodifier_notesnumber;
+    double wpmodifier_notesoffset;
+    //WPNote wpmodifier_note;
+    WPMultinote *currentmultinoteiter;
+    double wpmodifier_stime;
+
 };
+
 
 #endif // WPMODIFIER_H

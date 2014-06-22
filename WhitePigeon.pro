@@ -17,7 +17,7 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     core/WPSynthesizer.cpp \
-    core/WPWave.cpp \
+#    core/WPWave.cpp \
     core/WPPipe.cpp \
     core/WPMixer.cpp \
     core/WPSynthesisController.cpp \
@@ -38,8 +38,6 @@ SOURCES += main.cpp\
     core/WPPropertyAndModifiers.cpp \
     core/WPOscilloscope.cpp \
     WPDLLManager/WPDLLTimbreManager.cpp \
-#    WPDLLManager/WPDLLTimbre.cpp \
-#    WPDLLManager/WPDLLModifier.cpp \
     WPDLLManager/WPDLLManager.cpp \
     WPDLLManager/WPCallbackManager.cpp \
     plugins/WPDefaultNoteModifier.cpp \
@@ -48,21 +46,19 @@ SOURCES += main.cpp\
     myglwidget.cpp \
     UI/QRecentWebsitesMenu.cpp \
     UI/versiondialog.cpp \
-#    plugins/WPTempoModifier.cpp \
-#    plugins/WPAmpModifier.cpp \
     WPImage/Parallel_Lines.cpp \
     WPImage/Image_Processing.cpp \
     WPImage/Image.cpp \
     core/WPTimbre.cpp \
-    core/WPModifierInternal.cpp
+#    core/WPModifierInternal.cpp \
+#    core/WPModifier.cpp
 
 HEADERS  +=\
     core/WPSynthesizer.h \
-    core/WPWave.h \
-    core/WPTimbre.h \
-    core/WPVarTimbre.h \
+    include/core/WPWave.h \
+    include/core/WPTimbre.h \
     core/WPPipe.h \
-	core/WPMixer.h \
+    core/WPMixer.h \
     core/WPSynthesisController.h \
     UI/WPWindow.h \
     UI/QRecentFilesMenu.h \
@@ -82,8 +78,6 @@ HEADERS  +=\
     core/WPPropertyAndModifiers.h \
     core/WPOscilloscope.h \
     WPDLLManager/WPDLLTimbreManager.h \
-#    WPDLLManager/WPDLLTimbre.h \
-#    WPDLLManager/WPDLLModifier.h \
     WPDLLManager/WPDLLManager.h \
     WPDLLManager/WPCallbackManager.h \
     plugins/WPDefaultNoteModifier.h \
@@ -92,13 +86,21 @@ HEADERS  +=\
     myglwidget.h \
     UI/QRecentWebsitesMenu.h \
     UI/versiondialog.h \
-#    plugins/WPTempoModifier.h \
-#    plugins/WPAmpModifier.h \
     WPImage/Parallel_Lines.h \
     WPImage/Image_Processing.h \
     WPImage/Image.h \
-    core/WPModifierInternal.h \
-    core/WPModifier.h
+#    core/WPModifierInternal.h \
+    include/core/WPModifier.h \
+    include/WPScore/WPScore.h \
+    include/WPScore/WPProperty.h \
+    include/WPScore/WPPosition.h \
+    include/WPScore/WPPersistentTree.h \
+    include/WPScore/WPPart.h \
+    include/WPScore/WPNote.h \
+    include/WPScore/WPMultinote.h \
+    include/WPScore/WPLib.h \
+    include/WPScore/WPInterval.h \
+    include/WPScore/WPAllocator.h
 
 TRANSLATIONS += Chinese.ts
 
@@ -114,3 +116,10 @@ else:unix: LIBS += -L$$PWD/lib/ -lWPScore
 
 INCLUDEPATH += $$PWD/include/
 DEPENDPATH += $$PWD/include/
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/release/ -lWPPlugin
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/debug/ -lWPPlugin
+else:unix: LIBS += -L$$PWD/lib/ -lWPPlugin
+
+INCLUDEPATH += $$PWD/include
+DEPENDPATH += $$PWD/include

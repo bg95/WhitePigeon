@@ -576,5 +576,5 @@ WPWave::WaveDataType WPSynthesizer::truncateWaveData(double x)
         x = 1.0;
     if (x < -1.0)
         x = -1.0;
-    return WPWave::WaveDataType(x * 32767);
+    return WPWave::WaveDataType(x * 32767); //is 32767 safe?
 }

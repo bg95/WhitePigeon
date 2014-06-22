@@ -3,13 +3,13 @@
 
 #include <Qt>
 #include <sstream>
-#include "core/WPModifierInternal.h"
+#include "core/WPModifier.h"
 #include "WPScore/WPNote.h"
 #include "WPScore/WPMultinote.h"
 class WP12EqualTuning;
 #include "WPDLLManager/WPCallbackManager.h"
 
-class WP12EqualTuning : public WPModifierInternal
+class WP12EqualTuning : public WPModifier
 {
 public:
     WP12EqualTuning();

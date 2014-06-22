@@ -5,7 +5,7 @@
 #include <QThread>
 #include <QTimer>
 #include "WPPipe.h"
-#include "WPWave.h"
+#include "include/core/WPWave.h"
 
 class WPMixer : public QThread
 {

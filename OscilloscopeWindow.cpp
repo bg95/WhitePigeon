@@ -12,7 +12,8 @@ OscilloscopeWindow::OscilloscopeWindow(QWidget *parent) :
     glwidgetR(this),
     glwidgetI(this),
     glwidgetSTFT(this),*/
-    oscilloscope(new WPOscilloscope(this))
+    oscilloscope(new WPOscilloscope(this)),
+    audioinput(0)
 {
     //ui->setupUi(this);
     setGeometry(100, 50, 1000, 600);
@@ -23,7 +24,8 @@ OscilloscopeWindow::~OscilloscopeWindow()
 {
     //delete ui;
     delete oscilloscope;
-    delete audioinput;
+    if (audioinput)
+        delete audioinput;
     //delete pipe;
 }
 
@@ -84,7 +86,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
 	score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
 	score->unlock();
 
-
+/*
     score->lockForWrite();
     for (int i = 0; i < 16 * 3; i++)
     {
@@ -95,11 +97,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->getPartList()[1].startFrom(WPPosition(Fraction(0, 1)));
     //score->getPartList()[1].setToBeMuted();
 	score->unlock();
-
-	/*score->lockForWrite();
-    score->save("pi2.wps");
-	score->close();
-    score->unlock();
+*/
 /*
     score->lockForWrite();
     score->load("pi2.wps");
@@ -112,7 +110,14 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     //connect(controller, SIGNAL(synthesisFinished()), this, SLOT(waveDecodeFinished()));
     //controller->synthesizeAndOutput(*score, file);
     qDebug("part volume = %lf", score->getPartList()[0].getVolume());
-    controller->synthesizeAndPlay(*score);
+
+    //set plugin directories
+    /*
+    WPPropertyAndModifiers::ModifierPluginDir = "/home/pt-cr/Projects/WhitePigeon/WhitePigeon/plugins/";
+    WPDLLTimbreManager::TimbrePluginDir = "/home/pt-cr/Projects/WhitePigeon/WhitePigeon/plugins/";
+    */
+
+    //controller->synthesizeAndPlay(*score); /// prevent you from playing music!
     qDebug("part volume = %lf", score->getPartList()[0].getVolume());
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
