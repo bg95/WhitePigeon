@@ -19,10 +19,10 @@ class WPWave : public QObject
     Q_OBJECT
 public:
     typedef qint16 WaveDataType;
-    static const WaveDataType maxWaveDataType = 32767, minWaveDataType = -32768;
-    static const int SamplingRate = 48000;
-    static const double PI = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
-    static const double Ksigma = 6.0;   //The Gauss function is considered very small (as 0) if |x| > Ksigma * sigma
+    static const WaveDataType maxWaveDataType, minWaveDataType;
+    static const int SamplingRate;
+    static const double PI;
+    static const double Ksigma;   //The Gauss function is considered very small (as 0) if |x| > Ksigma * sigma
     //_FFT means Inverse FFT, so as _STFT, _Gabor
     template <class Type> static int FFT(const Type *begin, const Type *end, QVector<std::complex<double> > &FFTout);
     static int _FFT(const std::complex<double> *begin, const std::complex<double> *end, QVector<std::complex<double> > &FFTout);

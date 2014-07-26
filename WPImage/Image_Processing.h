@@ -95,7 +95,7 @@ private:
 	static const int Black_Color=2;
 	static const int WuXianPu=3;
   //  static const int WuxianPu_Color=200;
-	static const double Pi=3.1415926;
+    static const double Pi;
     double Parallel_Angel;
     int Width;
     int Height;

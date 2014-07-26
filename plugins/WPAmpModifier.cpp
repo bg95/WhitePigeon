@@ -11,9 +11,9 @@ WPAmpModifier::~WPAmpModifier()
 {
 }
 
-bool WPAmpModifier::isAmpModifier()
+WPModifier::Precedence WPAmpModifier::isAmpModifier()
 {
-    return true;
+    return PROP;
 }
 
 void WPAmpModifier::set(std::string para)

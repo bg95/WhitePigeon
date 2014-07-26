@@ -1,5 +1,6 @@
 #include "Image_Processing.h"
 
+const double Image_Processing::Pi=3.1415926;
 //public::
 Image_Processing::Image_Processing():ima()
 {

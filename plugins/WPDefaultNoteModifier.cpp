@@ -38,6 +38,12 @@ double WPDefaultNoteModifier::modifyNote(double time)
             return multinotes[notei].getNotes()[0].getLength().toDouble();
     return -1;
 }
+
+std::string WPDefaultNoteModifier::getComment()
+{
+    return std::string("The default note modifier. Does not modify the notes.");
+}
+
 /*
 extern "C"
 {

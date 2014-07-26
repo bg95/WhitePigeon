@@ -1,5 +1,7 @@
 #include "WPStaccatissimo.h"
 
+const double Shortened = 0.25;
+
 WPStaccatissimo::WPStaccatissimo()
 {
 }
@@ -29,9 +31,15 @@ double WPStaccatissimo::modifyNote(double time)
 
 std::vector<double> WPStaccatissimo::modifyAmp(double time, std::vector<double> amp)
 {
+	std::vector<double>::iterator iter;
     if (time < length * Shortened)
     {
-        return amp * std::exp(time / (length * Shortened));
+		double t = std::exp(time / (length * Shortened));
+		for (iter = amp.begin(); iter != amp.end(); iter++)
+			(*iter) *= t;
+		return amp;
     }
-    return 0;
+	for (iter = amp.begin(); iter != amp.end(); iter++)
+		(*iter) = 0.0;
+	return amp;
 }

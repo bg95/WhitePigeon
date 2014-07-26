@@ -42,6 +42,11 @@ std::vector<double> WP12EqualTuning::modifyFreq(double time, std::vector<double>
     return freq;
 }
 
+std::string WP12EqualTuning::getComment()
+{
+    return std::string("Twelve-tone equal temperament. The parameter is the base frequency (default 440.0Hz).");
+}
+
 double WP12EqualTuning::cal12EqualTuning(WPNote note)
 {
     return basefreq * pow(2.0, (double)note.getPitch() / 12.0);

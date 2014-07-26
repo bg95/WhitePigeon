@@ -1,9 +1,9 @@
 #ifndef WPSTACCATISSIMO_H
 #define WPSTACCATISSIMO_H
 
-#include "WPModifierPlugin.h"
+#include "WPModifier.h"
 
-class WPStaccatissimo : public WPModifierPlugin
+class WPStaccatissimo : public WPModifier
 {
 public:
     WPStaccatissimo();
@@ -13,9 +13,9 @@ public:
     {
         return true;
     }
-    bool isAmpModifier()
+    Precedence isAmpModifier()
     {
-        return true;
+        return PROP;
     }
 
     void setNotes(WPMultinote *notes, int num, double offset);
@@ -24,7 +24,7 @@ public:
     std::vector<double> modifyAmp(double time, std::vector<double> amp);
 
 private:
-    const double Shortened = 0.25;
+    const double Shortened;
     std::vector<double> notestart;
 
 };

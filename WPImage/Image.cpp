@@ -1,5 +1,7 @@
 #include "Image.h"
 
+const double Image::Pi=3.1415926;
+const double Image::Const_Color=2;
 
 Image::Image()
 {

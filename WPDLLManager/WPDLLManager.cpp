@@ -8,6 +8,7 @@ WPDLLManager::WPDLLManager() :
     create(0),
     destroy(0)
 {
+    objects.clear();
 }
 
 WPDLLManager::~WPDLLManager()
@@ -78,20 +79,44 @@ void *WPDLLManager::getFuncAddr(const char *str) const
     #endif
 }
 
-void *WPDLLManager::newObject() const
+void *WPDLLManager::newObject()
 {
-    return create ? create() : 0;
+    if (create)
+    {
+        void *p = create();
+        objects.insert(p);
+        return p;
+    }
+    return 0;
 }
 
-bool WPDLLManager::deleteObject(void *obj) const
+bool WPDLLManager::deleteObject(void *obj)
 {
     if (destroy)
     {
-        destroy(obj);
-        return true;
+        std::set<void *>::iterator iter = objects.find(obj);
+        if (iter != objects.end())
+        {
+            objects.erase(iter);
+            destroy(obj);
+            return true;
+        }
     }
     return false;
 }
+
+bool WPDLLManager::clearObjects()
+{
+    if (!destroy)
+        return false;
+    while (!objects.empty())
+    {
+        deleteObject(*objects.begin());
+    }
+    return true;
+}
+
+typedef MembFuncPtr typeof_callMember(WPCallbackManager::CallbackFuncMember func);
 
 bool WPDLLManager::sendCallbackHandle() const
 {
@@ -99,7 +124,7 @@ bool WPDLLManager::sendCallbackHandle() const
     if (!setCallbackStatic)
         return false;
     setCallbackStatic((void *)WPCallbackManager::callStatic);
-    void (*setCallbackMember)(typeof WPCallbackManager::callMember) = (typeof setCallbackMember)getFuncAddr("setCallbackMember");
+    void (*setCallbackMember)(typeof_callMember) = (void (*)(typeof_callMember))getFuncAddr("setCallbackMember");
     if (!setCallbackMember)
         return false;
     setCallbackMember(WPCallbackManager::callMember);
@@ -110,6 +135,7 @@ void WPDLLManager::closeDLL()
 {
     if (!handle)
         return;
+    clearObjects();
     #ifdef Q_OS_WIN
         FreeLibrary(handle);
     #else

@@ -13,7 +13,6 @@
 #include "WPScore/WPNote.h"
 #include "WPScore/WPPart.h"
 class WPSynthesizer;
-#include "WPDLLManager/WPDLLModifier.h"
 #include "WPDLLManager/WPDLLTimbreManager.h"
 #include "plugins/WP12EqualTuning.h"
 #include "plugins/WPDefaultNoteModifier.h"
@@ -22,7 +21,7 @@ class WPSynthesizer : public QThread
 {
     Q_OBJECT
 public:
-    static const double TimeStep = 1.0 / 1200.0;  //used to be 1200
+    static const double TimeStep;
     static WPWave::WaveDataType truncateWaveData(double x);
 
     explicit WPSynthesizer(QObject *parent = 0);
@@ -63,6 +62,7 @@ private:
     int processNote(double time, double &notelength);
     int processTimbre(double time, std::string &timbrename);
     int processTempo(double time, double &tempo);
+    int sortAndApplyModifier(bool (*filter)(WPModifier *), WPModifier::Precedence (*precedence)(WPModifier *), std::function<void (WPModifier *)> action);
     void processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo, std::string &timbre);
     //freq should be filled with 0's
     void outputNote();

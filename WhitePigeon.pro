@@ -7,7 +7,7 @@
 QT       += core gui opengl multimedia webkit webkitwidgets network
 CONFIG += opengl
 LIBS += -ldl
-QMAKE_CXXFLAGS += -rdynamic
+QMAKE_CXXFLAGS += -rdynamic -std=c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -52,6 +52,7 @@ SOURCES += main.cpp\
     core/WPTimbre.cpp \
 #    core/WPModifierInternal.cpp \
 #    core/WPModifier.cpp
+    WPDLLManager/WPPluginManager.cpp
 
 HEADERS  +=\
     core/WPSynthesizer.h \
@@ -100,7 +101,8 @@ HEADERS  +=\
     include/WPScore/WPMultinote.h \
     include/WPScore/WPLib.h \
     include/WPScore/WPInterval.h \
-    include/WPScore/WPAllocator.h
+    include/WPScore/WPAllocator.h \
+    WPDLLManager/WPPluginManager.h
 
 TRANSLATIONS += Chinese.ts
 

@@ -20,6 +20,8 @@ public:
     }
     double modifyNote(double time);
 
+    std::string getComment();
+
     static void *(*callback)(typename WPCallbackManager::CallbackFuncStatic);
     
 private:

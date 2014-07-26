@@ -1,6 +1,8 @@
 #include "WPSynthesizer.h"
 #include "WPPipe.h"
 
+const double WPSynthesizer::TimeStep = 1.0 / 1200.0;  //used to be 1200
+
 WPSynthesizer::WPSynthesizer(QObject *parent) :
     QThread(parent),
     swave(0),
@@ -275,6 +277,7 @@ int WPSynthesizer::processTuningFreqAmp(double time, std::vector<double> &freq, 
         tuned++;
         freq = defaulttuning.modifyFreq(time, freq);
     }
+    /*
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
         if ((*propmapiter).second->sampleModifier()->isFreqModifier() &&
             !(*propmapiter).second->sampleModifier()->isTuning())
@@ -285,7 +288,39 @@ int WPSynthesizer::processTuningFreqAmp(double time, std::vector<double> &freq, 
         if ((*propmapiter).second->sampleModifier()->isAmpModifier())
         {
             amp = (*propmapiter).second->sampleModifier()->modifyAmp(time, amp);
+            qDebug("amp modified by prop %s", (*propmapiter).first.getArg().data());
         }
+        */
+    int freqerr = sortAndApplyModifier(
+        [](WPModifier *modifier)
+        {
+            return modifier->isFreqModifier() && !modifier->isTuning();
+        },
+        [](WPModifier *modifier)
+        {
+            return modifier->isFreqModifier();
+        },
+        [&freq, time](WPModifier *modifier)
+        {
+            freq = modifier->modifyFreq(time, freq);
+        }
+    );
+    int amperr = sortAndApplyModifier(
+        [](WPModifier *modifier)
+        {
+            return (bool)modifier->isAmpModifier();
+        },
+        [](WPModifier *modifier)
+        {
+            return modifier->isAmpModifier();
+        },
+        [&amp, time](WPModifier *modifier)
+        {
+            amp = modifier->modifyAmp(time, amp);
+        }
+    );
+    //qDebug("amp = %lf", amp[0]);
+    //TODO: process freqerr and amperr
     return tuned;
 }
 
@@ -317,6 +352,7 @@ int WPSynthesizer::processNote(double time, double &notelength)
 int WPSynthesizer::processTempo(double time, double &tempo)
 {
     int tempocnt = 0;
+    /*
     std::map<WPProperty, WPPropertyAndModifiers *>::iterator propmapiter;
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
         if ((*propmapiter).second->sampleModifier()->isTempoModifier())
@@ -324,12 +360,29 @@ int WPSynthesizer::processTempo(double time, double &tempo)
             tempo = (*propmapiter).second->sampleModifier()->modifyTempo(time, tempo);
             tempocnt++;
         }
+        */
+    int tempoerr = sortAndApplyModifier(
+        [](WPModifier *modifier)
+        {
+            return (bool)modifier->isTempoModifier();
+        },
+        [](WPModifier *modifier)
+        {
+            return modifier->isTempoModifier();
+        },
+        [&tempo, time, &tempocnt](WPModifier *modifier)
+        {
+            tempo = modifier->modifyTempo(time, tempo);
+            tempocnt++;
+        }
+    );
     if (tempocnt == 0)
     {
         tempocnt++;
-        tempo = 144.0; //100.0;
+        tempo = 100.0; //100.0;
     }
-    //qDebug("##### process tempo = %lf", tempo);
+    qDebug("##### process tempo = %lf", tempo);
+    //TODO: process tempoerr
     return tempocnt;
 }
 
@@ -349,6 +402,27 @@ int WPSynthesizer::processTimbre(double time, std::string &timbrename)
         timbrename = "WPTuningFork";
     }
     return timbrecnt;
+}
+
+int WPSynthesizer::sortAndApplyModifier(bool (*filter)(WPModifier *), WPModifier::Precedence (*precedence)(WPModifier *), std::function<void (WPModifier *)> action)
+{
+    std::vector<WPModifier *> prec[WPModifier::PROP + 1];
+    std::vector<WPModifier *>::iterator piter;
+    int i;
+    std::map<WPProperty, WPPropertyAndModifiers *>::iterator propmapiter;
+    for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
+        if (filter((*propmapiter).second->sampleModifier()))
+        {
+            prec[precedence((*propmapiter).second->sampleModifier())].push_back((*propmapiter).second->sampleModifier());
+        }
+    for (i = WPModifier::INIT; i <= WPModifier::PROP; i++)
+        for (piter = prec[i].begin(); piter != prec[i].end(); piter++)
+        {
+            action(*piter);
+        }
+    return (prec[WPModifier::NEVER].size() <= 0 ? 0 : 1) |
+           (prec[WPModifier::INIT].size() <= 1 ? 0 : 2) |
+           (prec[WPModifier::DISPROP].size() <= 1 ? 0 : 4);
 }
 
 void WPSynthesizer::processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo, std::string &timbrename)

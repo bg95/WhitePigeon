@@ -8,7 +8,7 @@
 class WPTimbre
 {
 public:
-    const static double ControlRate = 480.0; //Hertz
+    const static double ControlRate; //Hertz
     //const static WPTuningFork TuningFork;
     /*static double interpolate(double *f, double t)
     {

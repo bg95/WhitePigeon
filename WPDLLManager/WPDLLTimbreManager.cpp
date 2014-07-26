@@ -34,7 +34,7 @@ bool WPDLLTimbreManager::setTimbre(std::string timbrenamepara)
     if (!manager.sendCallbackHandle())
     {
         qWarning("No setCallback !");
-        return false;
+        //return false;
     }
     WPTimbre *sample = (WPTimbre *)manager.newObject();
     if (!sample)

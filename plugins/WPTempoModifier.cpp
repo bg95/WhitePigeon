@@ -10,14 +10,14 @@ WPTempoModifier::~WPTempoModifier()
 {
 }
 
-bool WPTempoModifier::isTempoModifier()
+WPModifier::Precedence WPTempoModifier::isTempoModifier()
 {
-    return true;
+    return INIT;
 }
 
 void WPTempoModifier::reset()
 {
-    WPModifierPlugin::reset();
+    WPModifier::reset();
 }
 
 void WPTempoModifier::set(std::string para)

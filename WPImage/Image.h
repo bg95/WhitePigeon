@@ -58,8 +58,8 @@ private:
     int Width; //宽
     int Height; //高
 
-	static const double Pi=3.1415926;
-	static const double Const_Color=2;
+    static const double Pi;
+    static const double Const_Color;
 
 };
 

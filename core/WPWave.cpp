@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include "WPWave.h"
 
+const WPWave::WaveDataType WPWave::maxWaveDataType = 32767, WPWave::minWaveDataType = -32768;
+const int WPWave::SamplingRate = 48000;
+const double WPWave::PI = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
+const double WPWave::Ksigma = 6.0;   //The Gauss function is considered very small (as 0) if |x| > Ksigma * sigma
+
 WPWave::WPWave(QObject *parent) :
     QObject(parent),
     decoder(0)

@@ -10,7 +10,7 @@ public:
     WPAmpModifier();
     ~WPAmpModifier();
 
-    bool isAmpModifier();
+    Precedence isAmpModifier();
     void set(std::string para);
     std::vector<double> modifyAmp(double time, std::vector<double> amp);
 

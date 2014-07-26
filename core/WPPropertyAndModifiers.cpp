@@ -42,16 +42,22 @@ bool WPPropertyAndModifiers::setProperty(WPProperty &_prop)
     fname.append(".so");
     qDebug() << "filename = \"" << fname.data() << '\"';
     if (!manager.openDLL(fname))
+    {
+        qDebug() << "DLL open failed";
         return false;
+    }
     if (!manager.sendCallbackHandle())
     {
         qWarning("No setCallback !");
-        return false;
+        //return false;
     }
     samplemodifier = (WPModifier *)manager.newObject();
     if (!samplemodifier)
+    {
+        qDebug() << "Plugin construction failed";
         return false;
-    qDebug("samplemodifier setpara %s", para.data());
+    }
+    qDebug("samplemodifier %llX setpara %s", (quint64)samplemodifier, para.data());
     samplemodifier->set(para);
     return true;
 }

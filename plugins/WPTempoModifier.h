@@ -1,15 +1,15 @@
 #ifndef WPTEMPOMODIFIER_H
 #define WPTEMPOMODIFIER_H
 
-#include "WPModifierPlugin.h"
+#include "WPModifier.h"
 
-class WPTempoModifier : public WPModifierPlugin
+class WPTempoModifier : public WPModifier
 {
 public:
     WPTempoModifier();
     ~WPTempoModifier();
 
-    bool isTempoModifier();
+    Precedence isTempoModifier();
     void reset();
     void set(std::string para);
     double modifyTempo(double, double);

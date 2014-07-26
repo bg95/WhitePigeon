@@ -2,6 +2,7 @@
 #define WPDLLMANAGER_H
 
 #include <QString>
+#include <set>
 
 #ifdef Q_OS_WIN
     #include <windows.h>
@@ -40,8 +41,9 @@ public:
     bool openDLL(const char *str);
     void *getFuncAddr(QString &name) const;
     void *getFuncAddr(const char *str) const;
-    void *newObject() const; //assume there exists a constructor: void *create();
-    bool deleteObject(void *obj) const;
+    void *newObject(); //assume there exists a constructor: void *create();
+    bool deleteObject(void *obj);
+    bool clearObjects();
     bool sendCallbackHandle() const;
     void closeDLL();
 
@@ -49,6 +51,7 @@ private:
     HandleType handle;
     void *(*create)();
     void (*destroy)(void *);
+    std::set<void *> objects;
 
 };
 

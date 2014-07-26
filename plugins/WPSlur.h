@@ -1,13 +1,13 @@
 #ifndef WPDEFAULTNOTEMODIFIER_H
 #define WPDEFAULTNOTEMODIFIER_H
 
-#include "WPModifierPlugin.h"
+#include "core/WPModifier.h"
 #include "WPScore/WPLib.h"
 #include "WPScore/WPNote.h"
 #include "WPScore/WPMultinote.h"
 #include "WPDLLManager/WPCallbackManager.h"
 
-class WPSlur : public WPModifierPlugin
+class WPSlur : public WPModifier
 {
 public:
     WPSlur();

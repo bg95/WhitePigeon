@@ -1,4 +1,4 @@
-#include "WPModifier.h"
+#include "core/WPModifier.h"
 
 WPModifier::WPModifier()
 {
@@ -35,6 +35,11 @@ void WPModifier::reset()
     wpmodifier_time = 0.0;
     wpmodifier_prevtime = 0.0;
     currentmultinoteiter = getNotes();
+}
+
+WPModifier::NotesRequirement WPModifier::needNotes()
+{
+    return NONE;
 }
 
 void WPModifier::setNotes(WPMultinote *notes, int num, double offset)
@@ -80,9 +85,14 @@ bool WPModifier::isTimbreModifier()
     return false;
 }
 
-bool WPModifier::isTempoModifier()
+bool WPModifier::isTimbre()
 {
     return false;
+}
+
+WPModifier::Precedence WPModifier::isTempoModifier()
+{
+    return NEVER;
 }
 
 bool WPModifier::isNoteModifier()
@@ -90,19 +100,30 @@ bool WPModifier::isNoteModifier()
     return false;
 }
 
-bool WPModifier::isFreqModifier()
+WPModifier::Precedence WPModifier::isFreqModifier()
 {
-    return false;
+    return NEVER;
 }
 
-bool WPModifier::isAmpModifier()
+WPModifier::Precedence WPModifier::isAmpModifier()
 {
-    return false;
+    return NEVER;
 }
 
 std::string WPModifier::modifyTimbre()
 {
     return "";
+}
+
+WPWave *WPModifier::synthesize(double dur, double time0, double time1, double amp0, double amp1, double freq0, double freq1)
+{
+    QVector<WPWave::WaveDataType> tmpdata;
+    double t;
+    tmpdata.clear();
+    for (t = wpmodifier_synthesized_time; t < time1; t += 1.0 / double(WPWave::SamplingRate))
+        tmpdata.push_back(0);
+    wpmodifier_synthesized_time = t;
+    return new WPWave(tmpdata, WPWave::defaultAudioFormat());
 }
 
 double WPModifier::modifyTempo(double time, double tempo)
@@ -156,3 +177,7 @@ WPMultinote *WPModifier::getCurrentMultinote()
     return notes + n - 1;
 }
 
+std::string WPModifier::getComment()
+{
+	return std::string("No comment.");
+}

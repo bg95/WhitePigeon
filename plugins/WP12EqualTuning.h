@@ -25,6 +25,8 @@ public:
     std::vector<double> modifyFreq(double time, std::vector<double> freq);
     //WPMultinote *getCurrentMultinote();
 
+    std::string getComment();
+
     static void *(*callback)(WPCallbackManager::CallbackFuncStatic);
     
 private:
