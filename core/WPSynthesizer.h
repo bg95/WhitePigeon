@@ -61,9 +61,11 @@ private:
     int processTuningFreqAmp(double time, std::vector<double> &freq, std::vector<double> &amp);
     int processNote(double time, double &notelength);
     int processTimbre(double time, std::string &timbrename);
+    //int processTimbre(double time, WPPropertyAndModifiers *&timbreobj);
     int processTempo(double time, double &tempo);
     int sortAndApplyModifier(bool (*filter)(WPModifier *), WPModifier::Precedence (*precedence)(WPModifier *), std::function<void (WPModifier *)> action);
     void processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo, std::string &timbre);
+    //void processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo, WPPropertyAndModifiers *&timbreobj);
     //freq should be filled with 0's
     void outputNote();
     std::map<WPProperty, WPPropertyAndModifiers *> propmap;
@@ -76,6 +78,7 @@ private:
     WPWave *swave;
     WPWave *twave;
     std::string timbrename;
+    //WPModifier *timbreobj;
     double time0, time1;
     std::vector<std::vector<double> > freq, amp;
     std::vector<double> tempo, time;
@@ -90,6 +93,7 @@ private:
     std::vector<WPNote> notes;
     std::vector<WPProperty> sprop, eprop;
     WPPropertyAndModifiers *pam;
+    bool notestart;
 
     QTimer timer, outputtimer;
     int waitingtime;

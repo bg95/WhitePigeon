@@ -32,9 +32,6 @@ inline bool WPModifier::timePassed(double t)
 
 void WPModifier::reset()
 {
-    wpmodifier_time = 0.0;
-    wpmodifier_prevtime = 0.0;
-    currentmultinoteiter = getNotes();
 }
 
 WPModifier::NotesRequirement WPModifier::needNotes()
@@ -42,17 +39,32 @@ WPModifier::NotesRequirement WPModifier::needNotes()
     return NONE;
 }
 
+/*
 void WPModifier::setNotes(WPMultinote *notes, int num, double offset)
 {
     wpmodifier_notes = notes;
     wpmodifier_notesnumber = num;
     wpmodifier_notesoffset = offset;
     //qDebug("WPModifier::setNotes this = %X wpmodifier_notes.begin() = %X", (quint64)this, (quint64)&*wpmodifier_notes.begin());
+}*/
+void WPModifier::setNotes(std::vector<WPMultinote> notes, double offset)
+{
+    wpmodifier_notes = notes;
+    wpmodifier_notesnumber = notes.size();
+    wpmodifier_notesoffset = offset;
+    wpmodifier_time = 0.0;
+    wpmodifier_prevtime = 0.0;
+    currentmultinoteiter = getNotes().data();
+    reset();
 }
-
+/*
 WPMultinote *WPModifier::getNotes()
 {
     //qDebug("WPModifier::getNotes this = %X wpmodifier_notes.begin() = %X", (quint64)this, (quint64)&*wpmodifier_notes.begin());
+    return wpmodifier_notes;
+}*/
+std::vector<WPMultinote> &WPModifier::getNotes()
+{
     return wpmodifier_notes;
 }
 
@@ -150,7 +162,7 @@ WPMultinote *WPModifier::getCurrentMultinote()
 {
     double time = getTime();
     //double stime = (-getNotesOffset())/*.toDouble()*/;//need to be modified to a member variable
-    WPMultinote *notes = getNotes();
+    WPMultinote *notes = getNotes().data();
     int n = getNotesNumber();
     bool frombegin = false;
     //currentmultinoteiter = notes;

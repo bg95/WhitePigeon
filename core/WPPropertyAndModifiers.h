@@ -17,6 +17,7 @@ public:
     bool setProperty(WPProperty &_prop);
     void setNumModifiers(int n);
     WPModifier *sampleModifier();
+    WPModifier *modifier(int s);
     std::string getName();
     bool operator <(WPPropertyAndModifiers &b)
     {

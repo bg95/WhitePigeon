@@ -76,18 +76,23 @@ void WPSynthesizer::synthesizePartInitialize()
 
     WPMultinote *notes;
     std::vector<WPMultinote> notesvector = part->getAllNotes();
+    /*
     int num = notesvector.size();
-    notes = new WPMultinote[num];
+    notes = new WPMultinote[num]; //leak!
     for (int i = 0; i < num; i++)
         notes[i] = notesvector[i];
-    defaultnotemodifier.setNotes(notes, num, /*Fraction(0, 1)*/0.0);
-    defaultnotemodifier.reset();
-    notes = new WPMultinote[num];
+        */
+    defaultnotemodifier.setNotes(notesvector, /*Fraction(0, 1)*/0.0);
+    //defaultnotemodifier.reset();
+    /*
+    notes = new WPMultinote[num]; //leak!
     for (int i = 0; i < num; i++)
         notes[i] = notesvector[i];
-    defaulttuning.setNotes(notes, num, /*Fraction(0, 1)*/0.0);
-    defaulttuning.reset();
+        */
+    defaulttuning.setNotes(notesvector, /*Fraction(0, 1)*/0.0);
+    //defaulttuning.reset();
     //memory released in synthesizerPartFinalize()
+    //no need to release memory now
 
     part->lockForRead();
     fragment = part->nextFragment();
@@ -106,6 +111,8 @@ void WPSynthesizer::synthesizePartLoopInitialize()
         eprop = fragment.second.second;
 
         timeend = notes[0].getLength().toDouble() + time0;
+
+        notestart = true;
         scheduleSynthesizePartLoopBody();
     }
     else
@@ -168,9 +175,10 @@ void WPSynthesizer::synthesizePartFinalize()
     delete swave;
     swave = 0;
 
-    delete[] defaultnotemodifier.getNotes();
-    delete[] defaulttuning.getNotes();
+    //delete[] defaultnotemodifier.getNotes();
+    //delete[] defaulttuning.getNotes();
     //resolving memory leak in synthesizePartInitialize
+    //no need of delete now, for notes are copied to a vector in the modifier
 
     emit synthesisFinished();
 }
@@ -211,6 +219,22 @@ void WPSynthesizer::processProperties(double time0, double time1, std::vector<WP
                 insertProperty(*propiter);
             }
     }
+    //setNotes for WPModifier::SINGLE
+    if (!notes.empty() && notestart)
+    {
+        notestart = false;
+        std::map<WPProperty, WPPropertyAndModifiers *>::iterator propmapiter;
+        for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
+        {
+            WPModifier *mod = (*propmapiter).second->sampleModifier();
+            if (mod->needNotes() == WPModifier::SINGLE)
+            {
+                std::vector<WPMultinote> vecmlt;
+                vecmlt.push_back(fragment.first); //ugly to use fragment
+                mod->setNotes(vecmlt, 0.0);
+            }
+        }
+    }
 }
 
 void WPSynthesizer::insertProperty(WPProperty prop)
@@ -220,18 +244,35 @@ void WPSynthesizer::insertProperty(WPProperty prop)
     //memory released in removeProperty()
     if (pam->setProperty(prop))
     {
-        WPInterval propinterval = (prop).getInterval();
+        //setNotes. Another part for WPModifier::SINGLE is in synthesizePartLoopInitialize
+        if (pam->sampleModifier()->needNotes() != WPModifier::NONE)
+        {
+            WPInterval propinterval;
+            if (pam->sampleModifier()->needNotes() == WPModifier::RANGE)
+                propinterval = (prop).getInterval();
+            else if (pam->sampleModifier()->needNotes() == WPModifier::SINGLE)
+            {
+                WPPosition start = WPPosition(prop.getInterval().begin().getValue());
+                propinterval = WPInterval(start, start);
+            }
 
-        part->lockForRead();
-        WPInterval propexinterval = part->getExtendedInterval(propinterval);
-        std::vector<WPMultinote> notesvector = part->getNotesByInterval(propexinterval);
-        part->unlock();
+            part->lockForRead();
+            WPInterval propexinterval = part->getExtendedInterval(propinterval);
+            std::vector<WPMultinote> notesvector = part->getNotesByInterval(propexinterval);
+            part->unlock();
 
-        int num = notesvector.size();
-        WPMultinote *notes = new WPMultinote[num];
-        //memory released in removeProperty()
-        pam->sampleModifier()->reset();
-        pam->sampleModifier()->setNotes(notes, num, (propinterval.begin().getValue() - propexinterval.begin().getValue()).toDouble());
+            //int num = notesvector.size();
+            //WPMultinote *notes = new WPMultinote[num]; //leak!
+            //memory released in removeProperty()
+            //pam->sampleModifier()->setNotes(notes, num, (propinterval.begin().getValue() - propexinterval.begin().getValue()).toDouble());
+            pam->sampleModifier()->setNotes(notesvector, (propinterval.begin().getValue() - propexinterval.begin().getValue()).toDouble());
+        }
+        else //WPModifier::NONE, no notes passed (empty vector)
+        {
+            std::vector<WPMultinote> notesvector;
+            pam->sampleModifier()->setNotes(notesvector, 0.0);
+        }
+        //pam->sampleModifier()->reset();
         //propmap.insert(prop, pam);
         propmap[prop] = pam;
         qDebug("propmap modifier %lX", (quint64)pam->sampleModifier());
@@ -255,7 +296,7 @@ void WPSynthesizer::removeProperty(WPProperty prop)
         return;
     }
     qDebug("delete property %s [%lf,%lf]", prop.getArg().data(), prop.getInterval().begin().getValue().toDouble(), prop.getInterval().end().getValue().toDouble());
-    delete[] propmap[prop]->sampleModifier()->getNotes();
+    //delete[] propmap[prop]->sampleModifier()->getNotes();
     delete propmap[prop];
     //qDebug("propmap.size = %d", propmap.size());
     propmap.erase(prop);
@@ -403,7 +444,29 @@ int WPSynthesizer::processTimbre(double time, std::string &timbrename)
     }
     return timbrecnt;
 }
+/*
+int WPSynthesizer::processTimbre(double time, WPPropertyAndModifiers *&timbreobj)
+{
+    int timbrecnt = 0;
+    std::map<WPProperty, WPPropertyAndModifiers *>::iterator propmapiter;
+    for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
+        if ((*propmapiter).second->sampleModifier()->isTimbreModifier())
+        {
+            //timbrename = (*propmapiter).second->sampleModifier()->modifyTimbre();
+            timbreobj = (*propmapiter).second;
+            timbrecnt++;
+        }
+    if (timbrecnt == 0)
+    {
+        timbrecnt++;
+        //timbrename = "WPTuningFork";
+        timbreobj = ...;
+    }
+    return timbrecnt;
+}
+*/
 
+//TODO: not tested
 int WPSynthesizer::sortAndApplyModifier(bool (*filter)(WPModifier *), WPModifier::Precedence (*precedence)(WPModifier *), std::function<void (WPModifier *)> action)
 {
     std::vector<WPModifier *> prec[WPModifier::PROP + 1];

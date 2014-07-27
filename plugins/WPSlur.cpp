@@ -8,14 +8,15 @@ WPSlur::~WPSlur()
 {
 }
 
-void WPSlur::setNotes(WPMultinote *notes, int num, double offset)
+//void WPSlur::setNotes(WPMultinote *notes, int num, double offset)
+void WPSlur::reset()
 {
-    WPMultinote *iter;
-	WPModifier::setNotes(notes, num, offset);
+    //WPMultinote *iter;
+	std::vector<WPMultinote>::iterator iter;
 
     //double (WPMultinote::*getLengthDouble)() = (typeof getLengthDouble)callMember(WPCallbackManager::WPMultinote_getLengthDouble);
     sumlength = 0.0;
-    for (iter = getNotes(); iter != getNotes() + num; iter++)
+    for (iter = getNotes().begin(); iter != getNotes().end(); iter++)
     {
         sumlength += (*iter).getLength().toDouble();
     }

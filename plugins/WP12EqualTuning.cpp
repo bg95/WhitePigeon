@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-void *(*WP12EqualTuning::callback)(WPCallbackManager::CallbackFuncStatic) = 0;
+//void *(*WP12EqualTuning::callback)(WPCallbackManager::CallbackFuncStatic) = 0;
 
 WP12EqualTuning::WP12EqualTuning()
 {
@@ -14,7 +14,6 @@ WP12EqualTuning::~WP12EqualTuning()
 
 void WP12EqualTuning::reset()
 {
-    WPModifier::reset();
     basefreq = 440.0;
     //currentmultinoteiter = getNotes().begin();
     //qDebug("WP12EqualTuning::reset this = %X", (quint64)this);

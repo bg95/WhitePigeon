@@ -32,29 +32,26 @@ public:
     //setTime will be called before each call of modify* function, telling the current time (in beats)
     //call this when overwriting
     virtual void setTime(double t);
-    virtual double getTime() const; //should be protected
-    virtual double getPrevTime() const; //should be protected
-    virtual bool timePassed(double t); //should be protected
-    virtual void reset(); //call this when overwriting. Deprecated.
-    //virtual void reset(double t); //call this when overwriting
 
     //This indicates whether the modifier needs the information of the notes.
-    //Possible values may be NONE, SINGLE(single note), RANGE(all notes in the range).
-    //If it is NONE, setNote() will always pass meaningless values
-    //If it is SINGLE, setNote() will always pass a single note
-    //If it is RANGE, setNote() will always pass all nodes in the range of this modifier
+    //Possible values may be NONE, SINGLE (single note), RANGE (all notes in the range).
+    //If it is NONE, setNotes() will always pass meaningless values. setNotes() will be called once.
+    //If it is SINGLE, setNotes() will always pass a single note. setNotes() will be called every time a new multinote is going to be processed.
+    //If it is RANGE, setNotes() will always pass all nodes in the range of this modifier. setNotes() will be called once.
     virtual NotesRequirement needNotes();
 
     //setNotes will be called before calling all modify* functions, telling the notes for the modifier
     //call WPModifier::setNotes when overwriting, or getNotes won't work
     //virtual void setNotes(const std::vector<WPMultinote> &notes, double offset);
-    virtual void setNotes(WPMultinote *notes, int num, double offset); //want to change to std::vector
+    //virtual void setNotes(WPMultinote *notes, int num, double offset); //want to change to std::vector
+    void setNotes(std::vector<WPMultinote> notes, double offset); //TODO: not virtual. calls reset
     //virtual std::vector<WPMultinote> &getNotes(); //why can't be inline?
-    virtual WPMultinote *getNotes(); //want to change to std::vector
-    virtual int getNotesNumber();
-    virtual double getNotesOffset();
+    //virtual WPMultinote *getNotes(); //want to change to std::vector
+    std::vector<WPMultinote> &getNotes(); //TODO
+    int getNotesNumber();
+    double getNotesOffset();
 
-    virtual bool isGlobal(); //true if the modifier applies to all parts. Unused now.
+    virtual bool isGlobal(); //true if the modifier applies to all parts. Unused now. May be supported by the editor.
 
     virtual bool isTuning(); //if true, isFreqModifier is overridden to be INIT.
     virtual bool isTimbreModifier();//TODO: should be removed later
@@ -75,18 +72,27 @@ public:
     virtual std::vector<double> modifyFreq(double time, std::vector<double> freq);
     virtual std::vector<double> modifyAmp(double time, std::vector<double> amp);
 
-    virtual WPMultinote *getCurrentMultinote();
-
     virtual std::string getComment(); //Returns a human-readable description of the modifier
+
+protected:
+    virtual double getTime() const; //should be protected
+    virtual double getPrevTime() const; //should be protected
+    virtual bool timePassed(double t); //should be protected
+    virtual void reset(); //called by setNotes. should be protected
+    //virtual void reset(std::vector<WPMultinote> notes, double offset); //TODO: want to make setNotes call this
+    //virtual void reset(double t); //call this when overwriting
+
+    virtual WPMultinote *getCurrentMultinote(); //should be protected
 
 private:
     double wpmodifier_time, wpmodifier_prevtime, wpmodifier_synthesized_time;
     //std::vector<WPMultinote> wpmodifier_notes;
-    WPMultinote *wpmodifier_notes;
+    //WPMultinote *wpmodifier_notes;
+    std::vector<WPMultinote> wpmodifier_notes;
     int wpmodifier_notesnumber;
     double wpmodifier_notesoffset;
     //WPNote wpmodifier_note;
-    WPMultinote *currentmultinoteiter;
+    WPMultinote *currentmultinoteiter; //used by getCurrentMultinote
     double wpmodifier_stime;
 
 };

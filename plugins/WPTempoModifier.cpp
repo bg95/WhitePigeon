@@ -15,11 +15,6 @@ WPModifier::Precedence WPTempoModifier::isTempoModifier()
     return INIT;
 }
 
-void WPTempoModifier::reset()
-{
-    WPModifier::reset();
-}
-
 void WPTempoModifier::set(std::string para)
 {
     para.push_back(' ');

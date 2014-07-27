@@ -12,7 +12,12 @@ class WPSlur : public WPModifier
 public:
     WPSlur();
     ~WPSlur();
-    void setNotes(WPMultinote *notes, int num, double offset);
+	NotesRequirement needNotes()
+	{
+		return RANGE;
+	}
+    //void setNotes(WPMultinote *notes, int num, double offset);
+	void reset();
     bool isNoteModifier()
     {
         return true;

@@ -27,7 +27,7 @@ public:
 
     std::string getComment();
 
-    static void *(*callback)(WPCallbackManager::CallbackFuncStatic);
+    //static void *(*callback)(WPCallbackManager::CallbackFuncStatic);
     
 private:
     double cal12EqualTuning(WPNote note);

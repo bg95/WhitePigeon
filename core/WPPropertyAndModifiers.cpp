@@ -80,6 +80,11 @@ WPModifier *WPPropertyAndModifiers::sampleModifier()
     return samplemodifier;
 }
 
+WPModifier *WPPropertyAndModifiers::modifier(int s)
+{
+    return modifiers[s];
+}
+
 std::string WPPropertyAndModifiers::getName()
 {
     return name;

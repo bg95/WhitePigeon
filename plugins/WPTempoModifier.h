@@ -10,7 +10,6 @@ public:
     ~WPTempoModifier();
 
     Precedence isTempoModifier();
-    void reset();
     void set(std::string para);
     double modifyTempo(double, double);
 
