@@ -29,8 +29,15 @@ public:
     WPModifier();
     virtual ~WPModifier();
 
+    //Access absolute start time of the property, which is
+    // The start of the property - if needNotes is NONE or RANGE
+    // The start of current note - if needNotes is SINGLE
+    void setAbsoluteStartTime(double t);
+    double getAbsoluteStartTime() const;
     //setTime will be called before each call of modify* function, telling the current time (in beats)
-    //call this when overwriting
+    //The time is relative to getAbsoluteStartTime()
+    //Overwriting is not recommended. Call this when overwriting.
+    //getTime is protected (maybe it need not to be)
     virtual void setTime(double t);
 
     //This indicates whether the modifier needs the information of the notes.
@@ -85,6 +92,7 @@ protected:
     virtual WPMultinote *getCurrentMultinote(); //should be protected
 
 private:
+    double wpmodifier_absstarttime;
     double wpmodifier_time, wpmodifier_prevtime, wpmodifier_synthesized_time;
     //std::vector<WPMultinote> wpmodifier_notes;
     //WPMultinote *wpmodifier_notes;

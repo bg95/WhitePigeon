@@ -9,6 +9,16 @@ WPModifier::~WPModifier()
 {
 }
 
+void WPModifier::setAbsoluteStartTime(double t)
+{
+    wpmodifier_absstarttime = t;
+}
+
+double WPModifier::getAbsoluteStartTime() const
+{
+    return wpmodifier_absstarttime;
+}
+
 void WPModifier::setTime(double t)
 {
     wpmodifier_prevtime = wpmodifier_time;

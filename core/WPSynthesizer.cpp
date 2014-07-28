@@ -232,6 +232,7 @@ void WPSynthesizer::processProperties(double time0, double time1, std::vector<WP
                 std::vector<WPMultinote> vecmlt;
                 vecmlt.push_back(fragment.first); //ugly to use fragment
                 mod->setNotes(vecmlt, 0.0);
+                mod->setAbsoluteStartTime(time0);
             }
         }
     }
@@ -244,7 +245,7 @@ void WPSynthesizer::insertProperty(WPProperty prop)
     //memory released in removeProperty()
     if (pam->setProperty(prop))
     {
-        //setNotes. Another part for WPModifier::SINGLE is in synthesizePartLoopInitialize
+        //setNotes. Another part for WPModifier::SINGLE is in processProperties
         if (pam->sampleModifier()->needNotes() != WPModifier::NONE)
         {
             WPInterval propinterval;
@@ -265,12 +266,23 @@ void WPSynthesizer::insertProperty(WPProperty prop)
             //WPMultinote *notes = new WPMultinote[num]; //leak!
             //memory released in removeProperty()
             //pam->sampleModifier()->setNotes(notes, num, (propinterval.begin().getValue() - propexinterval.begin().getValue()).toDouble());
-            pam->sampleModifier()->setNotes(notesvector, (propinterval.begin().getValue() - propexinterval.begin().getValue()).toDouble());
+            if (pam->sampleModifier()->needNotes() == WPModifier::RANGE)
+            {
+                pam->sampleModifier()->setNotes(notesvector, (propinterval.begin().getValue() - propexinterval.begin().getValue()).toDouble());
+                pam->sampleModifier()->setAbsoluteStartTime(propinterval.begin().getValue().toDouble());
+            }
+            else if (pam->sampleModifier()->needNotes() == WPModifier::SINGLE)
+                if (!notesvector.empty()) //if empty, this modifier starts at the start of a multinote. setNotes and setAbsoluteStartTime will be called in processProperties
+                {
+                    pam->sampleModifier()->setNotes(notesvector, (propinterval.begin().getValue() - propexinterval.begin().getValue()).toDouble());
+                    pam->sampleModifier()->setAbsoluteStartTime(propexinterval.begin().getValue().toDouble());
+                }
         }
         else //WPModifier::NONE, no notes passed (empty vector)
         {
             std::vector<WPMultinote> notesvector;
             pam->sampleModifier()->setNotes(notesvector, 0.0);
+            pam->sampleModifier()->setAbsoluteStartTime(prop.getInterval().begin().getValue().toDouble());
         }
         //pam->sampleModifier()->reset();
         //propmap.insert(prop, pam);
@@ -360,7 +372,7 @@ int WPSynthesizer::processTuningFreqAmp(double time, std::vector<double> &freq, 
             amp = modifier->modifyAmp(time, amp);
         }
     );
-    //qDebug("amp = %lf", amp[0]);
+    qDebug("amp = %lf", amp[0]);
     //TODO: process freqerr and amperr
     return tuned;
 }
@@ -422,7 +434,7 @@ int WPSynthesizer::processTempo(double time, double &tempo)
         tempocnt++;
         tempo = 100.0; //100.0;
     }
-    qDebug("##### process tempo = %lf", tempo);
+    //qDebug("##### process tempo = %lf", tempo);
     //TODO: process tempoerr
     return tempocnt;
 }
@@ -493,12 +505,12 @@ void WPSynthesizer::processAllModifiers(double time, std::vector<double> &freq, 
     std::map<WPProperty, WPPropertyAndModifiers *>::iterator propmapiter;
     for (propmapiter = propmap.begin(); propmapiter != propmap.end(); propmapiter++)
     {
-        double ttime = 0.0;
-        double rtime = time - (*propmapiter).first.getInterval().begin().getValue().toDouble();/*
+        double ttime = 0.0;/*
         //WPProperty prop = (*propmapiter).first;
-        qDebug("Modifier: %lX", (quint64)(*propmapiter).second->sampleModifier());
         qDebug("Modifier: %lX", (quint64)(*propmapiter).second->sampleModifier());*/
         WPModifier *modifier = (*propmapiter).second->sampleModifier();
+        //double rtime = time - (*propmapiter).first.getInterval().begin().getValue().toDouble();/*
+        double rtime = time - modifier->getAbsoluteStartTime();
         //qDebug("relative time = %lf", rtime);
         /*qDebug("abcdefghijklmno %lf", ttime);
         qDebug("Modifier: %lX", (quint64)(*propmapiter).second->sampleModifier());

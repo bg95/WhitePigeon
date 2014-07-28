@@ -18,14 +18,20 @@ public:
         return PROP;
     }
 
-    void setNotes(WPMultinote *notes, int num, double offset);
+	NotesRequirement needNotes()
+	{
+		return SINGLE;
+	}
+    //void setNotes(WPMultinote *notes, int num, double offset);
+	void reset();
 
     double modifyNote(double time); //if a note starts at (near) time, returns the length, otherwise returns a negative
     std::vector<double> modifyAmp(double time, std::vector<double> amp);
 
 private:
     const double Shortened;
-    std::vector<double> notestart;
+	double length;
+    //std::vector<double> notestart;
 
 };
 

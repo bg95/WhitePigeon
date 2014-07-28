@@ -84,6 +84,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(9, 4)), WPPosition(Fraction(48, 1))), "WPTempoModifier 140.0"));
     score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 1)), WPPosition(Fraction(3, 4))), "WPSlur"));
     score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(3, 4)), WPPosition(Fraction(9, 4))), "WPAmpModifier 0.5"));
+    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(6, 4)), WPPosition(Fraction(12, 4))), "WPStaccatissimo"));
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
 	score->unlock();
 
