@@ -18,7 +18,7 @@ public:
         p = t * ControlRate - a;
         return f[a] * (1.0 - p) + f[a + 1] * p;
     }*/
-    static inline double interpolate(double t, double t0, double t1, double f0, double f1);
+    static double interpolate(double t, double t0, double t1, double f0, double f1);
 
     WPTimbre();
     virtual ~WPTimbre();

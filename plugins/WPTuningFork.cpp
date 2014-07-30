@@ -61,14 +61,14 @@ WPWave *WPTuningFork::synthesize(double dur, double time0, double time1, double 
     	iamp = interpolate(t, time0, time1, amp0, amp1);
     	ifreq = interpolate(t, time0, time1, freq0, freq1);
         tmpdata.push_back(WPSynthesizer_truncateWaveData(
-        iamp * 0.1 * //envelope(0.1 * dur, 0.8 * dur, 0.1 * dur, t) * 0.25 *
+        iamp * 0.5 * //envelope(0.1 * dur, 0.8 * dur, 0.1 * dur, t) * 0.25 *
         (
-        	std::sin(phi) * std::exp(-1.0 * t) +/*
+        	0.2 * std::sin(phi) * std::exp(-1.0 * t * 0.1) +/*
             std::sin(phi * 2.0) * std::exp(-4.0 * t) +
         	std::sin(phi * 3.0) * std::exp(-9.0 * t) +
         	std::sin(phi * 4.0) * std::exp(-16.0 * t) +*/
-            0.3 * std::sin(phi * 5.0) * std::exp(-25.0 * t) +
-            0.3 * std::sin(phi * 9.0) * std::exp(-81.0 * t)
+            0.6 * std::sin(phi * 4.0) * std::exp(-16.0 * t * 0.1) +
+            0.2 * std::sin(phi * 9.0) * std::exp(-81.0 * t * 0.1)
         )
         ));
         phi += 2 * WPWave::PI * ifreq / double(WPWave::SamplingRate);

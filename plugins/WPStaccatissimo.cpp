@@ -35,7 +35,7 @@ double WPStaccatissimo::modifyNote(double time)
 
 std::vector<double> WPStaccatissimo::modifyAmp(double time, std::vector<double> amp)
 {
-	printf("WPStaccatissimo::modifyAmp length*Shortened=%.2lf getTime()=%.2lf\n", length * Shortened, getTime());
+	//printf("WPStaccatissimo::modifyAmp length*Shortened=%.2lf getTime()=%.2lf\n", length * Shortened, getTime());
 	std::vector<double>::iterator iter;
 	double rtime = getTime();
     if (rtime < length * Shortened)

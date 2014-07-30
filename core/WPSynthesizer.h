@@ -64,7 +64,8 @@ private:
     //int processTimbre(double time, WPPropertyAndModifiers *&timbreobj);
     int processTempo(double time, double &tempo);
     int sortAndApplyModifier(bool (*filter)(WPModifier *), WPModifier::Precedence (*precedence)(WPModifier *), std::function<void (WPModifier *)> action);
-    void processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo, std::string &timbre);
+    void processAllModifiersExceptTimbre(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo);//, std::string &timbre);
+    void processTimbreWrapper(double time, std::string &timbrename);
     //void processAllModifiers(double time, std::vector<double> &freq, std::vector<double> &amp, double &notelength, double &tempo, WPPropertyAndModifiers *&timbreobj);
     //freq should be filled with 0's
     void outputNote();

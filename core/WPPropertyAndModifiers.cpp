@@ -35,7 +35,13 @@ bool WPPropertyAndModifiers::setProperty(WPProperty &_prop)
         name.push_back(c);
     }
     qDebug() << " WPPropertyAndModifiers::setProperty name = " << name.data();
-    iss >> para;
+    std::string arg = prop.getArg();
+    size_t spacepos = arg.find(' ');
+    if (spacepos != std::string::npos && spacepos < arg.size() - 1)
+        para = arg.substr(spacepos + 1);
+    else
+        para.clear();
+    //iss >> para;
     fname.append(ModifierPluginDir);
     fname.append("lib");
     fname.append(name);
