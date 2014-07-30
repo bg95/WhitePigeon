@@ -105,6 +105,8 @@ void WPSynthesizer::synthesizePartLoopInitialize()
 {
     if (!(fragment.first.getLength() == Fraction(-1, 1)))
     {
+        //if no need to output (in synthesizePartFinalize), then process Timbre
+        //processTimbreWrapper(time1, timbrename);
         qDebug("start processing one fragment");
         notes = fragment.first.getNotes();
         sprop = fragment.second.first;
@@ -132,6 +134,7 @@ void WPSynthesizer::synthesizePartLoopBody()
         synthesizePartLoopFinalize();
         return;
     }
+    processTimbreWrapper(time1, timbrename);
     processProperties(time0, time1, sprop, eprop);
 
     freq.push_back(std::vector<double>(notes.size(), 0.0));
@@ -147,7 +150,7 @@ void WPSynthesizer::synthesizePartLoopBody()
         processTimbreWrapper(time1, timbrename);
         return;
     }
-    processTimbreWrapper(time1, timbrename);
+    //processTimbreWrapper(time1, timbrename);
 
     time0 = time1;
     time1 = std::min(time1 + TimeStep, timeend);

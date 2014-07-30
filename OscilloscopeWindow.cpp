@@ -81,11 +81,14 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
         score->getPartList()[0].insertMultinote(WPPosition(pos), WPMultinote(note3));
         pos += note3.getLength();
     }
-    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(9, 4)), WPPosition(Fraction(48, 1))), "WPTempoModifier 40.0"));
+    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(9, 4)), WPPosition(Fraction(30, 1))), "WPTempoModifier 40.0"));
     score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(3, 4)), WPPosition(Fraction(6, 4))), "WPSlur"));
     score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(3, 4)), WPPosition(Fraction(9, 4))), "WPAmpModifier 0.5"));
     score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(6, 4)), WPPosition(Fraction(12, 4))), "WPStaccatissimo"));
-    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 4)), WPPosition(Fraction(3, 4))), "WPTimbreModifier WPExpressionTimbre (sin(phi)+sin(2*phi))/2"));
+    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(0, 4)), WPPosition(Fraction(3, 4))), "WPTimbreModifier WPExpressionTimbre amp*tan(phi)"));
+    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(3, 4)), WPPosition(Fraction(6, 4))), "WPTimbreModifier WPExpressionTimbre amp*sin(phi)"));
+    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(7, 4)), WPPosition(Fraction(17, 8))), "WPTimbreModifier WPExpressionTimbre amp*(mod(phi,2)-1)"));
+    score->getPartList()[0].insertProperty(WPProperty(WPInterval(WPPosition(Fraction(17, 8)), WPPosition(Fraction(12, 4))), "WPTimbreModifier WPExpressionTimbre amp*sin(phi)"));
     score->getPartList()[0].startFrom(WPPosition(Fraction(0, 1)));
 
     score->save("test_score.wps");
@@ -122,7 +125,7 @@ void OscilloscopeWindow::showEvent(QShowEvent *)
     WPDLLTimbreManager::TimbrePluginDir = "/home/pt-cr/Projects/WhitePigeon/WhitePigeon/plugins/";
     */
 
-    //controller->synthesizeAndPlay(*score); // prevent you from playing music!
+    controller->synthesizeAndPlay(*score); // prevent you from playing music!
     qDebug("part volume = %lf", score->getPartList()[0].getVolume());
 
     audioinput = new QAudioInput(WPWave::defaultAudioFormat());
