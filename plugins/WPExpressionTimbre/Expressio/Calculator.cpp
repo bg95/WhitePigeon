@@ -90,3 +90,16 @@ Calculator::Calculator()
 	evaluator.addFunction("min"  , [](double x, double y) { return std::fmin(x, y);  });
 	evaluator.addFunction("mod"  , [](double x, double y) { return std::fmod(x, y);  });
 }
+
+void Calculator::setExpression(const std::string &expression)
+{
+	//this->expression = expression;
+	postfix = infixToPostfix(tokenize(expression));
+}
+
+double Calculator::evaluate() const
+{
+	return evaluatePostfix(postfix);
+	//return evaluate(expression);
+	//return this->Expressio::Evaluator<double>::evaluate(expression);
+}

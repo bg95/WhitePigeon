@@ -21,7 +21,11 @@ void WPExpressionTimbre::reset()
 
 void WPExpressionTimbre::set(std::string para)
 {
-	expression = para;
+	calculator.addConstant("time", 0);
+	calculator.addConstant("amp", 0);
+	calculator.addConstant("freq", 0);
+	calculator.addConstant("phi", 0);
+	calculator.setExpression(para);
 }
 
 WPWave *WPExpressionTimbre::synthesize(double dur, double time0, double time1, double amp0, double amp1, double freq0, double freq1)
@@ -46,7 +50,7 @@ WPWave *WPExpressionTimbre::synthesize(double dur, double time0, double time1, d
 		calculator.setConstant("freq", ifreq);
 		calculator.setConstant("phi", phi);
         tmpdata.push_back(WPSynthesizer::truncateWaveData(
-			calculator.evaluate(expression)
+			calculator.evaluate()
         ));
         phi += 2 * WPWave::PI * ifreq / double(WPWave::SamplingRate);
     }

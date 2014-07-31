@@ -24,7 +24,7 @@ private:
 	//double envelope(double rise, double sustain, double decay, double t);
 	double rand11();
 	Calculator calculator;
-	std::string expression;
+	//std::string expression;
 
 };
 

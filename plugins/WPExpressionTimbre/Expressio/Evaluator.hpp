@@ -115,7 +115,8 @@ public:
 		return evaluatePostfix(infixToPostfix(tokenize(expression)));		
 	}
 
-private:
+//private:
+protected:
 	struct Comma { };      ///< Represents a comma
 	struct LeftParen { };  ///< Represents a left parenthesis
 	struct RightParen { }; ///< Represents a right parenthesis
@@ -149,6 +150,15 @@ private:
 			Function(function), precedence(precedence), associativity(a) { }
 	};
 
+	/**
+	 * The ConstantName struct represents a constant name.
+	 */
+	struct ConstantName : public std::string
+	{
+		ConstantName(std::string str) :
+			std::string(str) { }
+	};
+
 	/// A string to operator dictionary. Same for all Evaluators, and therfore static (and constant).
 	static const std::unordered_map<std::string, Operator> operatorMap;
 	
@@ -161,10 +171,12 @@ private:
 	std::unordered_map<std::string, ValueType> constantsMap;
 
 	/// A token in an infix expression. This can be either a value, a comma, a parenthesis, an operator or a function.
-	using InfixToken = boost::variant<ValueType, Comma, LeftParen, RightParen, Operator, Function>;
+	/// Or the name of a constant
+	using InfixToken = boost::variant<ValueType, ConstantName, Comma, LeftParen, RightParen, Operator, Function>;
 	
 	/// A token in a postfix expression. This can be either a value or a function
-	using PostfixToken = boost::variant<ValueType, Function>;
+	/// Or the name of a constant
+	using PostfixToken = boost::variant<ValueType, ConstantName, Function>;
 
 	/**
 	 * Get the first sequence of consecutive characters that obey the character predicate requirements.
@@ -316,7 +328,10 @@ private:
 			         [](char c) { return isalnum(c) || c == '_'; })) != "") // Function or constant
 			{
 				if (auto constantValue = getConstant(subStr)) // if constant
-					token = *constantValue;
+				{
+					//token = *constantValue;
+					token = ConstantName(subStr); //record the constant name in case of modification of the value before evaluation
+				}
 				else // if function
 					token = getFunction(subStr);
 				
@@ -387,6 +402,12 @@ private:
 	
 			// Insert values to the output vector
 			void operator()(const ValueType& x) const
+			{
+				output.emplace_back(x);
+			}
+	
+			// Insert constant names to the output vector
+			void operator()(const ConstantName& x) const
 			{
 				output.emplace_back(x);
 			}
@@ -539,14 +560,21 @@ private:
 		class PostfixTokenVisitor : public boost::static_visitor<void>
 		{
 			std::vector<ValueType>& valueStack;
+			const std::unordered_map<std::string, ValueType>& constantsMap;
 	
 		public:
-			PostfixTokenVisitor(std::vector<ValueType>& valueStack) :
-				valueStack(valueStack) { }
+			PostfixTokenVisitor(std::vector<ValueType>& valueStack, const std::unordered_map<std::string, ValueType>& constantsMap) :
+				valueStack(valueStack), constantsMap(constantsMap) { }
 	
 			void operator()(const ValueType& v) const
 			{
 				valueStack.emplace_back(v);
+			}
+	
+			void operator()(const ConstantName& v) const
+			{
+				auto pair = constantsMap.find(v);
+				valueStack.emplace_back((*pair).second);
 			}
 	
 			void operator()(const Function& f) const
@@ -565,7 +593,7 @@ private:
 	
 		// Apply the postfix token visitor for each postfix token
 		for (const auto& token : postfixTokens)
-			boost::apply_visitor(PostfixTokenVisitor(valueStack), token);
+			boost::apply_visitor(PostfixTokenVisitor(valueStack, constantsMap), token);
 	
 		if (valueStack.size() > 1)
 			throw std::invalid_argument("Syntax error: Too many arguments!");
